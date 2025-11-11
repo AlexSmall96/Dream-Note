@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  distDir: '.next',
   reactStrictMode: true,
-  output: 'export',
+  typescript: {
+    tsconfigPath: "./src/tsconfig.json",
+  },
 };
 
 export default nextConfig;
