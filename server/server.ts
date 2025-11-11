@@ -1,13 +1,23 @@
 import express, { Request, Response } from 'express';
+import next from "next";
 
-const app = express();
+const dev = process.env.NODE_ENV !== "production";
+const app = next({ dev, dir: './src' });
+const handle = app.getRequestHandler();
 
-app.get('/', (_req: Request, res: Response) => {
-  res.send('Welcome to The Dream Note API.');
-});
+app.prepare().then(() => {
+    const server = express();
 
-const port = process.env.PORT || 3001;
+    server.get('/api', (_req: Request, res: Response) => {
+        res.send('Welcome to The Dream Note API.');
+    });
 
-app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
-});
+    server.all("*", (req, res) => handle(req, res));
+
+
+    const port = process.env.PORT || 3000;
+
+    server.listen(port, () => {
+        console.log(`Server started on port ${port}`);
+    });
+})
