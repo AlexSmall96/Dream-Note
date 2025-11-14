@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { UserController } from "../controllers/user.controller";
+import { UserController } from "../controllers/user.controller.js";
 import { injectable, inject } from "inversify";
 
 // Router class for User model

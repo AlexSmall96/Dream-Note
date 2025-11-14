@@ -1,7 +1,11 @@
-import { Schema, Model, model } from "mongoose";
-import { UserInterface } from "../interfaces";
+import { Schema, Model, model, Document } from "mongoose";
+import { UserInterface } from "../interfaces.js";
+import bcrypt from "bcrypt";
 
-const userSchema: Schema<UserInterface> = new Schema({
+// Create new interface from UserInterface + mongoose Document
+export interface UserDocument extends UserInterface, Document {}
+
+const userSchema: Schema<UserDocument> = new Schema({
     email: {
         type: String,
         required: [true, 'Email address is required'],
@@ -16,4 +20,13 @@ const userSchema: Schema<UserInterface> = new Schema({
     }
 }, {timestamps: true})
 
-export const User:Model<UserInterface> = model('User', userSchema)
+// Method to hash passwords when user is created or password is changed
+userSchema.pre<UserDocument>("save", async function (next) {
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 8);
+    }
+    next();
+});
+
+
+export const User:Model<UserDocument> = model('User', userSchema)

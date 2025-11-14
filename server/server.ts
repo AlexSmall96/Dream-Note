@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import next from "next";
 import mongoose from "mongoose";
-import { addRoutes } from './config/routes.config';
+import { addRoutes } from './config/routes.config.js';
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });

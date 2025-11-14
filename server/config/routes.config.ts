@@ -1,6 +1,6 @@
 import { Application } from "express";
-import { container } from "./container";
-import { UserRouter } from "../routers/user.router";
+import { container } from "./container.js";
+import { UserRouter } from "../routers/user.router.js";
 
 export function addRoutes(server: Application): Application{
 

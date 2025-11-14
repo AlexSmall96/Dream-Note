@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
-import { UserInterface } from "../interfaces"
-import { User } from "../models/user.model";
+import { UserInterface } from "../interfaces.js"
+import { User } from "../models/user.model.js";
 
 // Controller clas for User model
 @injectable()
