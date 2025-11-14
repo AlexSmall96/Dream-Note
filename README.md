@@ -1,8 +1,36 @@
 # Dream Note
 
+## Live Site
+[https://dream-note-uh6p.onrender.com//](https://dream-note-uh6p.onrender.com/)
+## Repository
+[https://github.com/AlexSmall96/Dream-Note](https://github.com/AlexSmall96/Dream-Note)
+## Author
+Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
+## Table of Contents
+
+## Testing 
+
+## Project Goals and Planning
+
+### Process Flow Diagrams
+
+### Methodology
+
+## UX
+
+### User Stories
+
+### Target Audience
+
+### Wireframes
+
+### Fonts
+
+### Images
+
 ## Programming Languages, Frameworks, and Libraries used
 
-- TypeScript
+- TypeScript    
 - Backend 
     - Node.js 
     - Express
@@ -21,7 +49,8 @@
     - GitHub
     
 ## Credits
-
+### Courses
+### APIs
 ### Code
 
 Code was taken from/inspired by the below articles. Whenever the code is used, it is referenced as a comment.
