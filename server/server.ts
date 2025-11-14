@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import next from "next";
 import mongoose from "mongoose";
+import { addRoutes } from './config/routes.config';
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
@@ -15,6 +16,9 @@ app.prepare().then(() => {
     server.get('/api', (_req: Request, res: Response) => {
         res.json({message: 'Welcome to The Dream Note API.'});
     });
+
+    // Add all routes to server
+    addRoutes(server)
 
     // Connect to MongoDB database
     async function bootstrap() {
@@ -35,6 +39,7 @@ app.prepare().then(() => {
         }
     }
 
+    // Render frontend
     server.all("*", (req, res) => handle(req, res));
 
     const port = process.env.PORT || 3000;
@@ -43,6 +48,7 @@ app.prepare().then(() => {
         console.log(`Server started on port ${port}`);
     });
 
+    // Call boostrap function to connect to database
     bootstrap()
 
 })
