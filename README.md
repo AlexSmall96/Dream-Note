@@ -20,7 +20,19 @@ To plan the end to end processes involved in the site, the following diagrams we
 ![Log New Dream](documentation/process-flows/LogNewDream.png)
 #### View Dreams Page
 ![View Dreams Page](documentation/process-flows/ViewDreamsPage.png)
+### Database Schema
+The below diagram was used to model the database schema.
+Descriptions of the database tables and fields are as follows:
+
+- **Users:** Contains User's login data.
+- **Dreams:** Dreams the user will record. Contains description, date, and optional title, notes, and AI analysis. Related to the User model via a many to one relationship.
+
+- **Themes:** Themes related to dream, either chosen by the user or AI generated. Related to the Dream model via a many to one relationship.
+
+![Database Schema](documentation/database/db-diagram.png)
 ### Methodology
+
+
 
 ## UX
 
@@ -53,6 +65,9 @@ To plan the end to end processes involved in the site, the following diagrams we
     - VS code
     - HttpYac
     - GitHub
+- Documentation
+    - lucidchart
+    - dbdiagram
     
 ## Credits
 ### Courses
