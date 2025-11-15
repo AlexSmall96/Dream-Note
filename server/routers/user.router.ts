@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { UserController } from "../controllers/user.controller.js";
 import { injectable, inject } from "inversify";
 
@@ -23,6 +23,16 @@ export class UserRouter {
                 res.json(user)
             } catch (err){
                 res.send(err)
+            }
+        })
+
+        // Log in
+        this.router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const result = await this.userController.handleLogIn(req.body);
+                res.json(result) 
+            } catch (err){
+                next(err);
             }
         })
     }

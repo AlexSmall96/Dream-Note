@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import next from "next";
 import mongoose from "mongoose";
 import { addRoutes } from './config/routes.config.js';
@@ -9,8 +9,10 @@ const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
 
+    // Setup Express server
     const server = express();
     server.use(express.json());
+    server.use(express.urlencoded({ extended: true }));
 
     // Welcome message
     server.get('/api', (_req: Request, res: Response) => {
@@ -19,7 +21,13 @@ app.prepare().then(() => {
 
     // Add all routes to server
     addRoutes(server)
-
+    
+    // Add error handling middleware
+    server.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+        console.error(err);
+        res.status(400).json({ error: err.message?? "Unkown error." });
+    })
+        
     // Connect to MongoDB database
     async function bootstrap() {
         if (!process.env.DATABASE_URL){

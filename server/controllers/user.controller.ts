@@ -9,7 +9,15 @@ export class UserController {
     public async handleSignUp(data: UserInterface){
         const user = new User(data);
         await user.save();
-        return user;
+        return {email: user.email, id: user._id}
+    }
+
+    // Log in
+    public async handleLogIn(data: UserInterface){
+        const { email, password } = data;
+        const user = await User.findByCredentials(email, password)
+        const token = await user.generateAuthToken()
+        return {user, token}
     }
 
 }
