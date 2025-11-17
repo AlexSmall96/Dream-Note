@@ -8,7 +8,8 @@ const userSchema = new Schema<UserDocument, UserModel>({
         type: String,
         required: [true, 'Email address is required'],
         maxlength: [50, 'Email address cannot be more than 50 characters.'],
-        trim: true
+        trim: true,
+        unique: true
     },
     password: {
         type: String,
