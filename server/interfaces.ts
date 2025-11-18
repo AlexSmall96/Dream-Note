@@ -4,6 +4,7 @@ import { Model, Document, Types } from "mongoose";
 export interface UserInterface {
     email: string;
     password: string;
+    newPassword: string;
     tokens: string[];
 }
 

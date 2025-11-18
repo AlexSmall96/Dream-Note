@@ -4,6 +4,7 @@ import { injectable, inject } from "inversify";
 import { validationResult } from "express-validator";
 import { userValidator } from "../validators/user.validator.js";
 import { auth, AuthenticatedRequest } from "../middleware/auth.js";
+import bcrypt from "bcrypt";
 
 // Router class for User model
 @injectable()
@@ -57,10 +58,17 @@ export class UserRouter {
 
         // Update user details
         this.router.patch('/update', auth, userValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+            // Check if current password is correct
+            const isMatch: boolean = await bcrypt.compare(req.body.password, req.user.password)
+            if (!isMatch) {
+                return res.status(400).send({errors: {password: {message: 'Current password incorrect.'}}})
+            }
+            // Validate new details
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array() });
             }
+            // Save new details
             try {
                 const result = await this.userController.handleUpdateProfile(req.body, req.user);
                 res.json(result) 
