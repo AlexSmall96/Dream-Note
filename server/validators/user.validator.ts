@@ -2,7 +2,7 @@ import { checkSchema } from "express-validator";
 import { User } from "../models/user.model.js";
 
 // Validator for Sign up route
-export const signupValidator = checkSchema({
+export const userValidator = checkSchema({
     // Email
     email: { 
         // Valid format

@@ -36,4 +36,9 @@ export class UserController {
         await user.save()
         return { user }
     }
+
+    // Delete account
+    public async handleDeleteAccount(user: UserDocument){
+        await user.deleteOne()
+    }
 }
