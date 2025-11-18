@@ -63,7 +63,7 @@ Descriptions of the database tables and fields are as follows:
     - Render
 - Development
     - VS code
-    - HttpYac
+    - Postman
     - GitHub
 - Documentation
     - lucidchart
@@ -77,4 +77,4 @@ Descriptions of the database tables and fields are as follows:
 Code was taken from/inspired by the below articles. Whenever the code is used, it is referenced as a comment.
 
 - Next.js and Express mono-repo setup: https://codezup.com/expressing-your-node-js-app-with-express-typescript-and-next-js/
-
+- Authentication middleware https://www.xjavascript.com/blog/express-auth-middleware-typescript/ 

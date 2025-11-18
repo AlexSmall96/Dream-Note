@@ -4,6 +4,7 @@ import { Model, Document, Types } from "mongoose";
 export interface UserInterface {
     email: string;
     password: string;
+    tokens: string[];
 }
 
 // New interface to define methods
@@ -22,5 +23,6 @@ export interface UserModel extends Model<UserDocument> {
         email: string,
         password: string
     ): Promise<UserDocument>;
+    findByIdOrThrowError(_id: string): Promise<UserDocument>
 }
 

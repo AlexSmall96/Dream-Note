@@ -15,6 +15,12 @@ const userSchema = new Schema<UserDocument, UserModel>({
         type: String,
         required: [true, 'Password is required'],
         trim: true        
+    },
+    tokens: {
+        type: [String],
+        tokens: [{
+  token: String
+}]
     }
 }, {timestamps: true})
 
@@ -43,6 +49,14 @@ userSchema.statics.findByCredentials = async function (
     return user
 }
 
+userSchema.statics.findByIdOrThrowError = async function (this: UserModel, _id: string) : Promise<UserDocument> {
+    const user = await this.findById(_id)
+    if (!user) {
+        throw new Error('Invalid id.')
+    }
+    return user
+}
+
 // Filters the user data to hide private data from response
 userSchema.methods.toJSON = function () {
     const user = this.toObject();
@@ -53,12 +67,15 @@ userSchema.methods.toJSON = function () {
 };
 
 // Method to generate JSON web token
-userSchema.methods.generateAuthToken = async function (): Promise<string> {
+userSchema.methods.generateAuthToken = async function (this: UserDocument): Promise<string> {
     const secretKey =  process.env.JWT_SECRET
+    const user = this
     if (!secretKey){
         throw new Error('Please provide a json web token secret key.')
     }
-    const token = jwt.sign({ _id:this._id.toString() }, secretKey, { expiresIn: "7d" })
+    const token = jwt.sign({ _id:user._id.toString() }, secretKey, { expiresIn: "1h" })
+    user.tokens.push(token)
+    await user.save()
     return token
 }
 

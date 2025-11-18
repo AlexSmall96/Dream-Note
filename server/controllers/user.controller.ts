@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
-import { UserInterface } from "../interfaces.js"
+import { UserDocument, UserInterface } from "../interfaces.js"
 import { User } from "../models/user.model.js";
+import { AuthenticatedRequest } from "../middleware/auth.js";
 
 // Controller clas for User model
 @injectable()
@@ -20,4 +21,19 @@ export class UserController {
         return {user, token}
     }
 
+    // Logout
+    public async handleLogOut(req: AuthenticatedRequest){
+        const { user, token } = req
+        user.tokens = user.tokens.filter((oldToken: string) => oldToken !== token)
+        await user.save()
+    }
+
+    // Edit profile
+    public async handleUpdateProfile(update: UserInterface, user: UserDocument){
+        const { email, password } = update;
+        user.email = email;
+        user.password = password;
+        await user.save()
+        return { user }
+    }
 }
