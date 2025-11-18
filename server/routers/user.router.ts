@@ -58,10 +58,13 @@ export class UserRouter {
 
         // Update user details
         this.router.patch('/update', auth, userValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-            // Check if current password is correct
-            const isMatch: boolean = await bcrypt.compare(req.body.password, req.user.password)
-            if (!isMatch) {
-                return res.status(400).send({errors: {password: {message: 'Current password incorrect.'}}})
+            // Check if password has been supplied and current password is correct
+            const currPassword = req.body.currPassword
+            if (currPassword){
+                const isMatch: boolean = await bcrypt.compare(req.body.currPassword, req.user.password)
+                if (!isMatch) {
+                    return res.status(400).send({errors: {password: {message: 'Current password incorrect.'}}})
+                }
             }
             // Validate new details
             const errors = validationResult(req);

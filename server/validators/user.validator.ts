@@ -4,7 +4,8 @@ import { User } from "../models/user.model.js";
 // Validator for Sign up route
 export const userValidator = checkSchema({
     // Email
-    email: { 
+    email: {    
+        optional: true,
         // Valid format
         isEmail: {errorMessage: "Please provide a valid email address.", bail: true}, 
         // Email address must be unique
@@ -20,10 +21,11 @@ export const userValidator = checkSchema({
     },
     // Password
     password: {  
+        optional: true,
         // Minimum length
         isLength: {
             options: { min: 8 },
-            errorMessage: 'Password must be at least 8 characters.'
+            errorMessage: 'Password must be at least 8 characters.',
         },
         // Cannot contain 'password'
         custom: {

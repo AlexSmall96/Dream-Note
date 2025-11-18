@@ -30,9 +30,13 @@ export class UserController {
 
     // Edit profile
     public async handleUpdateProfile(update: UserInterface, user: UserDocument){
-        const { email, newPassword } = update;
-        user.email = email;
-        user.password = newPassword;
+        const { email, password } = update;
+        if (email){
+            user.email = email
+        }
+        if (password){
+            user.password = password
+        }
         await user.save()
         return { user }
     }
