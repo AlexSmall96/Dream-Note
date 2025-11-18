@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import {  UserDocument, UserModel} from "../interfaces.js";
+import {  UserDocument, UserModel} from "../interfaces/user.interfaces.js";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 

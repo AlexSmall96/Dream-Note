@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
-import { UserDocument, UserInterface } from "../interfaces.js"
+import { UserDocument, UserInterface } from "../interfaces/user.interfaces.js"
 import { User } from "../models/user.model.js";
-import { AuthenticatedRequest } from "../middleware/auth.js";
+import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 
 // Controller clas for User model
 @injectable()

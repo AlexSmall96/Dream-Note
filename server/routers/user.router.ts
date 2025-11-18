@@ -3,7 +3,8 @@ import { UserController } from "../controllers/user.controller.js";
 import { injectable, inject } from "inversify";
 import { validationResult } from "express-validator";
 import { userValidator } from "../validators/user.validator.js";
-import { auth, AuthenticatedRequest } from "../middleware/auth.js";
+import { auth } from "../middleware/auth.js";
+import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import bcrypt from "bcrypt";
 import nodemailer from 'nodemailer';
 
