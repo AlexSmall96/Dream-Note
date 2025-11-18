@@ -7,6 +7,7 @@ import { auth } from "../middleware/auth.js";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import bcrypt from "bcrypt";
 import nodemailer from 'nodemailer';
+import { EmailService } from "../services/email.service.js";
 
 // Router class for User model
 @injectable()
@@ -15,7 +16,10 @@ export class UserRouter {
 
 
     // Inject UserController
-    constructor(@inject(UserController) private userController: UserController){
+    constructor(
+        @inject(UserController) private userController: UserController,
+        @inject(EmailService) private emailService: EmailService
+    ){
         this.router = Router();
         this.initializeRoutes();
     }
@@ -64,47 +68,42 @@ export class UserRouter {
         */
         this.router.post('/sendOTP', async (req: Request, res: Response, next: NextFunction) => {
 
-            // Get purpose and email from request body
-            const resetPassword: boolean = req.body.resetPassword
-            const verifyEmail: boolean = !resetPassword
-            const email: string = req.body.email
+            // Get purpose, email and OTP from request body
+            const {email, OTP, resetPassword} = req.body
 
+            // Check if email and OTP are present
+            if (!email || !OTP){
+                return res.status(400).send({error: "Please provide a OTP and email address."})
+            }
             try {
+
                 // Check for account associated with email address
-                const account = await this.userController.handleSendOTP(req.body.email)
+                const account = await this.userController.findUserByEmail(req.body.email)
+
                 // If aim is to reset password, check if email address belongs to an account
                 if (resetPassword && !account){
                     return res.status(404).send({ error: 'No account was found associated with the given email address.' });
+
                 // If aim is to verify new email, check if email address has not yet been taken
-                } else if (verifyEmail && account){
+                } else if (!resetPassword && account){
                     return res.status(400).send({ error: 'Email address taken. Please choose a different email address.' });
                 }
-                // Setup transporter
-                const transporter = nodemailer.createTransport({
-                    service: process.env.SMTP_SERVICE,
-                    auth: {
-                        user: process.env.SMTP_MAIL,
-                        pass: process.env.SMTP_PASS
-                    }
-                });
-                // Get OTP from request
-                const OTP: string = req.body.OTP
+
                 // Configure email options
+                const transporter = this.emailService.getTransporter();
+                const purpose = resetPassword? 'password reset' : 'email address verification'
+                
                 const mailOptions = {
                     from: process.env.SMTP_MAIL,
                     to: email,
-                    subject: `Your Dream Note OTP for ${resetPassword? 'password reset' : 'email address verification'}.`,
+                    subject: `Your Dream Note OTP for ${purpose}.`,
                     text: `Your one time passcode (OTP) is ${OTP}. This will expire in 10 minutes.`
                 };
+
                 // Send email
-                transporter.sendMail(mailOptions, (error, _info) => {
-                    if (error) {
-                        return res.status(500).send({error: "Couldn't send email due to system issues. Please try again later."})
-                    }
-                    res.status(200).send({
-                        message: 'OTP passcode sent.'
-                    })
-                });
+                await transporter.sendMail(mailOptions)
+                res.json({ message: "OTP sent successfully." });
+
             } catch (err){
                 next(err)
             }

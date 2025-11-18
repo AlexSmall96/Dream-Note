@@ -29,9 +29,8 @@ export class UserController {
     }
 
     // Send one time passcode (OTP) to email address
-    public async handleSendOTP(email: string){
-        const account = await User.findOne({email})
-        return account
+    public findUserByEmail(email: string){
+        return User.findOne({email})
     }
     
     // Edit profile
