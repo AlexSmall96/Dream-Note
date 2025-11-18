@@ -28,6 +28,12 @@ export class UserController {
         await user.save()
     }
 
+    // Send one time passcode (OTP) to email address
+    public async handleSendOTP(email: string){
+        const account = await User.findOne({email})
+        return account
+    }
+    
     // Edit profile
     public async handleUpdateProfile(update: UserInterface, user: UserDocument){
         const { email, password } = update;

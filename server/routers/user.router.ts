@@ -5,6 +5,7 @@ import { validationResult } from "express-validator";
 import { userValidator } from "../validators/user.validator.js";
 import { auth, AuthenticatedRequest } from "../middleware/auth.js";
 import bcrypt from "bcrypt";
+import nodemailer from 'nodemailer';
 
 // Router class for User model
 @injectable()
@@ -55,6 +56,58 @@ export class UserRouter {
             }
         })
 
+        /* Send one time passcode (OTP) to email address
+        Used to either verify an email address or reset password when logged out
+        The code to validate and send to an email address was taken from the following article
+        https://medium.com/@elijahechekwu/sending-emails-in-node-express-js-with-nodemailer-gmail-part-1-67b7da4ae04b
+        */
+        this.router.post('/sendOTP', async (req: Request, res: Response, next: NextFunction) => {
+
+            // Get purpose and email from request body
+            const resetPassword: boolean = req.body.resetPassword
+            const verifyEmail: boolean = !resetPassword
+            const email: string = req.body.email
+
+            try {
+                // Check for account associated with email address
+                const account = await this.userController.handleSendOTP(req.body.email)
+                // If aim is to reset password, check if email address belongs to an account
+                if (resetPassword && !account){
+                    return res.status(404).send({ error: 'No account was found associated with the given email address.' });
+                // If aim is to verify new email, check if email address has not yet been taken
+                } else if (verifyEmail && account){
+                    return res.status(400).send({ error: 'Email address taken. Please choose a different email address.' });
+                }
+                // Setup transporter
+                const transporter = nodemailer.createTransport({
+                    service: process.env.SMTP_SERVICE,
+                    auth: {
+                        user: process.env.SMTP_MAIL,
+                        pass: process.env.SMTP_PASS
+                    }
+                });
+                // Get OTP from request
+                const OTP: string = req.body.OTP
+                // Configure email options
+                const mailOptions = {
+                    from: process.env.SMTP_MAIL,
+                    to: email,
+                    subject: `Your Dream Note OTP for ${resetPassword? 'password reset' : 'email address verification'}.`,
+                    text: `Your one time passcode (OTP) is ${OTP}. This will expire in 10 minutes.`
+                };
+                // Send email
+                transporter.sendMail(mailOptions, (error, _info) => {
+                    if (error) {
+                        return res.status(500).send({error: "Couldn't send email due to system issues. Please try again later."})
+                    }
+                    res.status(200).send({
+                        message: 'OTP passcode sent.'
+                    })
+                });
+            } catch (err){
+                next(err)
+            }
+        })
 
         // Update user details
         this.router.patch('/update', auth, userValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
