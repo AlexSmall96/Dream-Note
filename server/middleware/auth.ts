@@ -5,17 +5,7 @@ https://www.xjavascript.com/blog/express-auth-middleware-typescript/
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 import { User } from '../models/user.model';
-
-// Extend express Request interface with user and token
-export interface AuthenticatedRequest extends Request {
-    user?: any;
-    token?: string;
-}
-
-// Extend JwtPayload with id
-interface decodedTokenWithId extends JwtPayload {
-    _id: string;
-}
+import { AuthenticatedRequest, decodedTokenWithId } from "../interfaces/auth.interfaces"
 
 // Middleware to verify jwtoken
 export const auth = async (req:AuthenticatedRequest, res: Response, next: NextFunction) => {
