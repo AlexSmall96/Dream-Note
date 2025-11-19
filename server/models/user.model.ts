@@ -24,6 +24,13 @@ const userSchema = new Schema<UserDocument, UserModel>({
     }
 }, {timestamps: true})
 
+// Virtual field for Dream logged by User
+userSchema.virtual('dreams', {
+    ref: 'Dream',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 // Method to hash passwords when user is created or password is changed
 userSchema.pre<UserDocument>("save", async function (next) {
     if (this.isModified("password")) {
