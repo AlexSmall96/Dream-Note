@@ -77,4 +77,9 @@ Descriptions of the database tables and fields are as follows:
 Code was taken from/inspired by the below articles. Whenever the code is used, it is referenced as a comment.
 
 - Next.js and Express mono-repo setup: https://codezup.com/expressing-your-node-js-app-with-express-typescript-and-next-js/
-- Authentication middleware https://www.xjavascript.com/blog/express-auth-middleware-typescript/ 
+
+- Authentication middleware: https://www.xjavascript.com/blog/express-auth-middleware-typescript/
+
+- Dream Interface: https://www.slingacademy.com/article/mongoose-define-schema-typescript/
+
+- Validate and send to an email address https://medium.com/@elijahechekwu/sending-emails-in-node-express-js-with-nodemailer-gmail-part-1-67b7da4ae04b

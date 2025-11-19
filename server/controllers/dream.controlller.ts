@@ -26,4 +26,26 @@ export class DreamController {
         await dream.save()
         return dream
     }
+
+    // Get a users dreams
+    public async handleGetDreams(owner: string, title: RegExp, fromDate: Date, limit: number, skip: number){
+        // Use aggregate to apply limit and skip first, thend date and then search by title
+        const dreams = await Dream.aggregate([
+            {
+                $match: {
+                    owner: owner,
+                    date: { $gte: fromDate }
+                }
+            },
+            {$sort: { date: -1 }},
+            {$skip: skip},
+            {$limit: limit},
+            {
+                $match: {
+                    title: { $regex: title }
+                }
+            }
+        ])
+        return dreams
+    }
 }

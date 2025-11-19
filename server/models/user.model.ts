@@ -80,7 +80,7 @@ userSchema.methods.generateAuthToken = async function (this: UserDocument): Prom
     if (!secretKey){
         throw new Error('Please provide a json web token secret key.')
     }
-    const token = jwt.sign({ _id:user._id.toString() }, secretKey, { expiresIn: "1h" })
+    const token = jwt.sign({ _id:user._id.toString() }, secretKey, { expiresIn: "24h" })
     user.tokens.push(token)
     await user.save()
     return token
