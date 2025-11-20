@@ -7,11 +7,19 @@ import { auth } from "../middleware/auth.js";
 import { DreamService } from "../services/dream.service.js";
 import { ThemeDocument } from "../interfaces/theme.interfaces.js";
 
+// Prompts for openAI API
+enum prompts {
+    title = 'Return exactly one short title for the provided dream.',
+    themes =  'Return 1-4 one word themes for the provided dream. Seperate them by commas without spaces.',
+    analysis = `Return a short interpretation of the provided dream. Include only the interpretation itself without any \n.
+                Never use self referntial langugae and never include a follow up question.`
+}
+                
 // Router class for Dream model
 @injectable()
 export class DreamRouter {
     public router: Router
-
+    
     // Inject DreamController
     constructor(
         @inject(DreamController) private dreamController: DreamController,
@@ -36,8 +44,9 @@ export class DreamRouter {
 
                 // If title has not been provided, generate title from AI API based on description
                 if (!dreamData.title){
-                    const title = await this.dreamService.generateAIDreamInfo(dreamData.description, true) as string
-                    dreamData.title = title
+                    const title = await this.dreamService.generateAIDreamInfo(dreamData.description, prompts.title, false) as string
+                    // If API not working, make title first 15 characters of description
+                    dreamData.title = title ?? dreamData.description.substring(0, 15).concat('...')
                 }  
 
                 // Dream now has title and optional description
@@ -47,7 +56,7 @@ export class DreamRouter {
                 if (dreamData.description){
 
                     // Get themes from request body if supplied, otherwise get AI themes from dream service
-                    const themes = req.body.themes ?? await this.dreamService.generateAIDreamInfo(dreamData.description, false) as string[]
+                    const themes = req.body.themes ?? await this.dreamService.generateAIDreamInfo(dreamData.description, prompts.themes, true) as string[]
                     
                     // Add each theme to database
                     themes.forEach(async (text: string) => {
@@ -63,6 +72,19 @@ export class DreamRouter {
                 next(err)
             }
         })
+
+
+        // Get AI analysis based on description
+        this.router.get('/analysis', async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+            try {
+                // Get analysis from dream service
+                const analysis = await this.dreamService.generateAIDreamInfo(req.body.description, prompts.analysis, false) as string
+                res.json(analysis ?? '')
+            } catch (err){
+                next(err)
+            }
+        })  
+
 
         // Get a users dreams
         // Can view all dreams, search by title or filter by date
