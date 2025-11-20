@@ -1,8 +1,9 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, Response, NextFunction } from "express";
 import { injectable, inject } from "inversify";
 import { DreamController } from "../controllers/dream.controlller.js";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import { auth } from "../middleware/auth.js";
+import { DreamTitleService } from "../services/dream.title.service.js";
 
 // Router class for Dream model
 @injectable()
@@ -12,6 +13,7 @@ export class DreamRouter {
     // Inject DreamController
     constructor(
         @inject(DreamController) private dreamController: DreamController,
+        @inject(DreamTitleService) private dreamTitleService: DreamTitleService
     ){
         this.router = Router();
         this.initializeRoutes();
@@ -23,6 +25,16 @@ export class DreamRouter {
         // Log new dream
         this.router.post('/log', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
+                // Title or description must be provided.
+                if (!req.body.title && !req.body.description){
+                    return res.status(400).json({ error: "At least one of title or description is required." });
+                }
+                // If title has not been provided, generate title from AI API based on description
+                if (!req.body.title){
+                    const response = await this.dreamTitleService.getDreamTitle(req.body.description)
+                    req.body.title = response
+                }  
+                // If description has not been provided, log dream with title only
                 const dream = await this.dreamController.handleLogDream(req.body, req.user._id)
                 res.json(dream)
             } catch (err){
