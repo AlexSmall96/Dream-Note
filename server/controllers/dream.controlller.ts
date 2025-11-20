@@ -45,7 +45,13 @@ export class DreamController {
                     title: { $regex: title }
                 }
             }
-        ])
+        ]).project({title: 1, date: 1}) // Only return title and date for all dreams view
         return dreams
+    }
+
+    // View details for a single dream
+    public async handleViewDream(dreamId: string){
+        const dream = await Dream.findById(dreamId)
+        return dream
     }
 }

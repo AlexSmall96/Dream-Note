@@ -63,6 +63,17 @@ export class DreamRouter {
             }
         })
 
+        // View details for a single dream
+        this.router.get('/view/:id', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+            const dreamId = req.params.id
+            try {
+                const dream = await this.dreamController.handleViewDream(dreamId)
+                res.json(dream)
+            } catch (err){
+                next(err)
+            }
+        })
+
 
     }
 }
