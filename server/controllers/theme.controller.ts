@@ -30,4 +30,10 @@ export class ThemeController {
         });
         return themes
     }   
+
+    // Remove a theme
+    public async handleRemoveTheme(themeId: string){
+        const theme = await Theme.findByIdAndDelete(themeId)
+        return theme
+    }
 }

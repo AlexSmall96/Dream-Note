@@ -17,7 +17,7 @@ export class ThemeRouter {
     }
 
     private initializeRoutes(){
-        
+
         // Get all users themes
         this.router.get('/', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
@@ -27,5 +27,18 @@ export class ThemeRouter {
                 next(err)
             }
         })
+
+        // Remove a theme
+        this.router.delete('/delete/:id', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+            const themeId = req.params.id
+            try {
+                const theme = this.themeController.handleRemoveTheme(themeId)
+                res.json(theme)
+            } catch (err){
+                next(err)
+            }
+        })
+
+        // Add theme and get themes associated with a specific dream are handled in dream.router.ts
     }
 }
