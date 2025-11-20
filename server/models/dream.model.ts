@@ -1,7 +1,7 @@
 import mongoose, { Schema, model } from "mongoose";
-import {  DreamDocument } from "../interfaces/dream.interfaces.js";
+import {  DreamDocument, DreamModel } from "../interfaces/dream.interfaces.js";
 
-const dreamSchema = new Schema<DreamDocument>({
+const dreamSchema = new Schema<DreamDocument, DreamModel>({
     title: {
         type: String,
         required: [true, 'Title is required.'],
@@ -28,4 +28,13 @@ const dreamSchema = new Schema<DreamDocument>({
     },
 })
 
-export const Dream = model<DreamDocument>("Dream", dreamSchema);
+dreamSchema.statics.findByIdAndUpdateOrThrowError = async function (this: DreamModel, _id: string, update): Promise<DreamDocument>{
+    const dream = await this.findByIdAndUpdate(_id, update);
+    if (!dream){
+        throw new Error('Invalid id.')
+    }
+    return dream
+}
+
+
+export const Dream = model<DreamDocument, DreamModel>("Dream", dreamSchema);

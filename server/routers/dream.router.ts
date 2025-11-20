@@ -72,6 +72,18 @@ export class DreamRouter {
             } catch (err){
                 next(err)
             }
+        })  
+
+        // Update dream
+        this.router.patch('/update/:id', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+            const dreamId = req.params.id
+            try {
+                const dream = await this.dreamController.handleUpdateDream(req.body, dreamId)
+                await dream.save()
+                res.json(dream)
+            } catch (err){
+                next(err)
+            }
         })
 
 

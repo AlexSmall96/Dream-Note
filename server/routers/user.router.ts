@@ -6,7 +6,6 @@ import { userValidator } from "../validators/user.validator.js";
 import { auth } from "../middleware/auth.js";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import bcrypt from "bcrypt";
-import nodemailer from 'nodemailer';
 import { EmailService } from "../services/email.service.js";
 
 // Router class for User model

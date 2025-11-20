@@ -54,4 +54,11 @@ export class DreamController {
         const dream = await Dream.findById(dreamId)
         return dream
     }
+
+    // Update dream
+    public async handleUpdateDream(update: DreamInterface, dreamId: string){
+        const dream = await Dream.findByIdAndUpdateOrThrowError(dreamId, update)
+        await dream.save()
+        return dream
+    }
 }
