@@ -8,28 +8,14 @@ export class DreamController {
     
     // Log new dream
     public async handleLogDream(data: DreamInterface, owner: string){
-        const {
-            title, 
-            description, 
-            analysis,
-            notes,
-            date
-        } = data;
-        const dream = new Dream({
-            title, 
-            description, 
-            date,
-            analysis,
-            notes,
-            owner
-        });
+        const dream = new Dream({...data, owner});
         await dream.save()
         return dream
     }
 
     // Get a users dreams
     public async handleGetDreams(owner: string, title: RegExp, fromDate: Date, limit: number, skip: number){
-        // Use aggregate to apply limit and skip first, thend date and then search by title
+        // Use aggregate to apply limit and skip first, then date and then search by title
         const dreams = await Dream.aggregate([
             {
                 $match: {
