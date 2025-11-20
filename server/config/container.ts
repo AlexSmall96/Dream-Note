@@ -4,7 +4,8 @@ import { UserRouter } from "../routers/user.router.js";
 import { EmailService } from "../services/email.service.js";
 import { DreamController } from "../controllers/dream.controlller.js";
 import { DreamRouter } from "../routers/dream.router.js";
-import { DreamTitleService } from "../services/dream.title.service.js";
+import { DreamService } from "../services/dream.service.js";
+
 
 export const container: Container = new Container();
 
@@ -19,6 +20,6 @@ container.bind(EmailService).toSelf().inTransientScope()
 container.bind(DreamController).toSelf().inTransientScope()
 container.bind(DreamRouter).toSelf().inTransientScope()
 
-// AI API Dream title generation service for dream router
-container.bind(DreamTitleService).toSelf().inTransientScope()
+// AI API Dream title and theme generation services for dream router
+container.bind(DreamService).toSelf().inTransientScope()
 

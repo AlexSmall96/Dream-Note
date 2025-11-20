@@ -3,7 +3,7 @@ import { injectable, inject } from "inversify";
 import { DreamController } from "../controllers/dream.controlller.js";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import { auth } from "../middleware/auth.js";
-import { DreamTitleService } from "../services/dream.title.service.js";
+import { DreamService } from "../services/dream.service.js";
 
 // Router class for Dream model
 @injectable()
@@ -13,7 +13,7 @@ export class DreamRouter {
     // Inject DreamController
     constructor(
         @inject(DreamController) private dreamController: DreamController,
-        @inject(DreamTitleService) private dreamTitleService: DreamTitleService
+        @inject(DreamService) private dreamService: DreamService,
     ){
         this.router = Router();
         this.initializeRoutes();
@@ -31,9 +31,14 @@ export class DreamRouter {
                 }
                 // If title has not been provided, generate title from AI API based on description
                 if (!req.body.title){
-                    const response = await this.dreamTitleService.getDreamTitle(req.body.description)
+                    const response = await this.dreamService.generateAIDreamInfo(req.body.description, true)
                     req.body.title = response
                 }  
+                // If description has been provided, generate themes
+                if (req.body.description){
+                    const response = await this.dreamService.generateAIDreamInfo(req.body.description, false)
+                    console.log(response)
+                }
                 // If description has not been provided, log dream with title only
                 const dream = await this.dreamController.handleLogDream(req.body, req.user._id)
                 res.json(dream)
