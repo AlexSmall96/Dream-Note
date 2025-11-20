@@ -1,0 +1,13 @@
+import { Document, Types} from "mongoose";
+import { DreamDocument } from "./dream.interfaces.js";
+
+// Define basic theme interface
+export interface ThemeInterface {
+    theme: string
+    dream: DreamDocument['_id']
+}
+
+// Create new interface from theme interface and mongoose document
+export interface ThemeDocument extends ThemeInterface, Document {
+    _id: Types.ObjectId;
+}
