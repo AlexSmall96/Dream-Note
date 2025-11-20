@@ -1,9 +1,11 @@
 import { Router, Response, NextFunction } from "express";
 import { injectable, inject } from "inversify";
 import { DreamController } from "../controllers/dream.controlller.js";
+import { ThemeController } from "../controllers/theme.controller.js"
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import { auth } from "../middleware/auth.js";
 import { DreamService } from "../services/dream.service.js";
+import { ThemeDocument } from "../interfaces/theme.interfaces.js";
 
 // Router class for Dream model
 @injectable()
@@ -14,6 +16,7 @@ export class DreamRouter {
     constructor(
         @inject(DreamController) private dreamController: DreamController,
         @inject(DreamService) private dreamService: DreamService,
+        @inject(ThemeController) private themeController: ThemeController
     ){
         this.router = Router();
         this.initializeRoutes();
@@ -25,23 +28,36 @@ export class DreamRouter {
         // Log new dream
         this.router.post('/log', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
+
                 // Title or description must be provided.
                 if (!req.body.title && !req.body.description){
                     return res.status(400).json({ error: "At least one of title or description is required." });
                 }
+
                 // If title has not been provided, generate title from AI API based on description
                 if (!req.body.title){
-                    const response = await this.dreamService.generateAIDreamInfo(req.body.description, true)
-                    req.body.title = response
+                    const title = await this.dreamService.generateAIDreamInfo(req.body.description, true) as string
+                    req.body.title = title
                 }  
+
+                // Dream now has title and optional description
+                const dream = await this.dreamController.handleLogDream(req.body, req.user._id)
+                
                 // If description has been provided, generate themes
                 if (req.body.description){
-                    const response = await this.dreamService.generateAIDreamInfo(req.body.description, false)
-                    console.log(response)
+                    // Get AI themes from dream service
+                    const themes = await this.dreamService.generateAIDreamInfo(req.body.description, false) as string[]
+                    
+                    // Add each theme to database
+                    themes.forEach(async (text) => {
+                        await this.themeController.handleAddTheme(dream.id, text.trim())
+                    })
+
+                    // Return dream document and themes array
+                    return res.json({dream, themes})
                 }
-                // If description has not been provided, log dream with title only
-                const dream = await this.dreamController.handleLogDream(req.body, req.user._id)
-                res.json(dream)
+                // Return dream document
+                res.json({dream})
             } catch (err){
                 next(err)
             }
