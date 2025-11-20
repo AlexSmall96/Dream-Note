@@ -61,4 +61,10 @@ export class DreamController {
         await dream.save()
         return dream
     }
+
+    // Delete dream
+    public async handleDeleteDream(dreamId: string){
+        const dream = await Dream.findByIdAndDelete(dreamId)
+        return dream
+    }    
 }

@@ -79,11 +79,21 @@ export class DreamRouter {
             const dreamId = req.params.id
             try {
                 const dream = await this.dreamController.handleUpdateDream(req.body, dreamId)
-                await dream.save()
                 res.json(dream)
             } catch (err){
                 next(err)
             }
+        })
+
+        // Delete dream
+        this.router.delete('/delete/:id', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+            const dreamId = req.params.id
+            try {
+                const dream = await this.dreamController.handleDeleteDream(dreamId)
+                res.json(dream)
+            } catch (err){
+                next(err)
+            }            
         })
 
 
