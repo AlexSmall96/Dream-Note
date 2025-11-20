@@ -28,28 +28,29 @@ export class DreamRouter {
         // Log new dream
         this.router.post('/log', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
-
+                const dreamData = req.body.dream
                 // Title or description must be provided.
-                if (!req.body.title && !req.body.description){
+                if (!dreamData.title && !dreamData.description){
                     return res.status(400).json({ error: "At least one of title or description is required." });
                 }
 
                 // If title has not been provided, generate title from AI API based on description
-                if (!req.body.title){
-                    const title = await this.dreamService.generateAIDreamInfo(req.body.description, true) as string
-                    req.body.title = title
+                if (!dreamData.title){
+                    const title = await this.dreamService.generateAIDreamInfo(dreamData.description, true) as string
+                    dreamData.title = title
                 }  
 
                 // Dream now has title and optional description
-                const dream = await this.dreamController.handleLogDream(req.body, req.user._id)
+                const dream = await this.dreamController.handleLogDream(dreamData, req.user._id)
                 
                 // If description has been provided, generate themes
-                if (req.body.description){
-                    // Get AI themes from dream service
-                    const themes = await this.dreamService.generateAIDreamInfo(req.body.description, false) as string[]
+                if (dreamData.description){
+
+                    // Get themes from request body if supplied, otherwise get AI themes from dream service
+                    const themes = req.body.themes ?? await this.dreamService.generateAIDreamInfo(dreamData.description, false) as string[]
                     
                     // Add each theme to database
-                    themes.forEach(async (text) => {
+                    themes.forEach(async (text: string) => {
                         await this.themeController.handleAddTheme(dream.id, text.trim())
                     })
 
@@ -89,7 +90,8 @@ export class DreamRouter {
             const dreamId = req.params.id
             try {
                 const dream = await this.dreamController.handleViewDream(dreamId)
-                res.json(dream)
+                const themes = await this.themeController.handleGetDreamThemes(dreamId)
+                res.json({dream, themes})
             } catch (err){
                 next(err)
             }

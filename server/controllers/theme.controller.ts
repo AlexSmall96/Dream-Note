@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
-import { ThemeInterface } from "../interfaces/theme.interfaces.js";
 import { Theme } from "../models/theme.model.js";
+import { Dream } from "../models/dream.model.js";
 
 // Controller clas for Theme model
 @injectable()
@@ -12,4 +12,22 @@ export class ThemeController {
         await theme.save()
         return theme
     }
+
+    // Get all themes associated with a specific dream
+    public async handleGetDreamThemes(dream: string){
+        const themes = Theme.find({dream})
+        return themes
+    }
+
+    // Get all a users themes
+    public async handleGetAllThemes(userId: string) {
+        const dreamIds = await Dream.find({ owner: userId }).distinct('_id');
+        const themes = await Theme.find({ 
+            dream: { $in: dreamIds } 
+        }).populate({
+            path: "dream",
+            select: "_id title date"
+        });
+        return themes
+    }   
 }

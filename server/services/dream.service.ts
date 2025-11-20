@@ -22,7 +22,7 @@ export class DreamService {
             ? 
                 'Return exactly one short title for the provided dream.' 
             : 
-                'Return 1-3 one word themes for the provided dream. Seperate them by commas.'
+                'Return 1-4 one word themes for the provided dream. Seperate them by commas without spaces.'
 
         const response = await this.openAI.responses.create({
             model: "gpt-5-nano",
