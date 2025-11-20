@@ -14,7 +14,7 @@ enum prompts {
     analysis = `Return a short interpretation of the provided dream. Include only the interpretation itself without any \n.
                 Never use self referntial langugae and never include a follow up question.`
 }
-                
+              
 // Router class for Dream model
 @injectable()
 export class DreamRouter {
@@ -75,10 +75,14 @@ export class DreamRouter {
 
 
         // Get AI analysis based on description
-        this.router.get('/analysis', async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+        this.router.get('/analysis', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
-                // Get analysis from dream service
-                const analysis = await this.dreamService.generateAIDreamInfo(req.body.description, prompts.analysis, false) as string
+                // Get tone and style from request
+                const tone = req.body.tone
+                const style = req.body.style
+                // Create full prompt using tone and style
+                const fullPrompt = prompts.analysis.concat(` ${tone}`).concat(` ${style}`)
+                const analysis = await this.dreamService.generateAIDreamInfo(req.body.dream.description, fullPrompt, false) as string
                 res.json(analysis ?? '')
             } catch (err){
                 next(err)
