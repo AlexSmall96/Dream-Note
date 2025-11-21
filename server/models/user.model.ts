@@ -2,6 +2,8 @@ import { Schema, model } from "mongoose";
 import {  UserDocument, UserModel} from "../interfaces/user.interfaces.js";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
+import { Dream } from "./dream.model.js";
+import { Theme } from "./theme.model.js";
 
 const userSchema = new Schema<UserDocument, UserModel>({
     email: {
@@ -38,6 +40,21 @@ userSchema.pre<UserDocument>("save", async function (next) {
     }
     next();
 });
+
+// Method to delete a users dreams and themes when account is deleted
+userSchema.pre('findOneAndDelete', async function (next) {
+    // Get user id
+    const owner = this.getFilter()._id;
+    // Find dream ids
+    const dreamIds = await Dream.find({ owner }).distinct('_id');
+    // If dreams are found, first delete assocaited themes
+    if (dreamIds.length > 0){
+        await Theme.deleteMany({ dream: { $in: dreamIds } });
+    }
+    // Delete dreams
+    await Dream.deleteMany({owner})
+    next();
+})
 
 // Static method to find user by email and password
 userSchema.statics.findByCredentials = async function (

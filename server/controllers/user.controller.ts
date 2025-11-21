@@ -47,7 +47,7 @@ export class UserController {
     }
 
     // Delete account
-    public async handleDeleteAccount(user: UserDocument){
-        await user.deleteOne()
+    public async handleDeleteAccount(userId: string){
+        await User.findOneAndDelete({ _id: userId})
     }
 }

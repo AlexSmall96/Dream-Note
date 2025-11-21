@@ -135,7 +135,7 @@ export class UserRouter {
         // Delete account
         this.router.delete('/delete', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
-                const result = await this.userController.handleDeleteAccount(req.user);
+                const result = await this.userController.handleDeleteAccount(req.user._id);
                 res.json(result) 
             } catch (err){
                 next(err);
