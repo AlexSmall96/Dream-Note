@@ -5,7 +5,6 @@ import { ThemeController } from "../controllers/theme.controller.js"
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import { auth } from "../middleware/auth.js";
 import { DreamService } from "../services/dream.service.js";
-import { ThemeDocument } from "../interfaces/theme.interfaces.js";
 
 // Prompts for openAI API
 enum prompts {
@@ -19,8 +18,9 @@ enum prompts {
 @injectable()
 export class DreamRouter {
     public router: Router
+    public addThemes: (description: string, dreamId: string, existingThemes: string[] | null) => Promise<string[]>
     
-    // Inject DreamController
+    // Inject DreamController, DreamService and ThemeController
     constructor(
         @inject(DreamController) private dreamController: DreamController,
         @inject(DreamService) private dreamService: DreamService,
@@ -28,6 +28,17 @@ export class DreamRouter {
     ){
         this.router = Router();
         this.initializeRoutes();
+
+        // Add themes method used by log new dream and update dream routes
+        this.addThemes = async (description, dreamId, existingThemes) => {
+            // Use existing themes or generate themes if null
+            const themes = existingThemes ?? await this.dreamService.generateAIDreamInfo(description, prompts.themes, true) as string[]
+            // Add each theme to database
+            themes.forEach(async (text: string) => {
+                await this.themeController.handleAddTheme(dreamId, text.trim())
+            })
+            return themes
+        }
     }
 
     // Routes
@@ -52,20 +63,13 @@ export class DreamRouter {
                 // Dream now has title and optional description
                 const dream = await this.dreamController.handleLogDream(dreamData, req.user._id)
                 
-                // If description has been provided, generate themes
+                // If description has been provided, generate or save themes
                 if (dreamData.description){
-
-                    // Get themes from request body if supplied, otherwise get AI themes from dream service
-                    const themes = req.body.themes ?? await this.dreamService.generateAIDreamInfo(dreamData.description, prompts.themes, true) as string[]
-                    
-                    // Add each theme to database
-                    themes.forEach(async (text: string) => {
-                        await this.themeController.handleAddTheme(dream.id, text.trim())
-                    })
-
+                    const themes = await this.addThemes(dreamData.description, dream.id, req.body.themes)
                     // Return dream document and themes array
                     return res.json({dream, themes})
                 }
+
                 // Return dream document
                 res.json({dream})
             } catch (err){
@@ -126,8 +130,20 @@ export class DreamRouter {
         // Update dream
         this.router.patch('/update/:id', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             const dreamId = req.params.id
+            const dreamData = req.body.dream
             try {
-                const dream = await this.dreamController.handleUpdateDream(req.body, dreamId)
+                // Save dream
+                const dream = await this.dreamController.handleUpdateDream(dreamData, dreamId)
+
+                // Check if dream has any themes in database
+                const savedThemes = await this.themeController.handleGetDreamThemes(dreamId)
+
+                // If description exists but there are no saved themes, generate themes
+                if (dream.description && !savedThemes.length){
+                    const themes = await this.addThemes(dream.description, dreamId, null)
+                    // Return dream document and themes array
+                    return res.json({dream, themes})
+                }
                 res.json(dream)
             } catch (err){
                 next(err)
