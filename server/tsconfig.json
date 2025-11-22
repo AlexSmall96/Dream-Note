@@ -3,12 +3,11 @@
     "target": "ES2019",
     "module": "ESNext",
     "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
     "outDir": "../dist/server",
-    
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "useDefineForClassFields": false,
-
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true

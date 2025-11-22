@@ -7,10 +7,9 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-app.prepare().then(() => {
-
-    // Setup Express server
+export const server = await app.prepare().then(() => {
     const server = express();
+    // Setup Express server
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
 
@@ -58,5 +57,5 @@ app.prepare().then(() => {
 
     // Call boostrap function to connect to database
     bootstrap()
-
+    return server
 })
