@@ -3,11 +3,22 @@ import { server, wipeDBAndSaveData } from '../test-utils/setupTests.js'
 import { beforeEach, describe, expect, test } from 'vitest';
 import { User } from '../models/user.model.js';
 
-
+// Wipe db and save data
 beforeEach(async () => wipeDBAndSaveData())
 
+// Define base url
 const url = '/api/users'
 
+// Helper function to make assertions on email and password errors
+const assert = (errors: {param: string, msg: string}[], emailError: string, passwordError:string) => {
+    expect(errors).toHaveLength(2)
+    expect([errors[0].param, errors[1].param]).toEqual(['email', 'password'])
+    expect([errors[0].msg, errors[1].msg]).toEqual([emailError, passwordError])
+}
+
+// Tests
+
+// Signup tests
 describe('Signup', () => {
     test('Signup should fail with taken email address or password too short.', async () => {
         // Post should fail
@@ -16,12 +27,8 @@ describe('Signup', () => {
             password: 'apple'
         }).expect(400)
         // Email error message and password error message should be returned
-        const errorsArray = response.body.errors
-        expect(errorsArray).toHaveLength(2)
-        expect(errorsArray[0].param).toBe('email')
-        expect(errorsArray[1].param).toBe('password')
-        expect(errorsArray[0].msg).toBe('Email address already in use.')
-        expect(errorsArray[1].msg).toBe('Password must be at least 8 characters.')
+        const errors = response.body.errors
+        assert(errors, 'Email address already in use.', 'Password must be at least 8 characters.')
     })
     test('Signup should fail with invalid email address or password containing "password".', async () => {
         const response = await request(server).post(`${url}/signup`).send({
@@ -29,12 +36,8 @@ describe('Signup', () => {
             password: 'password'
         }).expect(400) 
         // Email error message and password error message should be returned
-        const errorsArray = response.body.errors
-        expect(errorsArray).toHaveLength(2)
-        expect(errorsArray[0].param).toBe('email')
-        expect(errorsArray[1].param).toBe('password')
-        expect(errorsArray[0].msg).toBe('Please provide a valid email address.')
-        expect(errorsArray[1].msg).toBe('Password cannot contain "password"')       
+        const errors = response.body.errors
+        assert(errors, 'Please provide a valid email address.', 'Password cannot contain "password"')      
     })
     test('Signup should succeed with valid data.', async() => {
         // Post correct data
