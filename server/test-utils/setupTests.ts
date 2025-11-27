@@ -20,4 +20,4 @@ const wipeDBAndSaveData = async () => {
     await new User(userOne).save()
 }
 
-export { server, wipeDBAndSaveData }
+export { server, wipeDBAndSaveData, userOne }
