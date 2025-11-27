@@ -59,7 +59,7 @@ describe('SIGNUP', () => {
 })
 
 // Login tests
-describe('LOGIN', () => {
+describe('LOGIN AND LOGOUT', () => {
     // Define url
     const url = baseUrl + '/login'
 
@@ -89,13 +89,35 @@ describe('LOGIN', () => {
         expect(error.message).toBe('Incorrect password.')
     })
 
-    test('Login should be successful with correct credentials.', async () => {
+    test('Login should be successful with correct credentials, and logout should succeed using generated token.', async () => {
+        // Extract user id
+        const id = userOne._id.toString()
+        // Assert that token doesn't exist in database yet
+        let user = await User.findByIdOrThrowError(id)
+        expect(user.tokens).toHaveLength(0)
         // Send correct data
         const response = await request(server).post(url).send(userOne).expect(200)
         // User object and token should be returned
         expect(response.body.user).toMatchObject({email:userOne.email})
-        expect(response.body.token).not.toBeNull()
+        const token = response.body.token
+        expect(token).not.toBeNull()
+        // Assert token was added to User in database
+        user = await User.findByIdOrThrowError(id)
+        expect(user.tokens).toHaveLength(1)
+        // Logout
+        const userOneAuth: [string, string] = ['Authorization', `Bearer ${token}`]
+        await request(server).post(`${baseUrl}/logout`).set(...userOneAuth).expect(200)
+        // Assert database has changed - Token should have been removed from 
+        user = await User.findByIdOrThrowError(id)
+        expect(user.tokens).toHaveLength(0)        
     })
 
-    
+    test('Logout should fail when not authenticated.', async () => {
+        await request(server).post(`${baseUrl}/logout`).expect(401)
+        await request(server).post(`${baseUrl}/logout`).set('Authorization', `Bearer 123`).expect(401)
+    })
+})
+
+describe('UPDATE', () => {
+
 })
