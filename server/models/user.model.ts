@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import {  UserDocument, UserModel} from "../interfaces/user.interfaces.js";
+import { UserDocument, UserModel} from "../interfaces/user.interfaces.js";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
 import { Dream } from "./dream.model.js";
@@ -55,23 +55,6 @@ userSchema.pre('findOneAndDelete', async function (next) {
     await Dream.deleteMany({owner})
     next();
 })
-
-// Static method to find user by email and password
-userSchema.statics.findByCredentials = async function (
-    this: UserModel,
-    email:string, 
-    password:string
-) : Promise<UserDocument> {
-    const user = await this.findOne({email})
-    if (!user) {
-        throw new Error('No account found associated with provided email address.')
-    }
-    const isMatch = await bcrypt.compare(password, user.password)
-    if (!isMatch) {
-        throw new Error('Incorrect password.')
-    }
-    return user
-}
 
 userSchema.statics.findByIdOrThrowError = async function (this: UserModel, _id: string) : Promise<UserDocument> {
     const user = await this.findById(_id)

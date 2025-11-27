@@ -1,11 +1,12 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { UserController } from "../controllers/user.controller.js";
-import { injectable, inject } from "inversify";
 import { validationResult } from "express-validator";
-import { userValidator } from "../validators/user.validator.js";
-import { auth } from "../middleware/auth.js";
-import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
+import { injectable, inject } from "inversify";
 import bcrypt from "bcrypt";
+import { UserController } from "../controllers/user.controller.js";
+import { auth } from "../middleware/auth.js";
+import { signupOrUpdateValidator } from "../middleware/signupOrUpdate.validator.js";
+import { findByCredentials } from "../middleware/findByCredentials.js";
+import { AuthenticatedRequest, RequestWithUser } from "../interfaces/auth.interfaces.js";
 import { EmailService } from "../services/email.service.js";
 
 // Router class for User model
@@ -26,14 +27,14 @@ export class UserRouter {
     // Routes
     private initializeRoutes(){
         // Sign up
-        this.router.post('/signup', userValidator, async (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/signup', signupOrUpdateValidator, async (req: Request, res: Response, next: NextFunction) => {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
                 return res.status(400).json({ errors: errors.array() });
             }
             try {
                 const user = await this.userController.handleSignUp(req.body);
-                res.json(user)
+                res.status(201).json(user)
             } catch (err){
                 next(err);
             }
@@ -41,9 +42,9 @@ export class UserRouter {
         )
 
         // Log in
-        this.router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.post('/login', findByCredentials, async (req: RequestWithUser, res: Response, next: NextFunction) => {
             try {
-                const result = await this.userController.handleLogIn(req.body);
+                const result = await this.userController.handleLogIn(req.user);
                 res.json(result) 
             } catch (err){
                 next(err);
@@ -109,14 +110,18 @@ export class UserRouter {
         })
 
         // Update user details
-        this.router.patch('/update', auth, userValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+        this.router.patch('/update', auth, signupOrUpdateValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             // Check if password has been supplied and current password is correct
             const currPassword = req.body.currPassword
-            if (currPassword){
+            const newPassword = req.body.password
+            if (currPassword && newPassword){
                 const isMatch: boolean = await bcrypt.compare(req.body.currPassword, req.user.password)
                 if (!isMatch) {
-                    return res.status(400).send({errors: {password: {message: 'Current password incorrect.'}}})
+                    return res.status(400).send({errors: 'Current password incorrect.'})
                 }
+            }
+            if (!currPassword && newPassword){
+                return res.status(400).send({error: 'Please provide current password to update password.'})
             }
             // Validate new details
             const errors = validationResult(req);

@@ -14,9 +14,7 @@ export class UserController {
     }
 
     // Log in
-    public async handleLogIn(data: UserInterface){
-        const { email, password } = data;
-        const user = await User.findByCredentials(email, password)
+    public async handleLogIn(user: UserDocument){
         const token = await user.generateAuthToken()
         return {user, token}
     }
