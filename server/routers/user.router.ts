@@ -117,11 +117,11 @@ export class UserRouter {
             if (currPassword && newPassword){
                 const isMatch: boolean = await bcrypt.compare(req.body.currPassword, req.user.password)
                 if (!isMatch) {
-                    return res.status(400).send({errors: 'Current password incorrect.'})
+                    return res.status(400).send({errors: [{param: 'currPassword', msg: 'Current password incorrect.'}]})
                 }
             }
             if (!currPassword && newPassword){
-                return res.status(400).send({error: 'Please provide current password to update password.'})
+                return res.status(400).send({errors: [{param: 'currPassword', msg: 'Please provide current password to update.'}]})
             }
             // Validate new details
             const errors = validationResult(req);

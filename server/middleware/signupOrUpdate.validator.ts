@@ -31,7 +31,7 @@ export const signupOrUpdateValidator = checkSchema({
         custom: {
             options: async (password) => {
                 if (password.toLowerCase().includes('password')) {
-                    throw new Error('Password cannot contain "password"')
+                    throw new Error('Password cannot contain "password".')
                 }
                 return true;
             }

@@ -16,18 +16,18 @@ export const auth = async (req:AuthenticatedRequest, res: Response, next: NextFu
         }
         const token = req.headers['authorization']?.replace('Bearer ', '');
         if (!token) {
-            return res.status(401).send('Unauthorized');
+            return res.status(401).send({errors: [{param: 'token', msg:'Please provide json web token to authenticate.'}]});
         }
         const decoded = jwt.verify(token, secretKey) as decodedTokenWithId;
         const user = await User.findOne({_id: decoded._id, tokens: token})
           if (!user) {
-            return res.status(401).json({ error: "Invalid token" });
+            return res.status(401).json({errors: [{param: 'token', msg:'Invalid token.'}]});
         }
         req.user = user
         req.token = token
         next()
     } catch (e) {
-        res.status(401).send({ error: 'Invalid token.' })
+        res.status(401).json({errors: [{param: 'token', msg:'Invalid token.'}]})
     }
 }
 

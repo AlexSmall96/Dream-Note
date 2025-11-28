@@ -12,12 +12,12 @@ export const findByCredentials = async (req:AuthenticatedRequest, res: Response,
         // Check if user exists with email address
         const user = await User.findOne({email})
         if (!user){
-            return res.status(400).json({errors: [{param: 'email', message: 'No account found associated with provided email address.'}]})
+            return res.status(400).json({errors: [{param: 'email', msg: 'No account found associated with provided email address.'}]})
         }
         // Check if password is correct
         const isMatch = await bcrypt.compare(password, user.password)
         if (!isMatch){
-            return res.status(400).json({errors: [{param: 'password', message: 'Incorrect password.'}]})
+            return res.status(400).json({errors: [{param: 'password', msg: 'Incorrect password.'}]})
         }
         // If both checks pass, add found user to request 
         req.user = user

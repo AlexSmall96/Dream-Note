@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { server, wipeDBAndSaveData, userOne } from '../test-utils/setupTests.js'
+import { server, wipeDBAndSaveData, userOne, userOneId, userOneAuth } from '../test-utils/setupTests.js'
 import { beforeEach, describe, expect, test } from 'vitest';
 import { User } from '../models/user.model.js';
 
@@ -9,11 +9,15 @@ beforeEach(async () => wipeDBAndSaveData())
 // Define base url for user router
 const baseUrl = '/api/users'
 
-// Helper function to make assertions on email and password errors
-const assert = (errors: {param: string, msg: string}[], emailError: string, passwordError:string) => {
-    expect(errors).toHaveLength(2)
-    expect([errors[0].param, errors[1].param]).toEqual(['email', 'password'])
-    expect([errors[0].msg, errors[1].msg]).toEqual([emailError, passwordError])
+// Helper function to make assertions on email, password and token errors
+const assertErrors = (
+    errorsResponse: {param: string, msg: string}[], 
+    errorMsgs : {param: string, msg: string}[]
+) => {
+    expect(errorsResponse).toHaveLength(errorMsgs.length)
+    errorsResponse.forEach((error, index) => {
+        expect(error).toMatchObject(errorMsgs[index])
+    })
 }
 
 // Tests
@@ -30,8 +34,12 @@ describe('SIGNUP', () => {
             password: 'apple'
         }).expect(400)
         // Email error message and password error message should be returned
-        const errors = response.body.errors
-        assert(errors, 'Email address already in use.', 'Password must be at least 8 characters.')
+        assertErrors(response.body.errors, [{
+            param: 'email', msg: 'Email address already in use.'
+        }, {
+            param: 'password', msg: 'Password must be at least 8 characters.'
+        }])
+
     })
 
     test('Signup should fail with invalid email address or password containing "password".', async () => {
@@ -40,8 +48,11 @@ describe('SIGNUP', () => {
             password: 'password'
         }).expect(400) 
         // Email error message and password error message should be returned
-        const errors = response.body.errors
-        assert(errors, 'Please provide a valid email address.', 'Password cannot contain "password"')      
+        assertErrors(response.body.errors, [{
+            param: 'email', msg: 'Please provide a valid email address.'
+        }, {
+            param: 'password', msg: 'Password cannot contain "password".'
+        }])    
     })
 
     test('Signup should succeed with valid data.', async() => {
@@ -51,7 +62,7 @@ describe('SIGNUP', () => {
             password: 'apple123'
         }).expect(201)
         // Response contains correct details - contains email and not password
-        expect(response.body).toMatchObject({email: 'user2@email.com'})
+        expect(response.body).not.toHaveProperty('password')
         // Assert the database was changed
         const user = await User.findOne({email: 'user2@email.com'})
         expect(user).not.toBeNull()
@@ -69,11 +80,8 @@ describe('LOGIN AND LOGOUT', () => {
             email: 'notauser@email.com',
             password: 'apple123'            
         }).expect(400)
-        // Should be 1 error message in response
-        expect(response.body.errors).toHaveLength(1)
-        const error = response.body.errors[0]
-        expect(error.param).toBe('email')
-        expect(error.message).toBe('No account found associated with provided email address.')
+        // 1 error message should be present
+        assertErrors(response.body.errors, [{param: 'email', msg: 'No account found associated with provided email address.'}])
     })
 
     test('Login should fail with incorrect password.', async () => {
@@ -83,41 +91,146 @@ describe('LOGIN AND LOGOUT', () => {
             password: 'apple12'            
         }).expect(400)
         // Should be 1 error message in response
-        expect(response.body.errors).toHaveLength(1)
-        const error = response.body.errors[0]
-        expect(error.param).toBe('password')
-        expect(error.message).toBe('Incorrect password.')
+        assertErrors(response.body.errors, [{param: 'password', msg: 'Incorrect password.'}])
     })
 
     test('Login should be successful with correct credentials, and logout should succeed using generated token.', async () => {
         // Extract user id
         const id = userOne._id.toString()
-        // Assert that token doesn't exist in database yet
+        // Assert that only 1 token currently exists in database
         let user = await User.findByIdOrThrowError(id)
-        expect(user.tokens).toHaveLength(0)
+        expect(user.tokens).toHaveLength(1)
         // Send correct data
         const response = await request(server).post(url).send(userOne).expect(200)
         // User object and token should be returned
-        expect(response.body.user).toMatchObject({email:userOne.email})
+        expect(response.body.user).toMatchObject({email:userOne.email, _id: id})
         const token = response.body.token
         expect(token).not.toBeNull()
+        expect(response.body).not.toHaveProperty('password')
         // Assert token was added to User in database
         user = await User.findByIdOrThrowError(id)
-        expect(user.tokens).toHaveLength(1)
+        expect(user.tokens).toHaveLength(2)
         // Logout
-        const userOneAuth: [string, string] = ['Authorization', `Bearer ${token}`]
-        await request(server).post(`${baseUrl}/logout`).set(...userOneAuth).expect(200)
-        // Assert database has changed - Token should have been removed from 
+        await request(server).post(`${baseUrl}/logout`).set('Authorization', `Bearer ${token}`).expect(200)
+        // Assert database has changed - Token should have been removed
         user = await User.findByIdOrThrowError(id)
-        expect(user.tokens).toHaveLength(0)        
+        expect(user.tokens).toHaveLength(1)        
     })
 
     test('Logout should fail when not authenticated.', async () => {
-        await request(server).post(`${baseUrl}/logout`).expect(401)
-        await request(server).post(`${baseUrl}/logout`).set('Authorization', `Bearer 123`).expect(401)
+        // No token
+        const responseNoToken = await request(server).post(`${baseUrl}/logout`).expect(401)
+        assertErrors(responseNoToken.body.errors, [{param: 'token', msg: 'Please provide json web token to authenticate.'}])
+        // Invalid token
+        const responseInvalidToken = await request(server).post(`${baseUrl}/logout`).set('Authorization', `Bearer 123`).expect(401)
+        assertErrors(responseInvalidToken.body.errors, [{param: 'token', msg: 'Invalid token.'}])
     })
 })
 
-describe('UPDATE', () => {
+describe('UPDATE', async () => {
+    // Define url
+    const url = baseUrl + '/update'
 
+    test('Update should fail when current password value is incorrect and new password value is supplied.', async () => {
+        // Send data with current password incorrect
+        const response = await request(server).patch(url).send({
+            currPassword: 'orange123', password: 'grape123'
+        }).set(...userOneAuth).expect(400)
+        // Should be 1 error message in response
+        assertErrors(response.body.errors, [{param: 'currPassword', msg: 'Current password incorrect.'}])
+    })
+
+    test('Update should fail when current password value is missing and new password value is supplied.', async () => {
+        // Send data without current password
+        const response = await request(server).patch(url).send({password: 'grape123'}).set(...userOneAuth).expect(400)   
+        // Should be 1 error message in response
+        assertErrors(response.body.errors, [{param: 'currPassword', msg: 'Please provide current password to update.'}])   
+    })
+
+    test('Update should fail if current password is correct but new password is invalid.', async () => {
+        // Send data with new password too short
+        const responseTooShort = await request(server).patch(url).send({
+            currPassword: 'apple123',
+            password: 'hello'
+        }).set(...userOneAuth).expect(400) 
+        // Correct error message returned
+        assertErrors(responseTooShort.body.errors, [{param: 'password', msg: 'Password must be at least 8 characters.'}])   
+
+        // Send data with new password containing password
+        const responsePwd = await request(server).patch(url).send({
+            currPassword: 'apple123',
+            password: 'password134'
+        }).set(...userOneAuth).expect(400) 
+        // Correct error message returned
+        assertErrors(responsePwd.body.errors, [{param: 'password', msg: 'Password cannot contain "password".'}])                
+    })
+
+    test('Update should fail when not authenticated.', async () => {
+        const response = await request(server).patch(url).send({
+            currPassword: 'apple123',
+            password: 'strawberrry123'
+        }).expect(401)
+        assertErrors(response.body.errors, [{param: 'token', msg: 'Please provide json web token to authenticate.'}])
+    })
+    test('Password update should succeed with valid data.', async () => {
+        // Send valid data
+        const response = await request(server).patch(url).send({
+            currPassword: 'apple123',
+            password: 'strawberrry123'
+        }).set(...userOneAuth).expect(200)
+        // New password should and tokens not be returned in response
+        expect(response.body.user).not.toHaveProperty('password')
+        expect(response.body.user).not.toHaveProperty('tokens')
+    })
+
+    test('Email update should fail with taken email address.', async () => {
+        // Send data with taken email address
+        const response = await request(server).patch(url).send({
+            email: 'user1@email.com',
+        }).set(...userOneAuth).expect(400)
+        // Correct error message is returned  
+        assertErrors(response.body.errors, [{param: 'email', msg: 'Email address already in use.'}])
+    })
+
+    test('Email update should fail with invalid email address.', async () => {
+        // Send data with taken invalid address
+        const response = await request(server).patch(url).send({
+            email: 'user1',
+        }).set(...userOneAuth).expect(400)
+        // Correct error message is returned  
+        assertErrors(response.body.errors, [{param: 'email', msg: 'Please provide a valid email address.'}])        
+    })
+
+    test('Email update should be successful wtih valid and available data.', async () => {
+        // Send data with valid and available email address
+        const response = await request(server).patch(url).send({
+            email: 'user3@email.com',
+        }).set(...userOneAuth).expect(200)
+        // New email should be returned in response
+        expect(response.body.user.email).toBe('user3@email.com')
+        // Response should not contain password and tokens
+        expect(response.body.user).not.toHaveProperty('password')
+        expect(response.body.user).not.toHaveProperty('tokens')
+        // Assert that the database was changed
+        const user = await User.findByIdOrThrowError(userOneId.toString())
+        expect(user).not.toBeNull()
+        expect(user.email).toBe('user3@email.com')
+    })
+})
+
+describe('DELETE', () => {
+    // Define url
+    const url = baseUrl + '/delete' 
+    
+    test('Account deletion should fail when not authenticated.', async () => {
+        // Send unauthenticated response
+        const response = await request(server).delete(url).expect(401)
+        // Assert correct error is returned
+        assertErrors(response.body.errors, [{param: 'token', msg: 'Please provide json web token to authenticate.'}])        
+    })  
+
+    test('Account deletion should be successful when authenticated.', async () => {
+        // Send authenticated response
+        await request(server).delete(url).set(...userOneAuth).expect(200)
+    })
 })
