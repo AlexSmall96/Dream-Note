@@ -1,5 +1,6 @@
 import request from 'supertest';
-import { server, wipeDBAndSaveData, userOne, userOneId, userOneAuth } from '../test-utils/setupTests.js'
+import { server, } from '../utils/test-utils/testServer.js'
+import { wipeDBAndSaveData, userOne, userOneId, userOneAuth } from '../utils/test-utils/testData.js'
 import { beforeEach, describe, expect, test } from 'vitest';
 import { User } from '../models/user.model.js';
 
@@ -221,7 +222,7 @@ describe('UPDATE', async () => {
 describe('DELETE', () => {
     // Define url
     const url = baseUrl + '/delete' 
-    
+
     test('Account deletion should fail when not authenticated.', async () => {
         // Send unauthenticated response
         const response = await request(server).delete(url).expect(401)

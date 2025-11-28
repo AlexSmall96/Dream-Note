@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { server } from './test-utils/setupTests.js'
+import { server } from './utils/test-utils/testServer.js'
 import { expect, test } from 'vitest';
 
 // Test API welcome message
