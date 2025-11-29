@@ -1,9 +1,10 @@
 import request from 'supertest';
 import { server } from '../utils/test-utils/testServer.js'
-import { wipeDBAndSaveData, userOneId, userOneAuth } from '../utils/test-utils/testData.js'
+import { wipeDBAndSaveData, userOneId, userOneAuth, userThreeAuth } from '../utils/test-utils/testData.js'
 import { beforeEach, describe, expect, test } from 'vitest';
 import { Dream } from '../models/dream.model.js';
 import { Theme } from '../models/theme.model.js';
+import { DreamDocument } from '../interfaces/dream.interfaces.js';
 
 // Wipe db and save data
 beforeEach(async () => wipeDBAndSaveData())
@@ -13,12 +14,24 @@ const baseUrl = '/api/dreams'
 
 // Helper function to assert an array of themes have been added to the db
 // Checks they are associated with the correct dream
-const assertThemesInDB = (themes: string[], dreamId: string) => {
-    themes.forEach(async (theme) => {
-        const savedTheme = await Theme.findByThemeOrThrowError(theme)
-        expect(savedTheme).not.toBeNull()
-        expect(savedTheme.dream.toString()).toBe(dreamId)
-    })   
+const assertThemesInDB = async (themes: string[], dreamId: string) => {
+    await Promise.all(
+        themes.map(async (theme) => {
+            const savedTheme = await Theme.findByThemeOrThrowError(theme)
+            expect(savedTheme).not.toBeNull()
+            expect(savedTheme.dream.toString()).toBe(dreamId)
+        })          
+    )
+}
+
+// Helper function to assert users dreams are in correct order and correct number are returned
+// Based on dreams saved in '../utils/test-utils/testData.js'
+const assertDreamTitlesAndDates = async (dreams: DreamDocument[], length: number, start: number = 9) => {
+    expect(dreams).toHaveLength(length)
+    dreams.map((dream: DreamDocument, index: number) => {
+        expect(dream.title).toBe(`dream${start-index}`)
+        expect(dream.date).toBe(`2025-06-0${start-index}T00:00:00.000Z`)
+    })    
 }
 
 // Tests 
@@ -62,7 +75,7 @@ describe('LOG NEW DREAM', () => {
         savedDream = await Dream.findOne({title:'I had a dream I was flying. It...'})
         expect(savedDream).not.toBeNull()
         // Assert that the themes were added to the database and associated with the correct dream
-        assertThemesInDB(defaultThemes, response.body.dream._id.toString())
+        await assertThemesInDB(defaultThemes, response.body.dream._id.toString())
     })
 
     test('Logging new dream should succeed if description, title and themes are provided, with no data from dev version of openAI API.', async () => {
@@ -84,7 +97,7 @@ describe('LOG NEW DREAM', () => {
         savedDream = await Dream.findOne({title}) 
         expect(savedDream).not.toBeNull()
         // Assert the themes were added to the database
-        assertThemesInDB(themes, response.body.dream._id.toString())       
+        await assertThemesInDB(themes, response.body.dream._id.toString())       
     })
 
     test('Logging new dream should succeed if title is provided, with themes generated from dev version of openAI API and no description.', async () => {
@@ -102,8 +115,77 @@ describe('LOG NEW DREAM', () => {
         expect(response.body).not.toHaveProperty('themes') 
         // Assert that the dream was added to the database
         savedDream = await Dream.findOne({title:'Flying dream'})
-        expect(savedDream).not.toBeNull() 
-        // Asser that the themes were added to the database and associated with the correct dream
-        assertThemesInDB(defaultThemes, response.body.dream._id.toString())       
+        expect(savedDream).not.toBeNull()     
+    })
+})
+
+describe('GET ALL DREAMS', () => {
+    // Define url
+    const url = baseUrl
+    
+    test("All user's dreams should be returned when no parameters are passed in.", async () => {
+        // Get all userOne's dreams
+        const response = await request(server).get(url).set(...userOneAuth).expect(200)
+        // Should be 9 dreams, sorted oldest to newest
+        const dreams = response.body.dreams
+        assertDreamTitlesAndDates(dreams, 9)
+    })
+
+    test("Skip, limit and title parameters return correct dreams.", async () => {
+        // Get dream page one of dreams
+        const pageOneResponse = await request(server).get(`${url}?limit=5&skip=0`).set(...userOneAuth).expect(200)
+        // Should be 5 dreams, sorted oldest to newest
+        const pageOneDreams = pageOneResponse.body.dreams
+        assertDreamTitlesAndDates(pageOneDreams, 5)
+        // Get dream page two of dreams
+        const pageTwoResponse = await request(server).get(`${url}?limit=5&skip=5`).set(...userOneAuth).expect(200)
+        // Should be 4 dreams, starting at dream4, sorted oldest to newest
+        const pageTwoDreams = pageTwoResponse.body.dreams
+        assertDreamTitlesAndDates(pageTwoDreams, 4, 4)
+        // Should only return dream9
+        const singleResponse = await request(server).get(`${url}?limit=5&skip=0&title=dream9`).set(...userOneAuth).expect(200)
+        const singleDreamArray = singleResponse.body.dreams
+        expect(singleDreamArray).toHaveLength(1)
+        expect(singleDreamArray[0].title).toBe('dream9')
+    })
+
+    test('Searching by title returns correct dreams.', async () => {
+        // Searching 'In space should return all 3 of userThree dreams
+        const allDreamsResponse = await request(server).get(`${url}?title=In space`).set(...userThreeAuth).expect(200)
+        const allDreams = allDreamsResponse.body.dreams
+        expect(allDreams).toHaveLength(3)
+        // Searching 'In space without' should return 1 dream
+        const singleDreamResponse = await request(server).get(`${url}?title=In space without`).set(...userThreeAuth).expect(200)
+        const singleDream = singleDreamResponse.body.dreams
+        expect(singleDream).toHaveLength(1)
+        expect(singleDream[0].title).toBe('In space without a space suit')
+        // Searching 'space suit' should return 2 dreams
+        const twoDreamResponse = await request(server).get(`${url}?title=space suit`).set(...userThreeAuth).expect(200)
+        const twoDreams = twoDreamResponse.body.dreams
+        expect(twoDreams).toHaveLength(2)
+        // Should be sorted newest to oldest
+        expect(twoDreams[0].title).toBe('In space wearing a space suit')
+        expect(twoDreams[1].title).toBe('In space without a space suit')
+    })
+
+    test('Filtering by days ago returns correct dreams.', async () => {
+        // Set days ago to 400
+        const allDreamsResponse = await request(server).get(`${url}?daysAgo=400`).set(...userThreeAuth).expect(200)
+        const allDreams = allDreamsResponse.body.dreams
+        // All dreams should be returned
+        expect(allDreams).toHaveLength(5)
+        // Last two should be oldest
+        expect(allDreams[3].title).toBe('A dream from 6 months ago.')
+        expect(allDreams[4].title).toBe('A dream from 1 year ago')
+        // set days ago to 250
+        const newResponse = await request(server).get(`${url}?daysAgo=250`).set(...userThreeAuth).expect(200)
+        // Only 4 dreams should be returned
+        const newDreams = newResponse.body.dreams
+        expect(newDreams).toHaveLength(4)
+        // Last dream should be oldest
+        expect(allDreams[3].title).toBe('A dream from 6 months ago.')
+        // Searching for A dream from 1 year ago with days ago set to 250 returns empty array
+        const emptyResponse = await request(server).get(`${url}?daysAgo=250&title=A dream from 1 year ago`).set(...userThreeAuth).expect(200)
+        expect(emptyResponse.body.dreams).toHaveLength(0)
     })
 })

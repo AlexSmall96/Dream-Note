@@ -111,7 +111,7 @@ export class DreamRouter {
             const skip = req.query.skip? Number(req.query.skip) : 0
             try {
                 const dreams = await this.dreamController.handleGetDreams(req.user._id, title, fromDate, limit, skip)
-                res.json(dreams)
+                res.json({dreams})
             } catch (err){
                 next(err)
             }

@@ -6,31 +6,67 @@ import { Theme } from '../../models/theme.model';
 
 // Define and save test data
 
-// Create user id 
+// Create user ids 
 const userOneId = new mongoose.Types.ObjectId()
+const userThreeId = new mongoose.Types.ObjectId()
 
 // Create token
 const JWT_SECRET = process.env.JWT_SECRET
 
-const generateToken = () => {
+const generateToken = (id: string) => {
     if (!JWT_SECRET){
         throw new Error('Please provide a json web token secret key.')
     }
-    return jwt.sign({ _id:userOneId.toString() }, JWT_SECRET, { expiresIn: "24h" })
+    return jwt.sign({ _id:id }, JWT_SECRET, { expiresIn: "24h" })
 }
 
-const token = generateToken()
-
-// Create 1 user to save to DB
+// Create users to save to DB
 const userOne = {
     email: 'user1@email.com',
     password: 'apple123',
     _id: userOneId,
-    tokens: [token]
+    tokens: [generateToken(userOneId.toString())]
+}
+
+const userThree = {
+    email: 'user3@email.com',
+    password: 'orange123',
+    _id: userThreeId,
+    tokens: [generateToken(userThreeId.toString())]
 }
 
 // Use token to create auth string
 const userOneAuth: [string, string] = ['Authorization', `Bearer ${userOne.tokens[0]}`]
+const userThreeAuth: [string, string] = ['Authorization', `Bearer ${userThree.tokens[0]}`]
+
+// Create dreams to save to db
+const userOneTitles: string[] = []
+for (let i=1; i<10; i++){
+    userOneTitles.push(`dream${i}`)
+}
+
+const userThreeTitles = ['In space', 'In space without a space suit', 'In space wearing a space suit']
+
+const saveDreams = async () => {
+    // Save userOne's dreams to test sorting and pagination
+    await Promise.all(
+        userOneTitles.map(async (title, index) => {
+            const date = `2025-06-0${index + 1}T00:00:00.000Z`
+            await new Dream({title, date, owner: userOneId}).save()
+        })
+    )
+    // Save userTwo's dreams to test title search
+    await Promise.all(
+        userThreeTitles.map(async (title, index) => {
+            const date = `2025-06-0${index + 1}T00:00:00.000Z`
+            await new Dream({title, owner: userThreeId, date}).save()
+        })
+    )
+
+    // Save two more dreams to user three to test date filtering
+    await new Dream({title: 'A dream from 1 year ago', date: '2024-12-30T00:00:00.000Z', owner: userThreeId}).save()
+    await new Dream({title: 'A dream from 6 months ago.', date: '2025-05-29T00:00:00.000Z', owner: userThreeId}).save() 
+}
 
 // Wipe DB, save data
 const wipeDBAndSaveData = async () => {
@@ -38,6 +74,8 @@ const wipeDBAndSaveData = async () => {
     await Dream.deleteMany()
     await Theme.deleteMany()
     await new User(userOne).save()
+    await new User(userThree).save()
+    await saveDreams()
 }
 
-export { wipeDBAndSaveData, userOne, userOneId, userOneAuth }
+export { wipeDBAndSaveData, userOne, userOneId, userOneAuth, userThreeId, userThreeAuth }
