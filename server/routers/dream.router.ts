@@ -120,8 +120,12 @@ export class DreamRouter {
         // View details for a single dream
         this.router.get('/view/:id', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             const dreamId = req.params.id
+            const owner = req.user._id
             try {
-                const dream = await this.dreamController.handleViewDream(dreamId)
+                const dream = await this.dreamController.handleViewDream(dreamId, owner)
+                if (!dream){
+                    return res.status(401).json({error: 'You are not authorized to view this dream.'})
+                }
                 const themes = await this.themeController.handleGetDreamThemes(dreamId)
                 res.json({dream, themes})
             } catch (err){

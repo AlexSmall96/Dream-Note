@@ -36,8 +36,8 @@ export class DreamController {
     }
 
     // View details for a single dream
-    public async handleViewDream(dreamId: string){
-        const dream = await Dream.findById(dreamId)
+    public async handleViewDream(dreamId: string, owner: string){
+        const dream = await Dream.findOne({_id: dreamId, owner})
         return dream
     }
 
