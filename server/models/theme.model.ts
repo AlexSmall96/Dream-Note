@@ -1,7 +1,7 @@
 import mongoose, { Schema, model } from "mongoose";
-import { ThemeDocument } from "../interfaces/theme.interfaces.js"
+import { ThemeDocument, ThemeModel } from "../interfaces/theme.interfaces.js"
 
-const themeSchema = new Schema<ThemeDocument>({
+const themeSchema = new Schema<ThemeDocument, ThemeModel>({
     theme: {
         type: String,
         required: [true, 'Theme is required.'],
@@ -15,4 +15,13 @@ const themeSchema = new Schema<ThemeDocument>({
     }
 })
 
-export const Theme = model<ThemeDocument>("Theme", themeSchema)
+themeSchema.statics.findByThemeOrThrowError = async function (this: ThemeModel, text: string): Promise<ThemeDocument> {
+    const theme = await this.findOne({theme:text})
+    if (!theme){
+        throw new Error('Theme not found.')
+    }
+    return theme
+}
+ 
+
+export const Theme = model<ThemeDocument, ThemeModel>("Theme", themeSchema)
