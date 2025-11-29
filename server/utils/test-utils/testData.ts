@@ -46,6 +46,29 @@ for (let i=1; i<10; i++){
 }
 
 const userThreeTitles = ['In space', 'In space without a space suit', 'In space wearing a space suit']
+const oldDreamId = new mongoose.Types.ObjectId()
+const newDreamId = new mongoose.Types.ObjectId()
+
+const oldDream = {
+    title: 'A dream from 1 year ago', 
+    date: '2024-12-30T00:00:00.000Z', 
+    owner: userThreeId, 
+    _id: oldDreamId,
+    description: 'I slept in and missed my train.'
+}
+
+const newDream = {
+    title: 'A dream from 6 months ago.', 
+    date: '2025-05-29T00:00:00.000Z', 
+    owner: userThreeId, 
+    _id: newDreamId,
+    description: 'I was being chased by a dog.'
+}
+
+const oldDreamTheme1 = {theme: 'Lateness', dream: oldDreamId}
+const oldDreamTheme2 = {theme: 'Anxiety', dream: oldDreamId}
+const newDreamTheme1 = {theme: 'Fear', dream: newDreamId}
+const newDreamTheme2 = {theme: 'Animals', dream: newDreamId}
 
 const saveDreams = async () => {
     // Save userOne's dreams to test sorting and pagination
@@ -62,20 +85,34 @@ const saveDreams = async () => {
             await new Dream({title, owner: userThreeId, date}).save()
         })
     )
-
+    
     // Save two more dreams to user three to test date filtering
-    await new Dream({title: 'A dream from 1 year ago', date: '2024-12-30T00:00:00.000Z', owner: userThreeId}).save()
-    await new Dream({title: 'A dream from 6 months ago.', date: '2025-05-29T00:00:00.000Z', owner: userThreeId}).save() 
+    await new Dream(oldDream).save()
+    await new Dream(newDream).save() 
+}
+
+const saveUsers = async () => {
+    await new User(userOne).save()
+    await new User(userThree).save()
+}
+
+const saveThemes = async () => {
+    await new Theme(oldDreamTheme1).save()
+    await new Theme(oldDreamTheme2).save()
+    await new Theme(newDreamTheme1).save()
+    await new Theme(newDreamTheme2).save()
 }
 
 // Wipe DB, save data
 const wipeDBAndSaveData = async () => {
+    // Wipe db
     await User.deleteMany()
     await Dream.deleteMany()
     await Theme.deleteMany()
-    await new User(userOne).save()
-    await new User(userThree).save()
+    // Save dreams, themes and users
+    await saveUsers()
     await saveDreams()
+    saveThemes()
 }
 
-export { wipeDBAndSaveData, userOne, userOneId, userOneAuth, userThreeId, userThreeAuth }
+export { wipeDBAndSaveData, userOne, userOneId, userOneAuth, userThreeId, userThreeAuth, oldDreamId, oldDream }

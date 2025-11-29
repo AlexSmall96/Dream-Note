@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { server } from '../utils/test-utils/testServer.js'
-import { wipeDBAndSaveData, userOneId, userOneAuth, userThreeAuth } from '../utils/test-utils/testData.js'
+import { wipeDBAndSaveData, userOneId, userOneAuth, userThreeAuth, oldDreamId, oldDream, userThreeId } from '../utils/test-utils/testData.js'
 import { beforeEach, describe, expect, test } from 'vitest';
 import { Dream } from '../models/dream.model.js';
 import { Theme } from '../models/theme.model.js';
@@ -55,8 +55,8 @@ describe('LOG NEW DREAM', () => {
         // Assert that no dreams with the correct title are found in DB
         let savedDream = await Dream.findOne({title:'I had a dream I was flying. It...'})
         expect(savedDream).toBeNull()
-        // Assert that no themes are found in DB yet
-        const themes = await Theme.find()
+        // Assert that no themes with the default names are found in DB yet
+        const themes = await Theme.find({$or: [{theme: 'theme1'}, {theme: 'theme2'}, {theme: 'theme3'}]})
         expect(themes).toHaveLength(0)
         // Send data with description and no title
         const description = 'I had a dream I was flying. It was very exciting.'
@@ -119,6 +119,7 @@ describe('LOG NEW DREAM', () => {
     })
 })
 
+// Get dreams
 describe('GET ALL DREAMS', () => {
     // Define url
     const url = baseUrl
@@ -187,5 +188,38 @@ describe('GET ALL DREAMS', () => {
         // Searching for A dream from 1 year ago with days ago set to 250 returns empty array
         const emptyResponse = await request(server).get(`${url}?daysAgo=250&title=A dream from 1 year ago`).set(...userThreeAuth).expect(200)
         expect(emptyResponse.body.dreams).toHaveLength(0)
+    })
+})
+
+// View a dream
+describe('VIEW DREAM DETAILS', () => {
+    // Define url
+    const url = baseUrl + '/view'
+
+    test('View dream should succeed with valid id if user is owner of dream.', async () => {
+        // View one of userThree's dreams
+        const response = await request(server).get(`${url}/${oldDreamId}`).set(...userThreeAuth).expect(200)
+        const { dream, themes } = response.body
+        const { title, description, date, owner } = dream
+        // Assert that dream response matches test data
+        expect(title).toBe(oldDream.title)
+        expect(description).toBe(oldDream.description)
+        expect(date).toBe(oldDream.date)
+        expect(owner).toBe(userThreeId.toString())
+        // Assert themes are correct - should be 2 in total
+        expect(themes).toHaveLength(2)
+        // Should be sorted alphabetically
+        expect(themes[0].theme).toBe('Anxiety')
+        expect(themes[1].theme).toBe('Lateness')
+        // Both themes should have oldDreamId as dream
+        expect(themes[0].dream).toBe(oldDreamId.toString())
+        expect(themes[1].dream).toBe(oldDreamId.toString())
+    })
+
+    test('View dream should fail if user is not owner of dream.', async () => {
+        // View one of userThree's dreams, authorized as userOne
+        const response = await request(server).get(`${url}/${oldDreamId}`).set(...userOneAuth).expect(401)
+        // Error message should be returned
+        expect(response.body.error).toBe('You are not authorized to view this dream.')
     })
 })

@@ -15,7 +15,7 @@ export class ThemeController {
 
     // Get all themes associated with a specific dream
     public async handleGetDreamThemes(dream: string){
-        const themes = Theme.find({dream})
+        const themes = Theme.find({dream}).sort('theme')
         return themes
     }
 
