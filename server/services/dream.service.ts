@@ -42,7 +42,7 @@ export class DreamService {
                     'theme1,theme2,theme3'
                 : 
                     // If title - use first 30 characters of description
-                    description.substring(0, 30)
+                    description.substring(0, 30) + '...'
         }
         if (forThemes){
             // Return themes as array

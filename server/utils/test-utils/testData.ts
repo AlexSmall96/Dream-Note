@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 import { User } from '../../models/user.model';
+import { Dream } from '../../models/dream.model';
+import { Theme } from '../../models/theme.model';
 
 // Define and save test data
 
@@ -33,6 +35,8 @@ const userOneAuth: [string, string] = ['Authorization', `Bearer ${userOne.tokens
 // Wipe DB, save data
 const wipeDBAndSaveData = async () => {
     await User.deleteMany()
+    await Dream.deleteMany()
+    await Theme.deleteMany()
     await new User(userOne).save()
 }
 

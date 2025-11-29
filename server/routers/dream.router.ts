@@ -67,11 +67,11 @@ export class DreamRouter {
                 if (dreamData.description){
                     const themes = await this.addThemes(dreamData.description, dream.id, req.body.themes)
                     // Return dream document and themes array
-                    return res.json({dream, themes})
+                    return res.status(201).json({dream, themes})
                 }
 
                 // Return dream document
-                res.json({dream})
+                res.status(201).json({dream})
             } catch (err){
                 next(err)
             }
