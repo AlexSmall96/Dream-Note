@@ -48,6 +48,8 @@ for (let i=1; i<10; i++){
 const userThreeTitles = ['In space', 'In space without a space suit', 'In space wearing a space suit']
 const oldDreamId = new mongoose.Types.ObjectId()
 const newDreamId = new mongoose.Types.ObjectId()
+const dreamWithNoThemesId = new mongoose.Types.ObjectId()
+const dreamWithNoDescId = new mongoose.Types.ObjectId()
 
 const oldDream = {
     title: 'A dream from 1 year ago', 
@@ -63,6 +65,21 @@ const newDream = {
     owner: userThreeId, 
     _id: newDreamId,
     description: 'I was being chased by a dog.'
+}
+
+const dreamWithNoThemes = {
+    title: 'A dream with no themes.', 
+    date: '2020-05-29T00:00:00.000Z',
+    owner: userThreeId, 
+    _id: dreamWithNoThemesId,
+    description: 'A description to generate themes from.'    
+}
+
+const dreamWithNoDesc = {
+    title: 'A dream with no description.', 
+    date: '2020-05-29T00:00:00.000Z',
+    owner: userThreeId, 
+    _id: dreamWithNoDescId,   
 }
 
 const oldDreamTheme1 = {theme: 'Lateness', dream: oldDreamId}
@@ -88,7 +105,9 @@ const saveDreams = async () => {
     
     // Save two more dreams to user three to test date filtering
     await new Dream(oldDream).save()
-    await new Dream(newDream).save() 
+    await new Dream(newDream).save()
+    await new Dream(dreamWithNoThemes).save()
+    await new Dream(dreamWithNoDesc).save()
 }
 
 const saveUsers = async () => {
@@ -112,7 +131,20 @@ const wipeDBAndSaveData = async () => {
     // Save dreams, themes and users
     await saveUsers()
     await saveDreams()
-    saveThemes()
+    await saveThemes()
 }
 
-export { wipeDBAndSaveData, userOne, userOneId, userOneAuth, userThreeId, userThreeAuth, oldDreamId, oldDream }
+export { 
+    wipeDBAndSaveData, 
+    userOne, 
+    userOneId, 
+    userOneAuth, 
+    userThreeId, 
+    userThreeAuth, 
+    oldDreamId, 
+    oldDream,
+    dreamWithNoThemes,
+    dreamWithNoDesc,
+    dreamWithNoThemesId,
+    dreamWithNoDescId,
+}

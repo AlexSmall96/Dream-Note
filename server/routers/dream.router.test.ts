@@ -1,11 +1,21 @@
 import request from 'supertest';
 import { server } from '../utils/test-utils/testServer.js'
-import { wipeDBAndSaveData, userOneId, userOneAuth, userThreeAuth, oldDreamId, oldDream, userThreeId } from '../utils/test-utils/testData.js'
 import { beforeEach, describe, expect, test } from 'vitest';
 import { Dream } from '../models/dream.model.js';
 import { Theme } from '../models/theme.model.js';
 import { DreamDocument } from '../interfaces/dream.interfaces.js';
-
+import { 
+    wipeDBAndSaveData, 
+    userOneId, 
+    userOneAuth, 
+    userThreeAuth, 
+    oldDreamId, 
+    oldDream, 
+    userThreeId,
+    dreamWithNoThemesId,
+    dreamWithNoDescId
+ } from '../utils/test-utils/testData.js'
+ 
 // Wipe db and save data
 beforeEach(async () => wipeDBAndSaveData())
 
@@ -34,15 +44,15 @@ const assertDreamTitlesAndDates = async (dreams: DreamDocument[], length: number
     })    
 }
 
+// Define default themes sent back from dev version of openAI API
+const defaultThemes = ['theme1', 'theme2', 'theme3']
+
 // Tests 
 
 // Log dream
 describe('LOG NEW DREAM', () => {
     // Define url
     const url = baseUrl + '/log'
-
-    // Define default themes sent back from dev version of openAI API
-    const defaultThemes = ['theme1', 'theme2', 'theme3']
 
     test('Logging new dream should fail if title and description are missing.', async () => {
         // Send incomplete data
@@ -221,5 +231,105 @@ describe('VIEW DREAM DETAILS', () => {
         const response = await request(server).get(`${url}/${oldDreamId}`).set(...userOneAuth).expect(401)
         // Error message should be returned
         expect(response.body.error).toBe('You are not authorized to view this dream.')
+    })
+})
+
+// Update dream
+describe('UPDATE DREAM', () => {
+    // Define url
+    const url = baseUrl + '/update'
+
+    test('Update dream fails if request body does not contain "dream" as a field.', async () => {
+        const response = await request(server).patch(`${url}/${oldDreamId}`).send({
+            title: 'Dream title'
+        }).set(...userThreeAuth).expect(400)
+        expect(response.body.error).toBe("Request body must contain the field 'dream'.")
+    })
+
+    // User cannot update another users dream
+    test('Update dream should fail if user is not owner of dream.', async () => {
+        const response = await request(server).patch(`${url}/${oldDreamId}`).send({
+            dream: {title: 'Dream title'}
+        }).set(...userOneAuth).expect(401)
+        expect(response.body.error).toBe('You are not authorized to edit this dream.')
+    })
+
+    test('Update dream succeeds with valid data, all fields can be changed and themes added.', async () => {
+        // Assert theme 'Travel' associated with oldDreamId is not yet in database
+        let theme = await Theme.findOne({dream: oldDreamId, theme: 'Travel'})
+        expect(theme).toBeNull()
+        // Send valid data with correct authentication, changing every field
+        const update = {
+            title: 'Missed train',
+            description: 'I slept in and missed my train. I had to get the next one.',
+            date: '2024-11-30T00:00:00.000Z',
+            notes: 'The dream woke me up.',
+            analysis: 'Interesting'
+        }
+        const response = await request(server).patch(`${url}/${oldDreamId}`).send({
+            dream: update, 
+            themes: ['Travel']
+        }).set(...userThreeAuth).expect(200)
+        // Dream data should be in response, title, description, date, notes and analysis changed
+        expect(response.body.dream).toMatchObject(update)
+        // Existing Themes and new theme should be in response
+        const themes = response.body.themes
+        expect(response.body.themes).toHaveLength(3)
+        const themeNames = ['Anxiety', 'Lateness', 'Travel']
+        themes.map((theme: {theme: string}, index: number) => {
+            expect(theme.theme).toBe(themeNames[index])
+        })
+        // Database should have been changed
+        const savedDream = await Dream.findByIdOrThrowError(oldDreamId.toString())
+        const {title,
+            description,
+            date,
+            notes,
+            analysis,
+        } = savedDream
+        expect({title,
+            description,
+            date,
+            notes,
+            analysis,
+        }).toMatchObject({...update, date: new Date(update.date)})
+        // Theme should have been added
+        theme = await Theme.findOne({dream: oldDreamId, theme: 'Travel'})
+        expect(theme).not.toBeNull()
+    })
+
+    test('If description is updated, themes should be automatically generated if not already present.', async () => {
+        // No themes should be associated with the dream yet
+        let savedThemes = await Theme.find({dream:dreamWithNoThemesId}).sort('theme')
+        expect(savedThemes).toHaveLength(0)
+        // Send valid data with correct authentication
+        const response = await request(server).patch(`${url}/${dreamWithNoThemesId}`).send({
+            dream: {description: 'A new description for this dream.'}
+        }).set(...userThreeAuth).expect(200)
+        // Dream data should be in response, description updated
+        const dream = response.body.dream
+        expect(dream.description).toBe('A new description for this dream.')
+        // Default themes should be in response
+        const themes = response.body.themes
+        expect(themes).toEqual(defaultThemes)
+        // Default Themes should have been added to the database
+        savedThemes = await Theme.find({dream:dreamWithNoThemesId}).sort('theme')
+        expect(savedThemes).toHaveLength(3)
+        savedThemes.map((theme: {theme: string}, index: number) => {
+            expect(theme.theme).toBe(defaultThemes[index])
+        })
+    })
+
+    test('Dream with no description can be updated, and themes are not generated.', async () => {
+        // Send valid data with no description
+        const response = await request(server).patch(`${url}/${dreamWithNoDescId}`).send({
+            dream: {title: 'Still a dream with no description.'}
+        }).set(...userThreeAuth).expect(200)
+        // Response should contain dream and not contain themes
+        expect(response.body).not.toHaveProperty('themes')
+        expect(response.body).toHaveProperty('dream')
+        // No themes should be associated with the dream
+        const savedThemes = await Theme.find({dream:dreamWithNoDescId}).sort('theme')
+        expect(savedThemes).toHaveLength(0)
     })
 })

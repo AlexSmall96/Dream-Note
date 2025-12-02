@@ -34,9 +34,11 @@ export class DreamRouter {
             // Use existing themes or generate themes if null
             const themes = existingThemes ?? await this.dreamService.generateAIDreamInfo(description, prompts.themes, true) as string[]
             // Add each theme to database
-            themes.forEach(async (text: string) => {
-                await this.themeController.handleAddTheme(dreamId, text.trim())
-            })
+            await Promise.all(
+                themes.map(async (text: string) => {
+                    await this.themeController.handleAddTheme(dreamId, text.trim())
+                })
+            )
             return themes
         }
     }
@@ -140,20 +142,30 @@ export class DreamRouter {
                 return res.status(400).json({ error: "Request body must contain the field 'dream'." });
             }
             const dreamData = req.body.dream
+            const newThemes = req.body.themes
             try {
                 // Save dream
-                const dream = await this.dreamController.handleUpdateDream(dreamData, dreamId)
-
-                // Check if dream has any themes in database
+                const dream = await this.dreamController.handleUpdateDream(dreamData, dreamId, req.user._id)
+                if (!dream){
+                    return res.status(401).json({error: 'You are not authorized to edit this dream.'})
+                }
+                // Add any extra themes passed through request
+                if (newThemes){
+                    await this.addThemes('', dreamId, newThemes)
+                }
+                // Check if dream now has any themes in database
                 const savedThemes = await this.themeController.handleGetDreamThemes(dreamId)
-
                 // If description exists but there are no saved themes, generate themes
                 if (dream.description && !savedThemes.length){
                     const themes = await this.addThemes(dream.description, dreamId, null)
                     // Return dream document and themes array
                     return res.json({dream, themes})
                 }
-                res.json(dream)
+                // If there are no saved themes, return dream data
+                if (!savedThemes.length){
+                    return res.json({dream})
+                }
+                res.json({dream, themes: savedThemes})
             } catch (err){
                 next(err)
             }

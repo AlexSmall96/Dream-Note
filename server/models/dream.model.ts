@@ -40,19 +40,17 @@ dreamSchema.virtual('themes', {
 dreamSchema.pre('findOneAndDelete', async function (next) {
     // Get dream id
     const dream = this.getFilter()._id;
-    // Delet associated themes
+    // Delete associated themes
     await Theme.deleteMany({dream})
     next()
 })
 
-
-dreamSchema.statics.findByIdAndUpdateOrThrowError = async function (this: DreamModel, _id: string, update): Promise<DreamDocument>{
-    const dream = await this.findByIdAndUpdate(_id, update);
+dreamSchema.statics.findByIdOrThrowError = async function (this: DreamModel, _id: string): Promise<DreamDocument>{
+    const dream = await this.findById(_id)
     if (!dream){
         throw new Error('Invalid id.')
     }
     return dream
 }
-
 
 export const Dream = model<DreamDocument, DreamModel>("Dream", dreamSchema);

@@ -42,9 +42,8 @@ export class DreamController {
     }
 
     // Update dream
-    public async handleUpdateDream(update: DreamInterface, dreamId: string){
-        const dream = await Dream.findByIdAndUpdateOrThrowError(dreamId, update)
-        await dream.save()
+    public async handleUpdateDream(update: DreamInterface, dreamId: string, userId: string){
+        const dream = await Dream.findOneAndUpdate({_id: dreamId, owner: userId}, update, {new: true})
         return dream
     }
 

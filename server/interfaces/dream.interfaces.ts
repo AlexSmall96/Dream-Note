@@ -22,7 +22,7 @@ export interface DreamDocument extends DreamInterface, Document {
 }
 
 export interface DreamModel extends Model<DreamDocument>{
-    findByIdAndUpdateOrThrowError(_id: string, update: DreamInterface): Promise<DreamDocument>
+    findByIdOrThrowError(_id: string): Promise<DreamDocument>
 }
 
 
