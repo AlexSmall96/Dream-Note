@@ -1,8 +1,10 @@
 import request from 'supertest';
-import { server, } from '../utils/test-utils/testServer.js'
-import { wipeDBAndSaveData, userOne, userOneId, userOneAuth } from '../utils/test-utils/testData.js'
+import { server } from '../utils/test-utils/testServer.js'
+import { wipeDBAndSaveData, userOne, userOneId, userOneAuth, userThreeAuth, userThreeId } from '../utils/test-utils/testData.js'
 import { beforeEach, describe, expect, test } from 'vitest';
 import { User } from '../models/user.model.js';
+import { Dream } from '../models/dream.model.js';
+import { Theme } from '../models/theme.model.js';
 
 // Wipe db and save data
 beforeEach(async () => wipeDBAndSaveData())
@@ -57,6 +59,9 @@ describe('SIGNUP', () => {
     })
 
     test('Signup should succeed with valid data.', async() => {
+        // Assert db contains no user with email user2@email.com
+        let user = await User.findOne({email: 'user2@email.com'})
+        expect(user).toBeNull()
         // Post correct data
         const response = await request(server).post(url).send({
             email: 'user2@email.com',
@@ -65,7 +70,7 @@ describe('SIGNUP', () => {
         // Response contains correct details - contains email and not password
         expect(response.body).not.toHaveProperty('password')
         // Assert the database was changed
-        const user = await User.findOne({email: 'user2@email.com'})
+        user = await User.findOne({email: 'user2@email.com'})
         expect(user).not.toBeNull()
     })
 })
@@ -128,6 +133,7 @@ describe('LOGIN AND LOGOUT', () => {
     })
 })
 
+// Update account
 describe('UPDATE', async () => {
     // Define url
     const url = baseUrl + '/update'
@@ -205,20 +211,21 @@ describe('UPDATE', async () => {
     test('Email update should be successful wtih valid and available data.', async () => {
         // Send data with valid and available email address
         const response = await request(server).patch(url).send({
-            email: 'user3@email.com',
+            email: 'user4@email.com',
         }).set(...userOneAuth).expect(200)
         // New email should be returned in response
-        expect(response.body.user.email).toBe('user3@email.com')
+        expect(response.body.user.email).toBe('user4@email.com')
         // Response should not contain password and tokens
         expect(response.body.user).not.toHaveProperty('password')
         expect(response.body.user).not.toHaveProperty('tokens')
         // Assert that the database was changed
         const user = await User.findByIdOrThrowError(userOneId.toString())
         expect(user).not.toBeNull()
-        expect(user.email).toBe('user3@email.com')
+        expect(user.email).toBe('user4@email.com')
     })
 })
 
+// Delete account
 describe('DELETE', () => {
     // Define url
     const url = baseUrl + '/delete' 
@@ -231,7 +238,21 @@ describe('DELETE', () => {
     })  
 
     test('Account deletion should be successful when authenticated.', async () => {
+        // The 4 themes associated with userThree's dreams should be in db
+        const themeNames = ['Lateness', 'Anxiety', 'Fear', 'Animals']
+        await Promise.all(themeNames.map(async (theme: string) => {
+            const savedTheme = await Theme.findOne({theme})
+            expect(savedTheme).not.toBeNull()
+        }))
         // Send authenticated response
-        await request(server).delete(url).set(...userOneAuth).expect(200)
+        await request(server).delete(url).set(...userThreeAuth).expect(200)
+        // Users dreams should be deleted, along with any themes associated with them
+        const dreams = await Dream.find({owner: userThreeId})
+        expect(dreams).toHaveLength(0)
+        // Assert themes are no longer in the database
+        await Promise.all(themeNames.map(async (theme: string) => {
+            const nullTheme = await Theme.findOne({theme})
+            expect(nullTheme).toBeNull()
+        }))
     })
 })
