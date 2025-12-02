@@ -21,7 +21,11 @@ export class ThemeRouter {
         // Get all users themes
         this.router.get('/', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
-                const themes = await this.themeController.handleGetAllThemes(req.user._id)
+                // Get limit and skip parameters
+                const limit = req.query.limit? Number(req.query.limit) : 100
+                const skip = req.query.skip? Number(req.query.skip) : 0
+                const sort = req.query.sort?.toString()
+                const themes = await this.themeController.handleGetAllThemes(req.user._id, limit, skip, sort)
                 res.json(themes)
             } catch (err){
                 next(err)
@@ -31,8 +35,9 @@ export class ThemeRouter {
         // Remove a theme
         this.router.delete('/delete/:id', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             const themeId = req.params.id
+
             try {
-                const theme = this.themeController.handleRemoveTheme(themeId)
+                const theme = await this.themeController.handleRemoveTheme(themeId)
                 res.json(theme)
             } catch (err){
                 next(err)

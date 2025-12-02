@@ -13,7 +13,7 @@ const themeSchema = new Schema<ThemeDocument, ThemeModel>({
         required: true,
         ref: 'Dream'        
     }
-})
+}, {timestamps: true})
 
 themeSchema.statics.findByThemeOrThrowError = async function (this: ThemeModel, text: string): Promise<ThemeDocument> {
     const theme = await this.findOne({theme:text})

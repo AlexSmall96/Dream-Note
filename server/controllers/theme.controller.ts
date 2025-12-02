@@ -20,14 +20,14 @@ export class ThemeController {
     }
 
     // Get all a users themes
-    public async handleGetAllThemes(userId: string) {
+    public async handleGetAllThemes(userId: string, limit: number, skip: number, sort?: string) {
         const dreamIds = await Dream.find({ owner: userId }).distinct('_id');
         const themes = await Theme.find({ 
             dream: { $in: dreamIds } 
         }).populate({
             path: "dream",
             select: "_id title date"
-        });
+        }).sort(sort? 'theme': {'createdAt': -1}).skip(skip).limit(limit)
         return themes
     }   
 
