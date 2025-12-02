@@ -31,10 +31,25 @@ Descriptions of the database tables and fields are as follows:
 
 ![Database Schema](documentation/database/db-diagram.png)
 ### Methodology
+The project followed an agile methodology, with n distinct sprints . Throughout, a kanban board was used to plan and track progress.
+![Initial Kanban Board](documentation/methodology/kanban1.png)
 
+### Sprint 1: Planning and Initial Documentation
+This phase consisted of initial brainstorming, where the basics of the idea were beginning to be fleshed out. During this phase, the tech stack that would be most suitable for the project purpose and my goals was decided on. Documentation was useful, with some process flows being created to map out some of the more complex processes involved in the site, as well as a database diagram, which helped confirm details of the database schema.
+### Sprint 2: Backend API
+The API for this site was written in [Node.js](https://nodejs.org/en) using Typescript. The [Express](https://expressjs.com/) framework was used to create all the HTTP endpoints (users, dreams, themes). [MongoDB](https://www.mongodb.com/) was used for the database, along with the [mongoose.js](https://mongoosejs.com/) object modeling framework. While the API was being developed, [Postman](https://www.postman.com/) was used to test HTTP endpoints.
 
+HTTP testing in postman
 
-## UX
+User endpoints               | Dream and Theme endpoints
+:-------------------------:| :-------------------------: 
+![](documentation/methodology/postman-users.png)              |![](documentation/methodology/postman-all.png)   | 
+
+### Sprint 3: Backend Testing
+### Sprint 4: Frontend Functionality
+### Sprint 5: Frontend Styling
+### Sprint 6: Frontend tesintg
+### Sprint 7: Remaining Documentation
 
 ### User Stories
 
