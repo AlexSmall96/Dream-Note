@@ -48,8 +48,8 @@ export class DreamController {
     }
 
     // Delete dream
-    public async handleDeleteDream(dreamId: string){
-        const dream = await Dream.findOneAndDelete({_id: dreamId})
+    public async handleDeleteDream(dreamId: string, owner: string){
+        const dream = await Dream.findOneAndDelete({_id: dreamId, owner})
         return dream
     }    
 }

@@ -174,8 +174,12 @@ export class DreamRouter {
         // Delete dream
         this.router.delete('/delete/:id', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             const dreamId = req.params.id
+            const owner = req.user._id
             try {
-                const dream = await this.dreamController.handleDeleteDream(dreamId)
+                const dream = await this.dreamController.handleDeleteDream(dreamId, owner)
+                if (!dream){
+                    return res.status(401).json({error: 'You are not authorized to delete this dream.'})
+                }
                 res.json(dream)
             } catch (err){
                 next(err)
