@@ -211,17 +211,17 @@ describe('UPDATE', async () => {
     test('Email update should be successful wtih valid and available data.', async () => {
         // Send data with valid and available email address
         const response = await request(server).patch(url).send({
-            email: 'user4@email.com',
+            email: 'user5@email.com',
         }).set(...userOneAuth).expect(200)
         // New email should be returned in response
-        expect(response.body.user.email).toBe('user4@email.com')
+        expect(response.body.user.email).toBe('user5@email.com')
         // Response should not contain password and tokens
         expect(response.body.user).not.toHaveProperty('password')
         expect(response.body.user).not.toHaveProperty('tokens')
         // Assert that the database was changed
         const user = await User.findByIdOrThrowError(userOneId.toString())
         expect(user).not.toBeNull()
-        expect(user.email).toBe('user4@email.com')
+        expect(user.email).toBe('user5@email.com')
     })
 })
 

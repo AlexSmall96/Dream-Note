@@ -9,6 +9,7 @@ import { Theme } from '../../models/theme.model';
 // Create user ids 
 const userOneId = new mongoose.Types.ObjectId()
 const userThreeId = new mongoose.Types.ObjectId()
+const userFourId = new mongoose.Types.ObjectId()
 
 // Create token
 const JWT_SECRET = process.env.JWT_SECRET
@@ -35,9 +36,17 @@ const userThree = {
     tokens: [generateToken(userThreeId.toString())]
 }
 
+const userFour = {
+    email: 'user4@email.com',
+    password: 'pear123',
+    _id: userFourId,
+    tokens: [generateToken(userFourId.toString())]
+}
+
 // Use token to create auth string
 const userOneAuth: [string, string] = ['Authorization', `Bearer ${userOne.tokens[0]}`]
 const userThreeAuth: [string, string] = ['Authorization', `Bearer ${userThree.tokens[0]}`]
+const userFourAuth: [string, string] = ['Authorization', `Bearer ${userFour.tokens[0]}`]
 
 // Create dreams to save to db
 const userOneTitles: string[] = []
@@ -50,6 +59,8 @@ const oldDreamId = new mongoose.Types.ObjectId()
 const newDreamId = new mongoose.Types.ObjectId()
 const dreamWithNoThemesId = new mongoose.Types.ObjectId()
 const dreamWithNoDescId = new mongoose.Types.ObjectId()
+const dreamWithManyThemesId = new mongoose.Types.ObjectId()
+
 
 const oldDream = {
     title: 'A dream from 1 year ago', 
@@ -60,7 +71,7 @@ const oldDream = {
 }
 
 const newDream = {
-    title: 'A dream from 6 months ago.', 
+    title: 'A dream from 6 months ago', 
     date: '2025-05-29T00:00:00.000Z', 
     owner: userThreeId, 
     _id: newDreamId,
@@ -68,7 +79,7 @@ const newDream = {
 }
 
 const dreamWithNoThemes = {
-    title: 'A dream with no themes.', 
+    title: 'A dream with no themes', 
     date: '2020-05-29T00:00:00.000Z',
     owner: userThreeId, 
     _id: dreamWithNoThemesId,
@@ -76,10 +87,23 @@ const dreamWithNoThemes = {
 }
 
 const dreamWithNoDesc = {
-    title: 'A dream with no description.', 
+    title: 'A dream with no description', 
     date: '2020-05-29T00:00:00.000Z',
     owner: userThreeId, 
     _id: dreamWithNoDescId,   
+}
+
+const dreamWithManyThemes = {
+    title: 'A dream with many themes', 
+    date: '2020-05-29T00:00:00.000Z',
+    owner: userFourId, 
+    _id: dreamWithManyThemesId, 
+}
+
+const manyThemeTitles: string[] = []
+
+for (let i=0; i<10; i++){
+    manyThemeTitles.push(i < 5? `b-theme-${i}` : i < 8 ? `a-theme-${i}` : `c-theme-${i}`)
 }
 
 const oldDreamTheme1 = {theme: 'Lateness', dream: oldDreamId}
@@ -103,16 +127,18 @@ const saveDreams = async () => {
         })
     )
     
-    // Save two more dreams to user three to test date filtering
+    // Save dreams to user three to test date filtering and theme generation
     await new Dream(oldDream).save()
     await new Dream(newDream).save()
     await new Dream(dreamWithNoThemes).save()
     await new Dream(dreamWithNoDesc).save()
+    await new Dream(dreamWithManyThemes).save()
 }
 
 const saveUsers = async () => {
     await new User(userOne).save()
     await new User(userThree).save()
+    await new User(userFour).save()
 }
 
 const saveThemes = async () => {
@@ -120,6 +146,15 @@ const saveThemes = async () => {
     await new Theme(oldDreamTheme2).save()
     await new Theme(newDreamTheme1).save()
     await new Theme(newDreamTheme2).save()
+
+    await Promise.all(
+        manyThemeTitles.map(async (theme, i) => {
+            await new Theme({
+                theme,
+                dream: dreamWithManyThemesId,
+            }).save()
+        })
+    )
 }
 
 // Wipe DB, save data
@@ -138,11 +173,14 @@ export {
     wipeDBAndSaveData, 
     userOne, 
     userOneId, 
-    userOneAuth, 
+    userOneAuth,
+    userFourAuth, 
     userThreeId, 
     userThreeAuth, 
     oldDreamId, 
     oldDream,
+    newDream,
+    newDreamId,
     dreamWithNoThemes,
     dreamWithNoDesc,
     dreamWithNoThemesId,
