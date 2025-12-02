@@ -60,6 +60,7 @@ const newDreamId = new mongoose.Types.ObjectId()
 const dreamWithNoThemesId = new mongoose.Types.ObjectId()
 const dreamWithNoDescId = new mongoose.Types.ObjectId()
 const dreamWithManyThemesId = new mongoose.Types.ObjectId()
+const oldDreamTheme1Id = new mongoose.Types.ObjectId()
 
 
 const oldDream = {
@@ -106,7 +107,7 @@ for (let i=0; i<10; i++){
     manyThemeTitles.push(i < 5? `b-theme-${i}` : i < 8 ? `a-theme-${i}` : `c-theme-${i}`)
 }
 
-const oldDreamTheme1 = {theme: 'Lateness', dream: oldDreamId}
+const oldDreamTheme1 = {theme: 'Lateness', dream: oldDreamId, _id: oldDreamTheme1Id}
 const oldDreamTheme2 = {theme: 'Anxiety', dream: oldDreamId}
 const newDreamTheme1 = {theme: 'Fear', dream: newDreamId}
 const newDreamTheme2 = {theme: 'Animals', dream: newDreamId}
@@ -185,4 +186,5 @@ export {
     dreamWithNoDesc,
     dreamWithNoThemesId,
     dreamWithNoDescId,
+    oldDreamTheme1Id
 }

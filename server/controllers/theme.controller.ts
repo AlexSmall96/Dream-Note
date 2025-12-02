@@ -32,8 +32,9 @@ export class ThemeController {
     }   
 
     // Remove a theme
-    public async handleRemoveTheme(themeId: string){
-        const theme = await Theme.findByIdAndDelete(themeId)
+    public async handleRemoveTheme(themeId: string, userId: string){
+        const dreamIds = await Dream.find({ owner: userId }).distinct('_id');
+        const theme = await Theme.findOneAndDelete({_id:themeId, dream: { $in: dreamIds }})
         return theme
     }
 }

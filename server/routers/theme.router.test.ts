@@ -2,13 +2,15 @@ import request from 'supertest';
 import { server } from '../utils/test-utils/testServer.js'
 import { beforeEach, describe, expect, test } from 'vitest';
 import { DreamInterface } from '../interfaces/dream.interfaces.js';
+import { Theme } from '../models/theme.model.js';
 
 import { 
     wipeDBAndSaveData, 
     userThreeAuth,
     userFourAuth,
     newDream, 
-    oldDream
+    oldDream,
+    oldDreamTheme1Id
  } from '../utils/test-utils/testData.js'
  
 // Wipe db and save data
@@ -64,5 +66,24 @@ describe('GET ALL USERS THEMES', () => {
         themesPageOne.map((theme: {theme: string, dream: DreamInterface}) => {
             expect(theme.dream.title).toBe('A dream with many themes')
         })   
+    })
+})
+
+describe('REMOVE THEME', () => {
+    // Define url
+    const url = baseUrl + '/delete'
+
+    test('User cannot delete theme if they are not the owner of the associated dream.', async () => {
+        // Attempt to delete a theme associated with oldDream authorized as userFour
+        const response = await request(server).delete(`${url}/${oldDreamTheme1Id}`).set(...userFourAuth).expect(401)
+        expect(response.body.error).toBe('You are not authorized to delete this theme.')
+    })
+
+    test('Theme can be removed if user is owner of associcated dream.', async () => {
+        // Delete a theme associated with oldDream authorized as userThree
+        await request(server).delete(`${url}/${oldDreamTheme1Id}`).set(...userThreeAuth).expect(200)
+        // Assert theme was removed from database
+        const nullTheme = await Theme.findById(oldDreamTheme1Id)
+        expect(nullTheme).toBeNull()
     })
 })

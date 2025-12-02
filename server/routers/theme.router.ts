@@ -35,9 +35,12 @@ export class ThemeRouter {
         // Remove a theme
         this.router.delete('/delete/:id', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             const themeId = req.params.id
-
+            const userId = req.user._id
             try {
-                const theme = await this.themeController.handleRemoveTheme(themeId)
+                const theme = await this.themeController.handleRemoveTheme(themeId, userId)
+                if (!theme){
+                    return res.status(401).json({error: 'You are not authorized to delete this theme.'})
+                }
                 res.json(theme)
             } catch (err){
                 next(err)
