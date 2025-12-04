@@ -91,7 +91,7 @@ export class DreamRouter {
                 const style = req.body.style ?? ''
                 // Create full prompt using tone and style
                 const analysis = await this.dreamService.generateAIDreamInfo(req.body.dream.description, prompts.analysis, false, {tone, style}) as string
-                res.json(analysis ?? '')
+                res.json({analysis: analysis ?? ''})
             } catch (err){
                 next(err)
             }

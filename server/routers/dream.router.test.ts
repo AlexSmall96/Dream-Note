@@ -334,6 +334,27 @@ describe('UPDATE DREAM', () => {
     })
 })
 
+describe('GET ANALYSIS', () => {
+    // Define url
+    const url = baseUrl + '/analysis' 
+
+    test('Generate analysis fails if dream description is not provided.', async () => {
+        // Error should be returned
+        const response = await request(server).post(url).send({dream: {title: 'A dream title'}}).set(...userOneAuth).expect(400)
+        expect(response.body.error).toBe("Description must be provided.")
+    })
+    test('Mock response is returned if dream description is provided.', async () => {
+        // Mock response is returned based on tone and style parameters
+        const response = await request(server).post(url).send({
+            dream: {description: 'A dream description'},
+            tone: 'serious',
+            style: 'formal'
+        }).set(...userOneAuth).expect(200)
+        expect(response.body.analysis).toBe('Mock analysis response. Tone: serious. Style: formal.')
+    })  
+})
+
+
 // Delete dream
 describe('DELETE DREAM', () => {
 
