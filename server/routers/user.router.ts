@@ -69,11 +69,11 @@ export class UserRouter {
         this.router.post('/sendOTP', async (req: Request, res: Response, next: NextFunction) => {
 
             // Get purpose, email and OTP from request body
-            const {email, OTP, resetPassword} = req.body
+            const {email, OTP, resetPassword, expiresIn} = req.body
 
             // Check if email and OTP are present
-            if (!email || !OTP){
-                return res.status(400).send({error: "Please provide a OTP and email address."})
+            if (!email || !OTP || !expiresIn){
+                return res.status(400).send({error: "Please provide a OTP, email address and expiresIn value."})
             }
             try {
 
@@ -82,28 +82,15 @@ export class UserRouter {
 
                 // If aim is to reset password, check if email address belongs to an account
                 if (resetPassword && !account){
-                    return res.status(404).send({ error: 'No account was found associated with the given email address.' });
+                    return res.status(400).send({ error: 'No account was found associated with the given email address.' });
 
                 // If aim is to verify new email, check if email address has not yet been taken
                 } else if (!resetPassword && account){
                     return res.status(400).send({ error: 'Email address taken. Please choose a different email address.' });
                 }
-
-                // Configure email options
-                const transporter = this.emailService.getTransporter();
-                const purpose = resetPassword? 'password reset' : 'email address verification'
-                
-                const mailOptions = {
-                    from: process.env.SMTP_MAIL,
-                    to: email,
-                    subject: `Your Dream Note OTP for ${purpose}.`,
-                    text: `Your one time passcode (OTP) is ${OTP}. This will expire in 10 minutes.`
-                };
-
                 // Send email
-                await transporter.sendMail(mailOptions)
+                await this.emailService.sendMailWithData(resetPassword, email, OTP, expiresIn)
                 res.json({ message: "OTP sent successfully." });
-
             } catch (err){
                 next(err)
             }

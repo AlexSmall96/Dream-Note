@@ -256,3 +256,45 @@ describe('DELETE', () => {
         }))
     })
 })
+
+
+describe('SEND OTP', () => {
+    const url = baseUrl + '/sendOTP'
+    test('Send OTP fails if email address, OTP or expiresIn are missing.', async () => {
+        // Expected error message
+        const expErrorMsg = "Please provide a OTP, email address and expiresIn value."
+        // Define 3 request bodies, each with a missing parameter
+        const reqBodies = [
+            {email: 'user4@email.com', expiresIn: 10},
+            {OTP: 123456, expiresIn: 10},
+            {email: 'user4@email.com', OTP: 123456}
+        ]
+        // Send each request, error message should be returned for each one
+        await Promise.all(reqBodies.map(async (body) => {
+            const response = await request(server).post(url).send(body).expect(400)
+            expect(response.body.error).toBe(expErrorMsg)
+        }))
+    })
+
+    test('Send OTP for password reset fails if email address is not associated with an account.', async () => {
+        const response = await request(server).post(url).send({
+            email: 'user5@email.com',
+            OTP: 123456,
+            resetPassword: true,
+            expiresIn: 10,
+        }).expect(400)
+        expect(response.body.error).toBe('No account was found associated with the given email address.')
+    })
+
+    test('Send OTP for update email address fails if email address is taken.', async () => {
+        const response = await request(server).post(url).send({
+            email: 'user4@email.com',
+            OTP: 123456,
+            resetPassword: false,
+            expiresIn: 10,
+        }).expect(400)
+        expect(response.body.error).toBe('Email address taken. Please choose a different email address.')
+    })
+
+    // Send OTP success case is handled in email.service.test
+})

@@ -12,7 +12,12 @@ export class EmailService {
         }
     }); 
 
-    public getTransporter() {
-        return this.transporter;
+    public sendMailWithData(resetPassword: boolean, email: string, OTP: number, expiresIn: number) {
+        return this.transporter.sendMail({
+            from: process.env.SMTP_MAIL,
+            to: email,
+            subject: `Your Dream Note OTP for ${resetPassword? 'password reset': 'email address verification'}.`,
+            text: `Your one time passcode (OTP) is ${OTP}. This will expire in ${expiresIn} minutes.`            
+        })
     }
 }
