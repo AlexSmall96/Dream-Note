@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { server } from '../utils/test-utils/testServer.js'
-import { beforeEach, describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test, vi} from 'vitest';
 import { Dream } from '../models/dream.model.js';
 import { Theme } from '../models/theme.model.js';
 import { DreamDocument } from '../interfaces/dream.interfaces.js';
@@ -15,7 +15,7 @@ import {
     dreamWithNoThemesId,
     dreamWithNoDescId
  } from '../utils/test-utils/testData.js'
- 
+
 // Wipe db and save data
 beforeEach(async () => wipeDBAndSaveData())
 
@@ -186,7 +186,7 @@ describe('GET ALL DREAMS', () => {
         // All dreams should be returned
         expect(allDreams).toHaveLength(5)
         // Last two should be oldest
-        expect(allDreams[3].title).toBe('A dream from 6 months ago.')
+        expect(allDreams[3].title).toBe('A dream from 6 months ago')
         expect(allDreams[4].title).toBe('A dream from 1 year ago')
         // set days ago to 250
         const newResponse = await request(server).get(`${url}?daysAgo=250`).set(...userThreeAuth).expect(200)
@@ -194,7 +194,7 @@ describe('GET ALL DREAMS', () => {
         const newDreams = newResponse.body.dreams
         expect(newDreams).toHaveLength(4)
         // Last dream should be oldest
-        expect(allDreams[3].title).toBe('A dream from 6 months ago.')
+        expect(allDreams[3].title).toBe('A dream from 6 months ago')
         // Searching for A dream from 1 year ago with days ago set to 250 returns empty array
         const emptyResponse = await request(server).get(`${url}?daysAgo=250&title=A dream from 1 year ago`).set(...userThreeAuth).expect(200)
         expect(emptyResponse.body.dreams).toHaveLength(0)

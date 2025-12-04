@@ -81,7 +81,7 @@ export class DreamRouter {
 
 
         // Get AI analysis based on description
-        this.router.get('/analysis', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+        this.router.post('/analysis', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
                 if (!req.body.dream.description){
                     return res.status(400).json({ error: "Description must be provided." });
