@@ -8,11 +8,11 @@
 Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
 ## Table of Contents
 
-## Testing 
+## 🧪 Testing 
+Testing is detailed fully in [TESTING.MD](TESTING.MD)
+## 🥅 Project Goals and Planning
 
-## Project Goals and Planning
-
-### Process Flow Diagrams
+### ➡️ Process Flow Diagrams
 To plan the end to end processes involved in the site, the following diagrams were created.
 #### Home Page
 ![Home Page](documentation/process-flows/HomePage.png)
@@ -20,7 +20,7 @@ To plan the end to end processes involved in the site, the following diagrams we
 ![Log New Dream](documentation/process-flows/LogNewDream.png)
 #### View Dreams Page
 ![View Dreams Page](documentation/process-flows/ViewDreamsPage.png)
-### Database Schema
+### 🗃️ Database Schema
 The below diagram was used to model the database schema.
 Descriptions of the database tables and fields are as follows:
 
@@ -30,13 +30,13 @@ Descriptions of the database tables and fields are as follows:
 - **Themes:** Themes related to dream, either chosen by the user or AI generated. Related to the Dream model via a many to one relationship.
 
 ![Database Schema](documentation/database/db-diagram.png)
-### Methodology
+### 📑 Methodology
 The project followed an agile methodology, with n distinct sprints . Throughout, a kanban board was used to plan and track progress.
 ![Initial Kanban Board](documentation/methodology/kanban1.png)
 
-### Sprint 1: Planning and Initial Documentation
+### Sprint 1: 📖 Planning and Initial Documentation 
 This phase consisted of initial brainstorming, where the basics of the idea were beginning to be fleshed out. During this phase, the tech stack that would be most suitable for the project purpose and my goals was decided on. Documentation was useful, with some process flows being created to map out some of the more complex processes involved in the site, as well as a database diagram, which helped confirm details of the database schema.
-### Sprint 2: Backend API
+### Sprint 2: 🔧 Backend API 
 The API for this site was written in [Node.js](https://nodejs.org/en) using Typescript. The [Express](https://expressjs.com/) framework was used to create all the HTTP endpoints (users, dreams, themes). [MongoDB](https://www.mongodb.com/) was used for the database, along with the [mongoose.js](https://mongoosejs.com/) object modeling framework. While the API was being developed, [Postman](https://www.postman.com/) was used to test HTTP endpoints.
 
 HTTP testing in postman
@@ -45,23 +45,24 @@ User endpoints               | Dream and Theme endpoints
 :-------------------------:| :-------------------------: 
 ![](documentation/methodology/postman-users.png)              |![](documentation/methodology/postman-all.png)   | 
 
-### Sprint 3: Backend Testing
-### Sprint 4: Frontend Functionality
-### Sprint 5: Frontend Styling
-### Sprint 6: Frontend tesintg
-### Sprint 7: Remaining Documentation
+### Sprint 3: 🧪 Backend Testing 
+### Sprint 4: 💻 Frontend Functionality 
+### Sprint 5: 🎨 Frontend Styling 
+### Sprint 6: 🧪 Frontend Testing 
+### Sprint 7: 📖 Remaining Documentation 
 
-### User Stories
+## 👤UX
+### 👥 User Stories
 
-### Target Audience
+### 🎯 Target Audience
 
-### Wireframes
+### 🖼️ Wireframes
 
-### Fonts
+### 🔤 Fonts
 
-### Images
+### 📷 Images
 
-## Programming Languages, Frameworks, and Libraries used
+## 🖥️  Programming Languages, Frameworks, and Libraries used
 
 - TypeScript    
 - Backend 
@@ -84,7 +85,7 @@ User endpoints               | Dream and Theme endpoints
     - lucidchart
     - dbdiagram
     
-## Credits
+## 🤝 Credits
 ### Courses
 ### APIs
 ### Code
