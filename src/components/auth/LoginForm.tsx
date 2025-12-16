@@ -2,18 +2,18 @@
 
 import { useState } from "react"
 import { login } from '@/lib/api/auth'
-import { useRouter } from "next/navigation"
 
 export default function LoginForm() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState('')
-    const [errors, setErrors] = useState({password: '', email: ''})
-
+    
+    const [error, setError] = useState({param: '', msg: ''})
+    
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
         const result = await login({ email, password })
         if (result.errors){
-            return console.log(result.errors)
+           return setError(result.errors[0])
         }   
         window.location.href = "/dreams"
   }
@@ -25,14 +25,14 @@ export default function LoginForm() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
         />
-        {errors.email?? ''}
+        {error.param === 'email' ? error.msg : ''}
         <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
         />
-        {errors.password?? ''}
+        {error.param === 'password' ? error.msg : ''}
         <button type="submit">Login</button>
         </form>
     )
