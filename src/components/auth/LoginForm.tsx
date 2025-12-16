@@ -12,7 +12,7 @@ export default function LoginForm() {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
         const result = await login({ email, password })
-        if (result.errors){
+        if ('errors' in result){
            return setError(result.errors[0])
         }   
         window.location.href = "/dreams"

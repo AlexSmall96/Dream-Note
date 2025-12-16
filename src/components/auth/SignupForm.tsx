@@ -28,7 +28,7 @@ export default function SignupForm() {
             return setErrors({password: 'Password and confirm password must match.', email: errors.email})
         } 
         const result = await signup({ email, password: password1 });
-        if (result.errors){
+        if ('errors' in result){
             const emailError = getError(result.errors, 'email')
             const pwdError = getError(result.errors, 'password')
             
