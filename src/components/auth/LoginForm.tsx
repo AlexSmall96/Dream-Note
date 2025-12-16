@@ -1,22 +1,21 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { login } from '@/lib/api/auth';
-import { useRouter } from "next/navigation";
+import { useState } from "react"
+import { login } from '@/lib/api/auth'
+import { useRouter } from "next/navigation"
 
 export default function LoginForm() {
-    const router = useRouter()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState('')
     const [errors, setErrors] = useState({password: '', email: ''})
 
     async function handleSubmit(e: React.FormEvent) {
-        e.preventDefault();
-        const result = await login({ email, password });
+        e.preventDefault()
+        const result = await login({ email, password })
         if (result.errors){
             return console.log(result.errors)
         }   
-        router.push("/");
+        window.location.href = "/dreams"
   }
 
     return (

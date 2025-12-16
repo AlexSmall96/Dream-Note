@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from 'next/link';
 
 import "./globals.css";
+import Navbar from "@/components/nav/Navbar";
 
 export const metadata: Metadata = {
 	title: "Dream Note",
@@ -16,24 +17,10 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body>
-        <Link href='/'>
-          Dream Note
-        </Link>
-		<Link className='m-2' href='/auth/signup'>
-			Signup
-		</Link>
-		<Link className='m-2' href='/auth/login'>
-			Login
-		</Link>
-		<Link className='m-2' href='/dreams'>
-			Dreams
-		</Link>
-		<Link className='m-2' href='/profile'>
-			Profile
-		</Link>
-        {children}
-      </body>
+		<body>
+			<Navbar />
+        	{children}
+      	</body>
     </html>
   );
 }
