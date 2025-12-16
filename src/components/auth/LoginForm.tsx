@@ -33,7 +33,7 @@ export default function LoginForm() {
             placeholder="Password"
         />
         {error.param === 'password' ? error.msg : ''}
-        <button type="submit">Login</button>
+        <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold'>Login</button>
         </form>
     )
 }

@@ -58,7 +58,7 @@ export default function SignupForm() {
             placeholder="Confirm Password"
         />
         {errors.password?? ''}
-      <button type="submit">Sign up</button>
+      <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold'>Sign up</button>
     </form>
   );
 }

@@ -1,7 +1,9 @@
-import SignupForm from "../../../components/auth/SignupForm";
+import SignupForm from "@/components/auth/SignupForm";
 
 export default function Signup(){
     return (
-        <SignupForm />
+        <div className="flex flex-col items-center m-4">
+            <SignupForm />   
+        </div>
     )
 }

@@ -1,5 +1,10 @@
-export default function Dreams(){
-    return (
-        <h1>Dreams</h1>
-    )
+import DreamsList from '@/components/dreams/DreamsList'
+
+export default function Dreams() {
+  return (
+    <div className="flex flex-col items-center">
+      <h1 className="text-l font-bold m-4">Dreams</h1>
+      <DreamsList />
+    </div>
+  );
 }

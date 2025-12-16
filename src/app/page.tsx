@@ -2,6 +2,8 @@ import React from 'react';
 
 export default function Home() {
   	return (
-		<h1>Home page</h1>
+		<div className="flex flex-col items-center m-4">
+			<h1>Home page</h1>  
+		</div>
   	);
 }
