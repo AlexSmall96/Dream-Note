@@ -14,7 +14,9 @@ export const auth = async (req:AuthenticatedRequest, res: Response, next: NextFu
         if (!secretKey){
             throw new Error('Please provide a json web token secret key.')
         }
-        const token = req.headers['authorization']?.replace('Bearer ', '');
+        
+        const token = req.cookies?.session || req.headers.authorization?.replace("Bearer ", "")
+        
         if (!token) {
             return res.status(401).send({errors: [{param: 'token', msg:'Please provide json web token to authenticate.'}]});
         }

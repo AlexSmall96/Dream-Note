@@ -1,9 +1,11 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
+import cookieParser from "cookie-parser";
 
 // Function to setup basic properties of Express server
 export const setupServer = (server: Application) => {
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
+    server.use(cookieParser())
     
     // Welcome message
     server.get('/api', (_req: Request, res: Response) => {

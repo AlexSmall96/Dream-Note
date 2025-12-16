@@ -45,6 +45,15 @@ export class UserRouter {
         this.router.post('/login', findByCredentials, async (req: RequestWithUser, res: Response, next: NextFunction) => {
             try {
                 const result = await this.userController.handleLogIn(req.user);
+                
+                // Set Http cookie
+                res.cookie('session', result.token, {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === 'production',
+                    sameSite: 'strict',
+                    maxAge: 1000 * 60 * 60 * 24, // 1 day
+                })
+
                 res.json(result) 
             } catch (err){
                 next(err);
