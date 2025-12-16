@@ -60,7 +60,20 @@ export class UserRouter {
             }
         })
 
-        // Logout
+        // Return the currently authenticated user
+        this.router.get('/auth/me', auth, (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+            try {
+                res.json({
+                    _id: req.user._id,
+                    email: req.user.email,
+                })
+            } catch (err){
+                next(err)
+            }
+        })
+
+    
+        // Logout 
         this.router.post('/logout', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
                 const result = await this.userController.handleLogOut(req);

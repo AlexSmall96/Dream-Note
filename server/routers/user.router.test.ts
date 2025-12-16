@@ -89,8 +89,8 @@ describe('SIGNUP', () => {
     })
 })
 
-// Login tests
-describe('LOGIN AND LOGOUT', () => {
+// Auth tests: Login, Logout and auth/me
+describe('AUTH', () => {
     // Define url
     const url = baseUrl + '/login'
 
@@ -144,6 +144,12 @@ describe('LOGIN AND LOGOUT', () => {
         // Invalid token
         const responseInvalidToken = await request(server).post(`${baseUrl}/logout`).set('Authorization', `Bearer 123`).expect(401)
         assertErrors(responseInvalidToken.body.errors, [{param: 'token', msg: 'Invalid token.'}])
+    })
+
+    test('Get currently authenticated user returns correct data.', async () => {
+        const response = await request(server).get(`${baseUrl}/auth/me`).set(...userOneAuth).expect(200)
+        expect(response.body._id).toBe(userOneId.toString())
+        expect(response.body.email).toBe(userOne.email)
     })
 })
 
