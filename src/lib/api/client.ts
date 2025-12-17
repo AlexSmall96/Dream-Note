@@ -21,10 +21,5 @@ export async function apiFetch<ResponseType, BodyType=undefined> (
 		},
 		...(body ? { body: JSON.stringify(body) } : {})
     })
-
-	if (!response.ok){
-		throw new Error('Unable to fetch data.')
-	}
-
     return response.json();
 }
