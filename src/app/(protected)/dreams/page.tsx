@@ -8,6 +8,7 @@ export default function Dreams() {
         <div className="flex flex-col items-center">
           <h1 className="text-l font-bold m-4">Dreams</h1>
           <button onClick={() => router.replace("/dreams/create")} className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2'>Log New Dream</button>
+          <DreamsList />
         </div>
       );
 }

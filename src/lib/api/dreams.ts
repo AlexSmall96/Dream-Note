@@ -8,6 +8,14 @@ export type DreamBodyType = {
     }
 }
 
+type DreamList = {
+    dreams: {
+        title: string,
+        date: Date,
+        _id: string
+    }
+}
+
 type DreamResponseType = {
     dream: {
         title: string,
@@ -27,4 +35,8 @@ type ErrorMsg = {
 
 export async function logNewDream(data: DreamBodyType){
     return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>('/dreams/log', {method: 'POST', body: data})
+}
+
+export async function fetchDreams() {
+    return apiFetch<DreamList>('/dreams')
 }
