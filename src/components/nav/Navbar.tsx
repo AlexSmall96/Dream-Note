@@ -43,13 +43,22 @@ function LoggedInNav() {
 
 
 export default function Navbar() {
-    const [user, setUser] = useState<User | null>(null)
+    const [authorized, setAuthorized] = useState(false)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        getCurrentUser()
-        .then(setUser)
-        .finally(() => setLoading(false))
+      const checkAuth = async () => {
+        try {
+          const result = await getCurrentUser()
+          if (!('errors' in result)){
+            setAuthorized(true)
+          }
+          setLoading(false)
+        } catch(err){
+          console.log(err)
+        }
+      }
+      checkAuth()
     }, [])
 
     if (loading) {
@@ -62,9 +71,8 @@ export default function Navbar() {
         <Link href="/" className="text-lg font-semibold">
           DreamNote
         </Link>
-
         <div className="flex gap-4">
-          {user ? <LoggedInNav /> : <LoggedOutNav />}
+          {authorized ? <LoggedInNav /> : <LoggedOutNav />}
         </div>
       </div>
     </nav>

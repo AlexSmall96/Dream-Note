@@ -23,5 +23,5 @@ export async function login(data: authInput){
 }
 
 export async function getCurrentUser() {
-    return apiFetch<user>('/users/auth/me', {});
+    return apiFetch<user | errorMsgs>('/users/auth/me');
 }

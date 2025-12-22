@@ -13,13 +13,19 @@ export default function ProtectedLayout({
     const [authorized, setAuthorized] = useState(false)
 
     useEffect(() => {
-        getCurrentUser().then((user) => {
-            if (!user) {
-                router.replace("/auth/login");
-            } else {
-                setAuthorized(true);
-            }
-        })
+      const checkAuth = async () => {
+        try {
+          const result = await getCurrentUser()
+          if (!('errors' in result)){
+            setAuthorized(true)
+          } else {
+            router.replace("/auth/login");
+          }
+        } catch(err){
+          console.log(err)
+        }
+      }
+      checkAuth()
     }, [])
 
     if (!authorized) return null;
