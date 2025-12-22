@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react"
 import { fetchDreams } from '@/lib/api/dreams'
+import { useRouter } from "next/navigation"
 
 export default function DreamsList(){
     const [dreams, setDreams] = useState([])
+    const router = useRouter()
 
     useEffect(() => {
         const getDreams = async () => {
@@ -16,6 +18,7 @@ export default function DreamsList(){
             }
         } 
         getDreams()
+        
     }, [])
 
     return (
@@ -24,7 +27,7 @@ export default function DreamsList(){
             <div className='text-lg font-bold'>Date</div>
             {dreams.map(dream => 
                 <>
-                    <div className="col-span-2 hover:underline font-semibold">{dream.title}</div>
+                    <div onClick={() => router.replace(`/dreams/${dream._id}`)} className="col-span-2 hover:underline font-semibold">{dream.title}</div>
                     <div>{dream.date}</div>
                 </>)}
         </div>

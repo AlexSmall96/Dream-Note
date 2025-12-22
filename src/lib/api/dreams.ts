@@ -40,3 +40,7 @@ export async function logNewDream(data: DreamBodyType){
 export async function fetchDreams() {
     return apiFetch<DreamList>('/dreams')
 }
+
+export async function fetchFullDream(id: string){
+    return apiFetch(`/dreams/view/${id}`)
+}
