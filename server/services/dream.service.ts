@@ -36,7 +36,7 @@ export class DreamService {
             // If DEV flag is supplied, mock response 
             // If analysis - supply generic analysis referring to tone and style
             output_text: analysisOptions? 
-                `Mock analysis response. Tone: ${analysisOptions.tone}. Style: ${analysisOptions.style}.` 
+                `Mock analysis response. Description: ${description} Tone: ${analysisOptions.tone}, Style: ${analysisOptions.style}.` 
             // If themes, return generic themes
                 : forThemes? 
                     'theme1,theme2,theme3'

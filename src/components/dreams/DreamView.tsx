@@ -1,8 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { fetchAnalysis, fetchFullDream, DreamResponseType, DreamFullView } from '@/lib/api/dreams'
-import { useRouter } from "next/navigation"
+import { fetchAnalysis, fetchFullDream, DreamFullView } from '@/lib/api/dreams'
 import Dropdown from "../ui/dropdown"
 
 export default function DreamView (props: {id: string}){
@@ -13,7 +12,7 @@ export default function DreamView (props: {id: string}){
         const [analysis, setAnalysis] = useState<string>('')
         const [tone, setTone] = useState('Curious & intrigued')
         const [style, setStyle] = useState('Informal')
-
+        const [showSettings, setShowSettings] = useState(false)
 
         useEffect(() => {
             const getFullDream = async () => {
@@ -50,9 +49,20 @@ export default function DreamView (props: {id: string}){
                     disabled={!dream.description}
                     className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 disabled:cursor-not-allowed disabled:bg-gray-400'
                 >
-                    Get AI Analysis</button>
-                <Dropdown parameter='tone' setParameter={setTone} />
-                <Dropdown parameter='style' setParameter={setStyle} />
+                    Get AI Analysis
+                </button>
+                <button 
+                    onClick={() => setShowSettings(!showSettings)} 
+                    className='bg-cyan-500 text-white font-bold p-2 m-2'
+                >
+                    {!showSettings? 'Show': 'Hide'} settings  
+                </button>
+                {showSettings?
+                        <>
+                            <Dropdown parameter='tone' setParameter={setTone} selected={tone} />
+                            <Dropdown parameter='style' setParameter={setStyle} selected={style} />                        
+                        </>
+                    :''}
             </div>
         )
 }
