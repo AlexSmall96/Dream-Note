@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
 import { UserDocument, UserModel} from "../interfaces/user.interfaces.js";
 import bcrypt from "bcrypt";
 import jwt from 'jsonwebtoken';
@@ -86,4 +86,5 @@ userSchema.methods.generateAuthToken = async function (this: UserDocument): Prom
     return token
 }
 
-export const User = model<UserDocument, UserModel>("User", userSchema);
+export const User = (mongoose.models.User as UserModel) || model<UserDocument, UserModel>("User", userSchema);
+

@@ -53,4 +53,6 @@ dreamSchema.statics.findByIdOrThrowError = async function (this: DreamModel, _id
     return dream
 }
 
-export const Dream = model<DreamDocument, DreamModel>("Dream", dreamSchema);
+export const Dream = 
+    (mongoose.models.Dream as DreamModel) || 
+    model<DreamDocument, DreamModel>("Dream", dreamSchema);

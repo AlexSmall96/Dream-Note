@@ -24,4 +24,6 @@ themeSchema.statics.findByThemeOrThrowError = async function (this: ThemeModel, 
 }
  
 
-export const Theme = model<ThemeDocument, ThemeModel>("Theme", themeSchema)
+export const Theme =
+    (mongoose.models.Theme as ThemeModel) ||
+    model<ThemeDocument, ThemeModel>("Theme", themeSchema)
