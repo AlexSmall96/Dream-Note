@@ -8,15 +8,18 @@ export type DreamBodyType = {
     }
 }
 
-type DreamList = {
-    dreams: {
-        title: string,
-        date: Date,
-        _id: string
-    }
+export type DreamOverview = {
+    title: string,
+    date: Date,
+    _id: string
 }
 
-type DreamResponseType = {
+
+export type DreamList = {
+    dreams: DreamOverview[]
+}
+
+export type DreamResponseType = {
     dream: {
         title: string,
         description?: string,
@@ -33,8 +36,20 @@ type ErrorMsg = {
     error: string
 }
 
-export async function logNewDream(data: DreamBodyType){
-    return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>('/dreams/log', {method: 'POST', body: data})
+type DreamAnalysisBody = {
+    dream: {
+        description: string
+    }, 
+    tone?: string,
+    style?: string
+}
+
+type DreamAnalysisResponse = {
+    analysis: string
+}   
+
+export async function logNewDream(body: DreamBodyType){
+    return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>('/dreams/log', {method: 'POST', body})
 }
 
 export async function fetchDreams() {
@@ -42,5 +57,9 @@ export async function fetchDreams() {
 }
 
 export async function fetchFullDream(id: string){
-    return apiFetch(`/dreams/view/${id}`)
+    return apiFetch<DreamResponseType>(`/dreams/view/${id}`)
+}
+
+export async function fetchAnalysis(body: DreamAnalysisBody){
+    return apiFetch<DreamAnalysisResponse, DreamAnalysisBody>(`/dreams/analysis`, {method: 'POST', body})
 }
