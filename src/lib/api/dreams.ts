@@ -31,7 +31,7 @@ export type DreamFullView = {
 
 export type DreamResponseType = {
     dream: DreamFullView,
-    themes?: string[]
+    themes?: {theme: string, dream: string}[]
 }
 
 type ErrorMsg = {

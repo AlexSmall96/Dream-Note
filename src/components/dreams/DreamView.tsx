@@ -8,7 +8,7 @@ export default function DreamView (props: {id: string}){
         const [dream, setDream] = useState<DreamFullView>({
             title: '', date: new Date(), owner: '', _id: '', __v: 0,
         })
-        const [themes, setThemes] = useState<string[]>([])
+        const [themes, setThemes] = useState<{theme: string, dream: string}[]>([])
         const [analysis, setAnalysis] = useState<string>('')
         const [tone, setTone] = useState('Curious & intrigued')
         const [style, setStyle] = useState('Informal')
@@ -19,6 +19,7 @@ export default function DreamView (props: {id: string}){
                 try {
                     const response = await fetchFullDream(props.id)
                     setDream(response.dream) 
+                    setThemes(response.themes || [])
                 } catch (err){
                     console.log(err)
                 }
@@ -43,7 +44,12 @@ export default function DreamView (props: {id: string}){
                 <h1>{new Date(dream.date).toLocaleDateString()}</h1>
                 <p>{dream.description}</p>
                 <p>{dream.notes}</p>
-                {analysis ?? ''}
+                {themes.map(theme =>
+                    <span className="bg-brand-softer border border-brand-subtle text-fg-brand-strong text-xs font-medium px-1.5 py-0.5 rounded">
+                        {theme.theme}
+                    </span>
+                 )}
+                <p className="italic">{analysis ?? ''}</p>
                 <button 
                     onClick={handleClick}
                     disabled={!dream.description}
