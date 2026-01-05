@@ -83,14 +83,14 @@ export class DreamRouter {
         // Get AI analysis based on description
         this.router.post('/analysis', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
-                if (!req.body.dream.description){
+                if (!req.body.description){
                     return res.status(400).json({ error: "Description must be provided." });
                 }
                 // Get tone and style from request
                 const tone = req.body.tone ?? ''
                 const style = req.body.style ?? ''
                 // Create full prompt using tone and style
-                const analysis = await this.dreamService.generateAIDreamInfo(req.body.dream.description, prompts.analysis, false, {tone, style}) as string
+                const analysis = await this.dreamService.generateAIDreamInfo(req.body.description, prompts.analysis, false, {tone, style}) as string
                 res.json({analysis: analysis ?? ''})
             } catch (err){
                 next(err)

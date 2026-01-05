@@ -346,7 +346,7 @@ describe('GET ANALYSIS', () => {
     test('Mock response is returned if dream description is provided.', async () => {
         // Mock response is returned based on tone and style parameters
         const response = await request(server).post(url).send({
-            dream: {description: 'A dream description'},
+            description: 'A dream description',
             tone: 'serious',
             style: 'formal'
         }).set(...userOneAuth).expect(200)
