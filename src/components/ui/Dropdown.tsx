@@ -1,9 +1,14 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { Dispatch, SetStateAction } from 'react'
 
-export default function Dropdown(props: {parameter: string}) {
-
-    const parameter = props.parameter
+export default function Dropdown({
+    parameter,
+    setParameter,
+}: {
+    parameter: string
+    setParameter: Dispatch<SetStateAction<string>>
+}) {
 
     const tones = [
         'Curious & intrigued', 'Caring & supportive', 'Excited and enthusiastic'
@@ -14,6 +19,7 @@ export default function Dropdown(props: {parameter: string}) {
     ]
 
     const options = parameter === 'tone'? tones : styles
+
     return (
         <Menu as="div" className="relative inline-block">
             <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50">
@@ -26,13 +32,13 @@ export default function Dropdown(props: {parameter: string}) {
             >
                 <div className="py-1">
                     {options.map(option => 
-                        <MenuItem>
-                            <a
-                                href="#"
+                        <MenuItem key={option}>
+                            <button
+                                onClick={() => setParameter(option)}
                                 className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:text-gray-900 data-focus:outline-hidden"
                             >
                                 {option}
-                            </a>
+                            </button>
                         </MenuItem>
                     )}
                 </div>
