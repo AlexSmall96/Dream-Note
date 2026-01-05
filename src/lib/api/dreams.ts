@@ -19,16 +19,18 @@ export type DreamList = {
     dreams: DreamOverview[]
 }
 
+export type DreamFullView = {
+    title: string,
+    description?: string,
+    notes?: string,
+    date: Date,
+    owner: string,
+    _id: string,
+    __v: number
+}
+
 export type DreamResponseType = {
-    dream: {
-        title: string,
-        description?: string,
-        notes?: string,
-        date: Date,
-        ower: string,
-        _id: string,
-        __v: number
-    },
+    dream: DreamFullView,
     themes?: string[]
 }
 
@@ -37,9 +39,7 @@ type ErrorMsg = {
 }
 
 type DreamAnalysisBody = {
-    dream: {
-        description: string
-    }, 
+    description: string
     tone?: string,
     style?: string
 }
