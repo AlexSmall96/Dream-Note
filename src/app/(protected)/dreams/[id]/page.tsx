@@ -7,7 +7,7 @@ export default function Dream() {
     const params = useParams()
     return (
         <div className="flex flex-col items-center m-4">
-            <DreamView id={params.id} />
+            <DreamView id={params.id.toString()} />
         </div>
     )
 }
