@@ -5,7 +5,8 @@ export type DreamBodyType = {
         title?: string,
         description?: string,
         notes?: string
-    }
+    },
+    themes: string[]
 }
 
 export type DreamOverview = {
