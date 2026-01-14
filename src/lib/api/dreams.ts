@@ -61,6 +61,11 @@ export async function fetchFullDream(id: string){
     return apiFetch<DreamResponseType>(`/dreams/view/${id}`)
 }
 
+export async function updateDream(id: string, body: DreamBodyType) {
+    return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>(`/dreams/update/${id}`, {method: 'PATCH', body}
+    )
+}
+
 export async function fetchAnalysis(body: DreamAnalysisBody){
     return apiFetch<DreamAnalysisResponse, DreamAnalysisBody>(`/dreams/analysis`, {method: 'POST', body})
 }
