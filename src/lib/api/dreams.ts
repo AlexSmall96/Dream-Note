@@ -1,4 +1,6 @@
 import { apiFetch } from "./client";
+import { DreamFullView } from "@/types/dreams";
+import { ThemeResponse } from "@/types/themes";
 
 export type DreamBodyType = {
     dream:{
@@ -20,19 +22,9 @@ export type DreamList = {
     dreams: DreamOverview[]
 }
 
-export type DreamFullView = {
-    title: string,
-    description?: string,
-    notes?: string,
-    date: Date,
-    owner: string,
-    _id: string,
-    __v: number
-}
-
-export type DreamResponseType = {
+type DreamResponseType = {
     dream: DreamFullView,
-    themes?: {theme: string, dream: string}[]
+    themes?: ThemeResponse[]
 }
 
 type ErrorMsg = {

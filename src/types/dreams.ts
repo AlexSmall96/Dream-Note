@@ -9,3 +9,13 @@ export type DreamOverview = {
     date: Date,
     _id: string
 }
+
+export type DreamFullView = {
+    title: string,
+    description?: string,
+    notes?: string,
+    date: Date,
+    owner: string,
+    _id: string,
+    __v: number
+}
