@@ -3,6 +3,7 @@ import { logNewDream, updateDream } from "@/lib/api/dreams";
 import { Dispatch, SetStateAction } from 'react'
 import { DreamFormType } from "@/types/dreams";
 import { useRouter } from "next/navigation";
+import { useDreams } from "@/contexts/DreamsContext";
 
 export default function DreamForm({ 
     dream, setDream, id
@@ -10,6 +11,8 @@ export default function DreamForm({
 
     const [msg, setMsg] = useState<string>('')
     const router = useRouter();
+
+    const { setDreams } = useDreams()
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMsg('')
@@ -24,7 +27,9 @@ export default function DreamForm({
         if ('error' in result){
             return setMsg(result.error)
         }
-        router.push("/dreams");
+        console.log(result)
+        const dreamOverview = {title: result.dream.title, date: result.dream.date, _id: result.dream._id}
+        setDreams(prev => [dreamOverview, ... prev])
         setMsg('Dream logged')
     }
 

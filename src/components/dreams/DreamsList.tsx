@@ -3,22 +3,12 @@
 import { useEffect, useState } from "react"
 import { fetchDreams, DreamOverview } from '@/lib/api/dreams'
 import { useRouter } from "next/navigation"
+import { useDreams } from "@/contexts/DreamsContext"
 
 export default function DreamsList(){
-    const [dreams, setDreams] = useState<DreamOverview[]>([])
+    const { dreams } = useDreams()
     const router = useRouter()
 
-    useEffect(() => {
-        const getDreams = async () => {
-            try {
-                const response = await fetchDreams()
-                setDreams(response.dreams)
-            } catch (err) {
-                console.log(err)
-            }
-        } 
-        getDreams()
-    }, [])
 
     return (
         <div className="grid grid-cols-3 gap-4">
