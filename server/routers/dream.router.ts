@@ -6,20 +6,12 @@ import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import { auth } from "../middleware/auth.js";
 import { DreamService } from "../services/dream.service.js";
 import { ThemeService } from "../services/theme.service.js";
-
-// Prompts for openAI API
-enum prompts {
-    title = 'Return exactly one short title for the provided dream.',
-    themes =  'Return 1-4 one word themes for the provided dream. Seperate them by commas without spaces.',
-    analysis = `Return a short interpretation of the provided dream. Include only the interpretation itself without any \n.
-                Never use self referntial langugae and never include a follow up question.`
-}
-              
+import { prompts } from "../services/dream.service.js"
+    
 // Router class for Dream model
 @injectable()
 export class DreamRouter {
     public router: Router
-    public addThemes: (description: string, dreamId: string, existingThemes: string[] | null) => Promise<string[]>
     
     // Inject DreamController, DreamService and ThemeController
     constructor(
@@ -30,19 +22,6 @@ export class DreamRouter {
     ){
         this.router = Router();
         this.initializeRoutes();
-
-        // Add themes method used by log new dream and update dream routes
-        this.addThemes = async (description, dreamId, existingThemes) => {
-            // Use existing themes or generate themes if null
-            const themes = existingThemes ?? await this.dreamService.generateAIDreamInfo(description, prompts.themes, true) as string[]
-            // Add each theme to database
-            await Promise.all(
-                themes.map(async (text: string) => {
-                    await this.themeController.handleAddTheme(dreamId, text.trim())
-                })
-            )
-            return themes
-        }
     }
 
     // Routes
@@ -69,7 +48,7 @@ export class DreamRouter {
                 
                 // If description has been provided, generate or save themes
                 if (dreamData.description){
-                    const themes = await this.addThemes(dreamData.description, dream.id, req.body.themes)
+                    const themes = await this.dreamService.addThemesToDream(dreamData.description, dream.id, req.body.themes)
                     // Return dream document and themes array
                     return res.status(201).json({dream, themes})
                 }
@@ -161,7 +140,7 @@ export class DreamRouter {
                 const savedThemes = await this.themeController.handleGetDreamThemes(dreamId)
                 // If description exists but there are no saved themes, generate themes
                 if (dream.description && !savedThemes.length){
-                    const themes = await this.addThemes(dream.description, dreamId, null)
+                    const themes = await this.dreamService.addThemesToDream(dream.description, dreamId, null)
                     // Return dream document and themes array
                     return res.json({dream, themes})
                 }
