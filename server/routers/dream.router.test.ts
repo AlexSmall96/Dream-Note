@@ -268,15 +268,16 @@ describe('UPDATE DREAM', () => {
         }
         const response = await request(server).patch(`${url}/${oldDreamId}`).send({
             dream: update, 
-            themes: ['Travel']
+            themes: ['Anxiety', 'Lateness', 'Travel']
         }).set(...userThreeAuth).expect(200)
         // Dream data should be in response, title, description, date, notes and analysis changed
         expect(response.body.dream).toMatchObject(update)
         // Existing Themes and new theme should be in response
         const themes = response.body.themes
+        console.log(themes)
         expect(response.body.themes).toHaveLength(3)
         const themeNames = ['Anxiety', 'Lateness', 'Travel']
-        themes.map((theme: {theme: string}, index: number) => {
+        themes.map((theme:{theme:string}, index: number) => {
             expect(theme.theme).toBe(themeNames[index])
         })
         // Database should have been changed
@@ -350,7 +351,7 @@ describe('GET ANALYSIS', () => {
             tone: 'serious',
             style: 'formal'
         }).set(...userOneAuth).expect(200)
-        expect(response.body.analysis).toBe('Mock analysis response. Tone: serious. Style: formal.')
+        expect(response.body.analysis).toBe('Mock analysis response. Description: A dream description Tone: serious, Style: formal.')
     })  
 })
 

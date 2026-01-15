@@ -7,7 +7,7 @@ import { ThemeController } from "../controllers/theme.controller.js"
 import { DreamRouter } from "../routers/dream.router.js";
 import { DreamService } from "../services/dream.service.js";
 import { ThemeRouter } from "../routers/theme.router.js";
-
+import { ThemeService } from "../services/theme.service.js";
 
 export const container: Container = new Container();
 
@@ -29,3 +29,5 @@ container.bind(ThemeRouter).toSelf().inTransientScope()
 // AI API Dream title and theme generation services for dream router
 container.bind(DreamService).toSelf().inTransientScope()
 
+// Theme service
+container.bind(ThemeService).toSelf().inTransientScope()

@@ -5,6 +5,7 @@ import { ThemeController } from "../controllers/theme.controller.js"
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import { auth } from "../middleware/auth.js";
 import { DreamService } from "../services/dream.service.js";
+import { ThemeService } from "../services/theme.service.js";
 
 // Prompts for openAI API
 enum prompts {
@@ -24,6 +25,7 @@ export class DreamRouter {
     constructor(
         @inject(DreamController) private dreamController: DreamController,
         @inject(DreamService) private dreamService: DreamService,
+        @inject(ThemeService) private themeService: ThemeService,
         @inject(ThemeController) private themeController: ThemeController
     ){
         this.router = Router();
@@ -70,6 +72,9 @@ export class DreamRouter {
                     const themes = await this.addThemes(dreamData.description, dream.id, req.body.themes)
                     // Return dream document and themes array
                     return res.status(201).json({dream, themes})
+                }
+                if (!dreamData.description && req.body.themes){
+                    throw new Error('Description must be provided to add themes.')
                 }
 
                 // Return dream document
@@ -142,17 +147,16 @@ export class DreamRouter {
                 return res.status(400).json({ error: "Request body must contain the field 'dream'." });
             }
             const dreamData = req.body.dream
-            const newThemes = req.body.themes
+            // Should be no themes if no description
+            const themes = dreamData.description ? req.body.themes : []
             try {
                 // Save dream
                 const dream = await this.dreamController.handleUpdateDream(dreamData, dreamId, req.user._id)
                 if (!dream){
                     return res.status(401).json({error: 'You are not authorized to edit this dream.'})
                 }
-                // Add any extra themes passed through request
-                if (newThemes){
-                    await this.addThemes('', dreamId, newThemes)
-                }
+                // Sync themes
+                await this.themeService.syncThemes(dreamId, themes)
                 // Check if dream now has any themes in database
                 const savedThemes = await this.themeController.handleGetDreamThemes(dreamId)
                 // If description exists but there are no saved themes, generate themes
