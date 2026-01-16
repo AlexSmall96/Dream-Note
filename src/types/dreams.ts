@@ -1,7 +1,7 @@
 export type DreamFormType = {
-    title?: string,
-    description?: string,
-    notes?: string
+    title: string,
+    description: string,
+    notes: string
 }
 
 export type DreamOverview = {

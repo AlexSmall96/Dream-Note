@@ -4,9 +4,9 @@ import { ThemeResponse } from "@/types/themes";
 
 export type DreamBodyType = {
     dream:{
-        title?: string,
-        description?: string,
-        notes?: string
+        title: string | null,
+        description: string | null,
+        notes: string | null
     },
     themes: string[]
 }

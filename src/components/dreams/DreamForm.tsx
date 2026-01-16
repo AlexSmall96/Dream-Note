@@ -1,6 +1,7 @@
 import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react'
-import { DreamFormType } from "@/types/dreams";
+import { DreamFormType, DreamFullView } from "@/types/dreams";
 import { ThemeBadge } from '../ui/ThemeBadge';
+import { ThemeResponse } from '@/types/themes';
 
 export default function DreamForm({ 
     dream, setDream, themes, setThemes, handleSubmit, msg, setMsg
@@ -15,7 +16,7 @@ export default function DreamForm({
 }){ 
 
     const [currentTheme, setCurrentTheme] = useState<string>('')
-
+    const [visible, setVisible] = useState(false)
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMsg('')
         setDream({
@@ -24,12 +25,17 @@ export default function DreamForm({
     }
 
     const handleChangeCurrentTheme = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCurrentTheme(event.target.value.trim())
+        const value = event.target.value.trim()
+        setCurrentTheme(value)
+        setMsg('')
+        setVisible(!themes.includes(value) && value !== '')
     }
 
     const addTheme = () => {
         setThemes(prev => [currentTheme, ...prev])
         setCurrentTheme('')
+        setMsg('')
+        setVisible(false)
     }
 
     const removeTheme = (themeToRemove: string) => {
@@ -70,7 +76,7 @@ export default function DreamForm({
             {dream.description === '' && <p className="text-xs text-gray-500">
                 Description must be provided to add themes.
             </p>}
-            {currentTheme === '' ? 
+            {!visible ? 
                 null 
             : 
                 <button className='bg-blue-300' type='button' onClick={addTheme}>

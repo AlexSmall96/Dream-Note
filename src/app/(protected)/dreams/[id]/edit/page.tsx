@@ -5,13 +5,17 @@ import { fetchFullDream, updateDream } from "@/lib/api/dreams";
 import DreamForm from "@/components/dreams/DreamForm";
 import { DreamFormType } from '@/types/dreams'
 import { useDreams } from "@/contexts/DreamsContext";
+import { ThemeResponse } from "@/types/themes";
+import { removeTheme } from "@/lib/api/themes";
+
 export default function EditDreamPage({
   	params,
 }: {
   	params: { id: string };
 }) {
 	
-	const [dream, setDream] = useState<DreamFormType>({})
+	const [dream, setDream] = useState<DreamFormType>({title: '', description: '', notes: ''})
+	const [themes, setThemes] = useState<string[]>([])
 	const [msg, setMsg] = useState<string>('')
 	const { setDreams } = useDreams()
 
@@ -19,20 +23,31 @@ export default function EditDreamPage({
 	useEffect(() => {
 		const getDream = async () => {
 			const response = await fetchFullDream(params.id)
-			setDream(response.dream)
-		}
+			const { title, description, notes } = response.dream
+			setDream({ title, description: description || '', notes: notes || '' })
+			setThemes(response.themes?.map(theme => theme.theme)?? [])
+		} 
 		getDream()
 	}, [])
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault()
-		const result = await updateDream(params.id, {dream, themes: []}) 
+		const payload = {
+			dream: {
+				title: dream.title,
+				description: dream.description.trim() || null,
+				notes: dream.notes.trim() || null,
+			},
+			themes: dream.description ? themes : []
+		}
+		const result = await updateDream(params.id, payload) 
 		if ('error' in result){
 			return setMsg(result.error)
 		}
+		// Update dreams list sidebar
 		const dreamOverview = {title: result.dream.title, date: result.dream.date, _id: result.dream._id}
-		setDreams(prev => [dreamOverview, ... prev])
-		setMsg('Dream logged')
+		setDreams(prev => [dreamOverview, ... prev.filter(dream => dream._id !==dreamOverview._id)])
+		setMsg('Dream updated')
 	}
 
   	return (
@@ -40,6 +55,8 @@ export default function EditDreamPage({
 			<DreamForm 
 				dream={dream} 
 				setDream={setDream}
+				themes={themes}
+				setThemes={setThemes}
 				handleSubmit={handleSubmit}
 				msg={msg}
 				setMsg={setMsg}
