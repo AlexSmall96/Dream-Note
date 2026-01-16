@@ -1,6 +1,8 @@
 import { injectable, inject } from "inversify";
 import OpenAI from "openai";
 import { ThemeService } from "./theme.service";
+import { Dream } from "../models/dream.model";
+import { DreamInterface } from "../interfaces/dream.interfaces";
 
 export enum prompts {
     title = 'Return exactly one short title for the provided dream.',
@@ -15,6 +17,7 @@ export class DreamService {
     private openAI: OpenAI 
 
     constructor(@inject(ThemeService) private themeService: ThemeService){
+
         // Check if API key is provided
         if (!process.env.API_KEY) {
                 throw new Error("OpenAI API key is missing.");
@@ -59,15 +62,32 @@ export class DreamService {
         return response.output_text.trim() ?? null
     }
 
-    async addThemesToDream(description: string, dreamId: string, existingThemes: string[] | null) {
-            // Use existing themes or generate themes if null
-            const themes = existingThemes ?? await this.generateAIDreamInfo(description, prompts.themes, true) as string[]
-            // Add each theme to database
-            await Promise.all(
-                themes.map(async (text: string) => {
-                    await this.themeService.addTheme(dreamId, text.trim())
-                })
-            )
-            return themes
+    async addThemesToDream(description: string, dreamId: string, existingThemes: string[] | null): Promise<string[]> {
+        // Use existing themes or generate themes if null
+        let themes: string[]
+        if (!existingThemes || existingThemes.length === 0){
+            themes = await this.generateAIDreamInfo(description, prompts.themes, true) as string[]
+        } else {
+            themes = existingThemes
+        }
+        // Add each theme to database
+        await Promise.all(
+            themes.map(async (text: string) => {
+                await this.themeService.addTheme(dreamId, text.trim())
+            })
+        )
+        return themes
+    }
+
+    async removeThemesIfDescriptionRemoved(
+        oldDescription: string | null,
+        newDescription: string | null,
+        dreamId: string
+    ): Promise<boolean> {
+        if (oldDescription && !newDescription) {
+            await this.themeService.removeAllForDream(dreamId)
+            return true
+        }
+        return false
     }
 }

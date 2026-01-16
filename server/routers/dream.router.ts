@@ -7,6 +7,7 @@ import { auth } from "../middleware/auth.js";
 import { DreamService } from "../services/dream.service.js";
 import { ThemeService } from "../services/theme.service.js";
 import { prompts } from "../services/dream.service.js"
+import { Dream } from "../models/dream.model.js";
     
 // Router class for Dream model
 @injectable()
@@ -35,17 +36,14 @@ export class DreamRouter {
                 if (!dreamData.title && !dreamData.description){
                     return res.status(400).json({ error: "At least one of title or description is required." });
                 }
-
                 // If title has not been provided, generate title from AI API based on description
                 if (!dreamData.title){
                     const title = await this.dreamService.generateAIDreamInfo(dreamData.description, prompts.title, false) as string
                     // If API not working, make title first 15 characters of description
                     dreamData.title = title ?? dreamData.description.substring(0, 15).concat('...')
                 }  
-
                 // Dream now has title and optional description
                 const dream = await this.dreamController.handleLogDream(dreamData, req.user._id)
-                
                 // If description has been provided, generate or save themes
                 if (dreamData.description){
                     const themes = await this.dreamService.addThemesToDream(dreamData.description, dream.id, req.body.themes)
@@ -55,7 +53,6 @@ export class DreamRouter {
                 if (!dreamData.description && req.body.themes){
                     throw new Error('Description must be provided to add themes.')
                 }
-
                 // Return dream document
                 res.status(201).json({dream})
             } catch (err){
@@ -122,33 +119,31 @@ export class DreamRouter {
         // Update dream
         this.router.patch('/update/:id', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             const dreamId = req.params.id
-            if (!req.body.dream){
-                return res.status(400).json({ error: "Request body must contain the field 'dream'." });
-            }
             const dreamData = req.body.dream
-            // Should be no themes if no description
-            const themes = dreamData.description ? req.body.themes : []
+            const themes = req.body.themes
+            if (!dreamData){
+                return res.status(400).json({ error: "Request body must contain the field 'dream'." })
+            }
+            if (!dreamData.title || dreamData.title.trim() === "") {
+                return res.status(400).json({ error: "Dream data must contain title." });
+            }
             try {
+                const existingDream = await Dream.findByIdOrThrowError(dreamId)
+                const normalizedDescription = dreamData.description?.trim() || null
                 // Save dream
-                const dream = await this.dreamController.handleUpdateDream(dreamData, dreamId, req.user._id)
+                const dream = await this.dreamController.handleUpdateDream({...dreamData, description: normalizedDescription}, dreamId, req.user._id)
                 if (!dream){
                     return res.status(401).json({error: 'You are not authorized to edit this dream.'})
                 }
+                // Check if themes should be deleted
+                await this.dreamService.removeThemesIfDescriptionRemoved(
+                    existingDream.description, 
+                    normalizedDescription, 
+                    dreamId
+                )
                 // Sync themes
-                await this.themeService.syncThemes(dreamId, themes)
-                // Check if dream now has any themes in database
-                const savedThemes = await this.themeController.handleGetDreamThemes(dreamId)
-                // If description exists but there are no saved themes, generate themes
-                if (dream.description && !savedThemes.length){
-                    const themes = await this.dreamService.addThemesToDream(dream.description, dreamId, null)
-                    // Return dream document and themes array
-                    return res.json({dream, themes})
-                }
-                // If there are no saved themes, return dream data
-                if (!savedThemes.length){
-                    return res.json({dream})
-                }
-                res.json({dream, themes: savedThemes})
+                const syncedThemes = normalizedDescription ? await this.themeService.syncThemes(dreamId, themes) :[]
+                return res.json({dream, themes: syncedThemes})
             } catch (err){
                 next(err)
             }

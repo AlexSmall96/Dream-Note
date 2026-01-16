@@ -11,6 +11,10 @@ export class ThemeService {
         return theme
     }
 
+    public async removeAllForDream(dreamId: string){
+        await Theme.deleteMany({dream: dreamId})
+    }
+
     public async syncThemes(dreamId: string, themeNames: string[]){
         const existingThemes = await Theme.find({ dream: dreamId })
 
@@ -24,5 +28,8 @@ export class ThemeService {
             ...toAdd.map(t => this.addTheme(dreamId, t)),
             ...toRemove.map(t => Theme.deleteOne({ _id: t._id }))
         ])
+
+        const syncedThemes = await Theme.find({ dream: dreamId })
+        return syncedThemes
     }
 }
