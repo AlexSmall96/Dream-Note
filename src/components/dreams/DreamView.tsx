@@ -1,10 +1,13 @@
+import { Router } from "next/router"
 import Dropdown from "../ui/Dropdown"
 import { useDreamView } from "@/contexts/DreamViewContext"
+import { useRouter } from "next/navigation";
 
-export default function DreamView ({getAnalysis}:{getAnalysis: () => Promise<void>}){
+export default function DreamView ({getAnalysis, id}:{getAnalysis: () => Promise<void>, id: string}){
 
     const {dream, themes, analysis, showSettings, setShowSettings, tone, setTone, style, setStyle, tones, styles } = useDreamView()
-    
+    const router = useRouter()
+
     return (
         <div className="flex flex-col items-center">
             <h1>{dream.title}</h1>
@@ -36,6 +39,8 @@ export default function DreamView ({getAnalysis}:{getAnalysis: () => Promise<voi
                         <Dropdown parameter={style} setParameter={setStyle} options={styles} parameterName="style" />                        
                     </>
                 :''}
+            <button className='bg-blue-300 p-1' onClick={() => router.replace(`/dreams/${id}/edit`)}>Edit</button>
+            <button className='bg-green-300 p-1' onClick={() => router.replace(`/dreams/${id}/delete`)}>Delete</button>
         </div>
     )
 }

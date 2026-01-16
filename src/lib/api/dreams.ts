@@ -61,3 +61,7 @@ export async function updateDream(id: string, body: DreamBodyType) {
 export async function fetchAnalysis(body: DreamAnalysisBody){
     return apiFetch<DreamAnalysisResponse, DreamAnalysisBody>(`/dreams/analysis`, {method: 'POST', body})
 }
+
+export async function deleteDream(id: string) {
+    return apiFetch<DreamFullView>(`/dreams/delete/${id}`, {method: 'DELETE'})
+}
