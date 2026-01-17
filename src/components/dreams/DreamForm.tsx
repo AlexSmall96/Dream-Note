@@ -1,7 +1,6 @@
-import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react'
-import { DreamFormType, DreamFullView } from "@/types/dreams";
+import { Dispatch, SetStateAction, useState } from 'react'
+import { DreamFormType } from "@/types/dreams";
 import { ThemeBadge } from '../ui/ThemeBadge';
-import { ThemeResponse } from '@/types/themes';
 
 export default function DreamForm({ 
     dream, setDream, themes, setThemes, handleSubmit, msg, setMsg
@@ -17,6 +16,7 @@ export default function DreamForm({
 
     const [currentTheme, setCurrentTheme] = useState<string>('')
     const [visible, setVisible] = useState(false)
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMsg('')
         setDream({
@@ -57,6 +57,12 @@ export default function DreamForm({
                 name='description'
                 onChange={handleChange}
                 placeholder="Description"
+            />
+            <input 
+                type='date'
+                value={dream.date}
+                name='date' 
+                onChange={handleChange}   
             />
             <input 
                 type='text'
