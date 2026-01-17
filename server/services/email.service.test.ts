@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { EmailService } from "./email.service";
+import { EmailService } from "./email.service.js";
 import { MailSlurp } from 'mailslurp-client';
 
 // Create instance of EmailService

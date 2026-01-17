@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import { Theme } from "../models/theme.model";
+import { Theme } from "../models/theme.model.js";
 
 // Theme sync service for dream update
 @injectable()

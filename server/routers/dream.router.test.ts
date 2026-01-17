@@ -1,6 +1,6 @@
 import request from 'supertest';
 import { server } from '../utils/test-utils/testServer.js'
-import { beforeEach, describe, expect, test, vi} from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 import { Dream } from '../models/dream.model.js';
 import { Theme } from '../models/theme.model.js';
 import { DreamDocument } from '../interfaces/dream.interfaces.js';

@@ -4,11 +4,6 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { getCurrentUser } from "@/lib/api/auth"
 
-type User = {
-  id: string
-  email: string
-}
-
 function LoggedOutNav() {
   return (
     <>
