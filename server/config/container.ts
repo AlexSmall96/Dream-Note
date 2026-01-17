@@ -3,7 +3,7 @@ import { UserController } from "../controllers/user.controller.js";
 import { UserRouter } from "../routers/user.router.js";
 import { EmailService } from "../services/email.service.js";
 import { DreamController } from "../controllers/dream.controlller.js";
-import { ThemeController } from "../controllers/theme.controller"
+import { ThemeController } from "../controllers/theme.controller.js"
 import { DreamRouter } from "../routers/dream.router.js";
 import { DreamService } from "../services/dream.service.js";
 import { ThemeRouter } from "../routers/theme.router.js";
