@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getCurrentUser } from "@/lib/api/auth";
+import { getCurrentUser } from "@/lib/api/auth.js";
 
 export default function ProtectedLayout({
   	children,

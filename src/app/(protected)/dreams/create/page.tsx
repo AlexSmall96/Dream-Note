@@ -1,9 +1,9 @@
 "use client";
-import DreamForm from "@/components/dreams/DreamForm";
-import { logNewDream } from "@/lib/api/dreams";
-import { DreamFormType } from "@/types/dreams";
+import DreamForm from "@/components/dreams/DreamForm.js";
+import { logNewDream } from "@/lib/api/dreams.js";
+import { DreamFormType } from "@/types/dreams.js";
 import { useState } from "react";
-import { useDreams } from "@/contexts/DreamsContext";
+import { useDreams } from "@/contexts/DreamsContext.js";
 
 export default function LogNewDream() {
     // State and contexts

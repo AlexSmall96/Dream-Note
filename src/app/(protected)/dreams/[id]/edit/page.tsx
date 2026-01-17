@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchFullDream, updateDream } from "@/lib/api/dreams";
-import DreamForm from "@/components/dreams/DreamForm";
-import { DreamFormType } from '@/types/dreams'
-import { useDreams } from "@/contexts/DreamsContext";
-import { ThemeResponse } from "@/types/themes";
-import { removeTheme } from "@/lib/api/themes";
+import { fetchFullDream, updateDream } from "@/lib/api/dreams.js";
+import DreamForm from "@/components/dreams/DreamForm.js";
+import { DreamFormType } from '@/types/dreams.js'
+import { useDreams } from "@/contexts/DreamsContext.js";
 
 export default function EditDreamPage({
   	params,

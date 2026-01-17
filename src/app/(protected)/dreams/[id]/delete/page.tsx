@@ -1,10 +1,10 @@
 "use client";
 
-import { useDreamView } from "@/contexts/DreamViewContext";
-import { deleteDream } from "@/lib/api/dreams";
+import { useDreamView } from "@/contexts/DreamViewContext.js";
+import { deleteDream } from "@/lib/api/dreams.js";
 import { useState } from "react";
-import DeleteDream from "@/components/dreams/DeleteDream";
-import { useDreams } from "@/contexts/DreamsContext";
+import DeleteDream from "@/components/dreams/DeleteDream.js";
+import { useDreams } from "@/contexts/DreamsContext.js";
 
 export default function DeleteDreamPage ({
   	params,

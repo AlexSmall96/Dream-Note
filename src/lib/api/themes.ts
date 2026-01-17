@@ -1,5 +1,5 @@
 import { apiFetch } from "./client";
-import { ThemeResponse } from "@/types/themes";
+import { ThemeResponse } from "@/types/themes.js";
 
 type ErrorMsg = {
     error: string

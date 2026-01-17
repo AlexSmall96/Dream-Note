@@ -1,6 +1,6 @@
 import { apiFetch } from "./client";
-import { DreamFullView } from "@/types/dreams";
-import { ThemeResponse } from "@/types/themes";
+import { DreamFullView } from "@/types/dreams.js";
+import { ThemeResponse } from "@/types/themes.js";
 
 export type DreamBodyType = {
     dream:{

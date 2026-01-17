@@ -1,8 +1,8 @@
 "use client";
-import DreamView from '@/components/dreams/DreamView'
+import DreamView from '@/components/dreams/DreamView.js'
 import { useEffect } from "react";
-import { fetchFullDream, fetchAnalysis } from "@/lib/api/dreams";
-import { useDreamView } from '@/contexts/DreamViewContext';
+import { fetchFullDream, fetchAnalysis } from "@/lib/api/dreams.js";
+import { useDreamView } from '@/contexts/DreamViewContext.js';
 
 export default function DreamPage({ params }: { params: { id: string } }) {
 

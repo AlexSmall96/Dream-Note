@@ -1,6 +1,5 @@
-import { Router } from "next/router"
 import Dropdown from "../ui/Dropdown"
-import { useDreamView } from "@/contexts/DreamViewContext"
+import { useDreamView } from "@/contexts/DreamViewContext.js"
 import { useRouter } from "next/navigation";
 
 export default function DreamView ({getAnalysis, id}:{getAnalysis: () => Promise<void>, id: string}){

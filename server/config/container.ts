@@ -1,13 +1,13 @@
 import { Container } from "inversify";
-import { UserController } from "../controllers/user.controller";
-import { UserRouter } from "../routers/user.router";
-import { EmailService } from "../services/email.service";
-import { DreamController } from "../controllers/dream.controlller";
+import { UserController } from "../controllers/user.controller.js";
+import { UserRouter } from "../routers/user.router.js";
+import { EmailService } from "../services/email.service.js";
+import { DreamController } from "../controllers/dream.controlller.js";
 import { ThemeController } from "../controllers/theme.controller"
-import { DreamRouter } from "../routers/dream.router";
-import { DreamService } from "../services/dream.service";
-import { ThemeRouter } from "../routers/theme.router";
-import { ThemeService } from "../services/theme.service";
+import { DreamRouter } from "../routers/dream.router.js";
+import { DreamService } from "../services/dream.service.js";
+import { ThemeRouter } from "../routers/theme.router.js";
+import { ThemeService } from "../services/theme.service.js";
 
 export const container: Container = new Container();
 

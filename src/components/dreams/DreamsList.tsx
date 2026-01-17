@@ -1,9 +1,6 @@
 "use client"
-
-import { useEffect, useState } from "react"
-import { fetchDreams, DreamOverview } from '@/lib/api/dreams'
 import { useRouter } from "next/navigation"
-import { useDreams } from "@/contexts/DreamsContext"
+import { useDreams } from "@/contexts/DreamsContext.js"
 
 export default function DreamsList(){
     const { dreams } = useDreams()

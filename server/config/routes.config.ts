@@ -1,8 +1,8 @@
 import { Application } from "express";
 import { container } from "./container";
-import { UserRouter } from "../routers/user.router";
-import { DreamRouter } from '../routers/dream.router'
-import { ThemeRouter } from '../routers/theme.router'
+import { UserRouter } from "../routers/user.router.js";
+import { DreamRouter } from '../routers/dream.router.js'
+import { ThemeRouter } from '../routers/theme.router.js'
 
 export function addRoutes(server: Application): Application{
 

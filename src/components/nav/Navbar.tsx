@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { getCurrentUser } from "@/lib/api/auth"
+import { getCurrentUser } from "@/lib/api/auth.js"
 
 type User = {
   id: string

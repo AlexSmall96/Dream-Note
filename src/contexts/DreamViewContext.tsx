@@ -1,7 +1,7 @@
 "use client";
 import { createContext, Dispatch, SetStateAction, useState, useContext } from "react"
-import { DreamFullView } from "@/types/dreams"
-import { ThemeResponse } from "@/types/themes"
+import { DreamFullView } from "@/types/dreams.js"
+import { ThemeResponse } from "@/types/themes.js"
 
 type DreamViewContextType = {
     dream: DreamFullView,

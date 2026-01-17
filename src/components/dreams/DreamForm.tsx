@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react'
 import { DreamFormType } from "@/types/dreams";
-import { ThemeBadge } from '../ui/ThemeBadge';
+import { ThemeBadge } from '../ui/ThemeBadge.js';
 
 export default function DreamForm({ 
     dream, setDream, themes, setThemes, handleSubmit, msg, setMsg

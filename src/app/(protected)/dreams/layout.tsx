@@ -1,6 +1,6 @@
 'use client';
-import DreamsList from '@/components/dreams/DreamsList'
-import { DreamsProvider } from '@/contexts/DreamsContext';
+import DreamsList from '@/components/dreams/DreamsList.js'
+import { DreamsProvider } from '@/contexts/DreamsContext.js';
 import { useRouter } from "next/navigation";
 
 export default function DreamsLayout({
