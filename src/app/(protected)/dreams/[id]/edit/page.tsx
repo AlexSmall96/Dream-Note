@@ -14,7 +14,7 @@ export default function EditDreamPage({
   	params: { id: string };
 }) {
 	
-	const [dream, setDream] = useState<DreamFormType>({title: '', description: '', notes: ''})
+	const [dream, setDream] = useState<DreamFormType>({title: '', description: '', notes: '', date: ''})
 	const [themes, setThemes] = useState<string[]>([])
 	const [msg, setMsg] = useState<string>('')
 	const { setDreams } = useDreams()
@@ -23,8 +23,8 @@ export default function EditDreamPage({
 	useEffect(() => {
 		const getDream = async () => {
 			const response = await fetchFullDream(params.id)
-			const { title, description, notes } = response.dream
-			setDream({ title, description: description || '', notes: notes || '' })
+			const { title, description, notes, date } = response.dream
+			setDream({ title, description: description || '', notes: notes || '', date: date.toISOString().split('T')[0]})
 			setThemes(response.themes?.map(theme => theme.theme)?? [])
 		} 
 		getDream()
@@ -37,6 +37,7 @@ export default function EditDreamPage({
 				title: dream.title,
 				description: dream.description.trim() || null,
 				notes: dream.notes.trim() || null,
+				date: new Date(dream.date)
 			},
 			themes: dream.description ? themes : []
 		}

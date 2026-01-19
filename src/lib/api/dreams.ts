@@ -6,7 +6,8 @@ export type DreamBodyType = {
     dream:{
         title: string | null,
         description: string | null,
-        notes: string | null
+        notes: string | null,
+        date: Date
     },
     themes: string[]
 }
@@ -50,7 +51,14 @@ export async function fetchDreams() {
 }
 
 export async function fetchFullDream(id: string){
-    return apiFetch<DreamResponseType>(`/dreams/view/${id}`)
+    const response = await apiFetch<DreamResponseType>(`/dreams/view/${id}`)
+    return {
+        ...response, 
+        dream: {
+            ...response.dream,
+            date: new Date(response.dream.date)
+        }
+    }
 }
 
 export async function updateDream(id: string, body: DreamBodyType) {

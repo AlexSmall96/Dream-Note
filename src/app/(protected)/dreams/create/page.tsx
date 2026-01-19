@@ -7,7 +7,7 @@ import { useDreams } from "@/contexts/DreamsContext";
 
 export default function LogNewDream() {
     // State and contexts
-    const [dream, setDream] = useState<DreamFormType>({title: '', description: '', notes: ''})
+    const [dream, setDream] = useState<DreamFormType>({title: '', description: '', notes: '', date: new Date().toISOString().split('T')[0]})
     const [themes, setThemes] = useState<string[]>([])
     const [msg, setMsg] = useState<string>('')
     const {setDreams} = useDreams()
@@ -15,7 +15,13 @@ export default function LogNewDream() {
     // Log new dream
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
-        const result = await logNewDream({dream, themes}) 
+        const payload = {
+            dream: {
+                ...dream, date: new Date(dream.date)
+            },
+            themes
+        }
+        const result = await logNewDream(payload) 
         if ('error' in result){
             return setMsg(result.error)
         }

@@ -59,6 +59,12 @@ export default function DreamForm({
                 placeholder="Description"
             />
             <input 
+                type='date'
+                value={dream.date}
+                name='date'
+                onChange={handleChange}
+            />
+            <input 
                 type='text'
                 value={dream.notes}
                 name='notes'
