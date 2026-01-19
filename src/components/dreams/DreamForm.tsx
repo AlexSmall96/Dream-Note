@@ -1,7 +1,6 @@
-import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react'
-import { DreamFormType, DreamFullView } from "@/types/dreams";
-import { ThemeBadge } from '../ui/ThemeBadge';
-import { ThemeResponse } from '@/types/themes';
+import { Dispatch, SetStateAction, useState } from 'react'
+import { DreamFormType } from "@/types/dreams";
+import { ThemeBadge } from '@/components/ui/ThemeBadge';
 
 export default function DreamForm({ 
     dream, setDream, themes, setThemes, handleSubmit, msg, setMsg

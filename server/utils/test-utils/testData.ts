@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
-import { User } from '../../models/user.model';
-import { Dream } from '../../models/dream.model';
-import { Theme } from '../../models/theme.model';
+import { User } from '../../models/user.model.js';
+import { Dream } from '../../models/dream.model.js';
+import { Theme } from '../../models/theme.model.js';
 
 // Define and save test data
 

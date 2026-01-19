@@ -1,7 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { fetchDreams, DreamOverview } from '@/lib/api/dreams'
 import { useRouter } from "next/navigation"
 import { useDreams } from "@/contexts/DreamsContext"
 

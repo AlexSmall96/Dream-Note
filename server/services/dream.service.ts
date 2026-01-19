@@ -1,8 +1,6 @@
 import { injectable, inject } from "inversify";
 import OpenAI from "openai";
-import { ThemeService } from "./theme.service";
-import { Dream } from "../models/dream.model";
-import { DreamInterface } from "../interfaces/dream.interfaces";
+import { ThemeService } from "./theme.service.js";
 
 export enum prompts {
     title = 'Return exactly one short title for the provided dream.',

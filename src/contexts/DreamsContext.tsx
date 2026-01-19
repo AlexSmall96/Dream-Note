@@ -1,5 +1,5 @@
 import { DreamOverview } from '@/types/dreams'
-import { createContext, useState, useEffect, useCallback, useContext} from 'react'
+import { createContext, useState, useEffect, useContext} from 'react'
 import { fetchDreams } from '@/lib/api/dreams'
 
 type DreamsContextType = {

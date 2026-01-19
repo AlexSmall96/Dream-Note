@@ -1,6 +1,4 @@
 "use client";
-import DreamsList from '@/components/dreams/DreamsList'
-
 export default function Dreams() {
       return (
         <div className="flex flex-col items-center">

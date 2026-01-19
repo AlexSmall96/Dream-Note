@@ -1,4 +1,4 @@
-import { apiFetch } from "./client";
+import { apiFetch } from "@/lib/api/client";
 
 type authInput = {
     email: string,
