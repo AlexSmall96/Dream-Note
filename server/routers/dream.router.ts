@@ -45,12 +45,13 @@ export class DreamRouter {
                 // Dream now has title and optional description
                 const dream = await this.dreamController.handleLogDream(dreamData, req.user._id)
                 // If description has been provided, generate or save themes
+                const incomingThemes = req.body.themes
                 if (dreamData.description){
-                    const themes = await this.dreamService.addThemesToDream(dreamData.description, dream.id, req.body.themes)
+                    const themes = await this.dreamService.addThemesToDream(dreamData.description, dream.id, incomingThemes)
                     // Return dream document and themes array
                     return res.status(201).json({dream, themes})
                 }
-                if (!dreamData.description && req.body.themes){
+                if (!dreamData.description && incomingThemes.length > 0){
                     throw new Error('Description must be provided to add themes.')
                 }
                 // Return dream document
