@@ -19,10 +19,10 @@ export default function DreamsLayout({
 						<aside>
 							{aside}
 						</aside>
+						<main className="flex-1 p-6">
+							{children}
+						</main>
 					</ThemesAsideProvider>
-					<main className="flex-1 p-6">
-						{children}
-					</main>
 				</div>
 			</ThemesProvider>
 		</DreamsProvider>

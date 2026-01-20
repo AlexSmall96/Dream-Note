@@ -1,14 +1,11 @@
 import Dropdown from "@/components/ui/Dropdown"
 import { useDreamView } from "@/contexts/DreamViewContext"
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function DreamView ({getAnalysis, id}:{getAnalysis: () => Promise<void>, id: string}){
 
     const {dream, themes, analysis, showSettings, setShowSettings, tone, setTone, style, setStyle, tones, styles } = useDreamView()
     const router = useRouter()
-    const searchParams = useSearchParams()
-
-    const view = searchParams.get('view') ?? 'dreams'
 
     return (
         <div className="flex flex-col items-center">
@@ -41,8 +38,8 @@ export default function DreamView ({getAnalysis, id}:{getAnalysis: () => Promise
                         <Dropdown parameter={style} setParameter={setStyle} options={styles} parameterName="style" />                        
                     </>
                 :''}
-            <button className='bg-blue-300 p-1' onClick={() => router.replace(`/dreams/${id}/edit?view=${view}`)}>Edit</button>
-            <button className='bg-green-300 p-1' onClick={() => router.replace(`/dreams/${id}/delete?view=${view}`)}>Delete</button>
+            <button className='bg-blue-300 p-1' onClick={() => router.replace(`/dreams/${id}/edit`)}>Edit</button>
+            <button className='bg-green-300 p-1' onClick={() => router.replace(`/dreams/${id}/delete`)}>Delete</button>
         </div>
     )
 }

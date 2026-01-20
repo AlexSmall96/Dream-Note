@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { useDreams } from "@/contexts/DreamsContext"
 import { useThemes } from "@/contexts/ThemesContext"
 import { useThemesAside } from "@/contexts/ThemesAsideContext"
@@ -10,9 +10,7 @@ export default function DreamsList(){
     const { dreams } = useDreams()
     const { themes } = useThemes()
     const { selectedTheme } = useThemesAside()
-    const searchParams = useSearchParams()
 
-    const view = searchParams.get('view') ?? 'dreams'
 
     const dreamsList = selectedTheme ? 
         themes.filter(
@@ -31,7 +29,7 @@ export default function DreamsList(){
             <div className='text-lg font-bold'>Date</div>
             {dreamsList.map(dream => 
                 <>
-                    <div onClick={() => router.replace(`/dreams/${dream._id}?view=${view}`)} className="col-span-2 hover:underline font-semibold">{dream.title}</div>
+                    <div onClick={() => router.replace(`/dreams/${dream._id}`)} className="col-span-2 hover:underline font-semibold">{dream.title}</div>
                     <div>{new Date(dream.date).toLocaleDateString()}</div>
                 </>)}
         </div>

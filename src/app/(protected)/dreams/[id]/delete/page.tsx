@@ -5,7 +5,6 @@ import { deleteDream } from "@/lib/api/dreams";
 import { useState } from "react";
 import DeleteDream from "@/components/dreams/DeleteDream";
 import { useDreams } from "@/contexts/DreamsContext";
-import { useSearchParams } from "next/navigation";
 
 export default function DeleteDreamPage ({
   	params,
@@ -13,14 +12,12 @@ export default function DeleteDreamPage ({
   	params: { id: string };
 }){
     const { dream } = useDreamView()
-    const searchParams = useSearchParams()
-    const view = searchParams.get('view') ?? 'dreams'
     const id = params.id
     const [msg, setMsg] = useState<string>(`Are you sure you want to remove the dream: ${dream.title}?`)
     const [visible, setVisible] = useState<boolean>(true)
     const [deleted, setDeleted] = useState<boolean>(false)
     const [waiting, setWaiting] = useState<boolean>(false)
-    const [backUrl, setBackUrl] = useState<string>(`/dreams/${id}/?view=${view}`)
+    const [backUrl, setBackUrl] = useState<string>(`/dreams/${id}/`)
     const { setDreams } = useDreams()
 
     const handleDelete = async () => {
@@ -29,7 +26,7 @@ export default function DeleteDreamPage ({
             await deleteDream(id)
             setMsg(`Removed the dream ${dream.title}.`)
             setDeleted(true)
-            setBackUrl(`/dreams?view=${view}`)
+            setBackUrl(`/dreams`)
             setDreams(prev => prev.filter(dream => dream._id !== id))
         } catch (err){
             console.log(err)
