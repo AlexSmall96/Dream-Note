@@ -1,25 +1,19 @@
 'use client';
-import DreamsList from '@/components/dreams/DreamsList'
 import { DreamsProvider } from '@/contexts/DreamsContext';
-import { useRouter } from "next/navigation";
+import React from 'react';
 
 export default function DreamsLayout({
 	children,
+	aside
 }: {
 	children: React.ReactNode;
+	aside: React.ReactNode
 }) {
-	const router = useRouter();
 	return (
 		<DreamsProvider>
 			<div className="flex h-screen">
-				<aside className="w-64 border-r">
-					<button 
-						onClick={() => router.replace("/dreams/create")} 
-						className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2'
-					>
-						Log New Dream
-					</button>
-					<DreamsList />
+				<aside>
+					{aside}
 				</aside>
 				<main className="flex-1 p-6">
 					{children}
