@@ -5,8 +5,6 @@ import { fetchFullDream, updateDream } from "@/lib/api/dreams";
 import DreamForm from "@/components/dreams/DreamForm";
 import { DreamFormType } from '@/types/dreams'
 import { useDreams } from "@/contexts/DreamsContext";
-import { ThemeResponse } from "@/types/themes";
-import { removeTheme } from "@/lib/api/themes";
 
 export default function EditDreamPage({
   	params,
