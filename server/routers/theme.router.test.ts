@@ -27,7 +27,7 @@ describe('GET ALL USERS THEMES', () => {
     test('Get themes should return all current users themes, each with associated dream id, title and date.', async () => {
         // Get all themes associated with userThree's dreams
         const response = await request(server).get(url).set(...userThreeAuth).expect(200)
-        const themes = response.body
+        const themes = response.body.themes
         // Should be 4 in total
         expect(themes).toHaveLength(4)
         // Default order is newest -> oldest
@@ -46,7 +46,7 @@ describe('GET ALL USERS THEMES', () => {
         // Get themes assocaited with userFour's dreams
         // Set limit to 5, skip 0, and sort by theme (A-Z)
         const responsePageOne = await request(server).get(`${url}/?limit=5&sort=theme`).set(...userFourAuth).expect(200)
-        const themesPageOne = responsePageOne.body  
+        const themesPageOne = responsePageOne.body.themes  
         expect(themesPageOne).toHaveLength(5)
         // First should be a-theme-5, last should be b-theme-1
         expect(themesPageOne[0].theme).toBe('a-theme-5')    
@@ -57,7 +57,7 @@ describe('GET ALL USERS THEMES', () => {
         })   
         // Set limit to 5, skip 5, and sort by theme (A-Z)
         const responsePageTwo = await request(server).get(`${url}/?limit=5&skip=5&sort=theme`).set(...userFourAuth).expect(200)
-        const themesPageTwo = responsePageTwo.body  
+        const themesPageTwo = responsePageTwo.body.themes
         expect(themesPageTwo).toHaveLength(5)
         // First should be b-theme-2, last should be c-theme-9
         expect(themesPageTwo[0].theme).toBe('b-theme-2')

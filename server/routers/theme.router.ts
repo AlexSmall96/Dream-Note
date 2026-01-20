@@ -26,7 +26,7 @@ export class ThemeRouter {
                 const skip = req.query.skip? Number(req.query.skip) : 0
                 const sort = req.query.sort?.toString()
                 const themes = await this.themeController.handleGetAllThemes(req.user._id, limit, skip, sort)
-                res.json(themes)
+                res.json({themes})
             } catch (err){
                 next(err)
             }
