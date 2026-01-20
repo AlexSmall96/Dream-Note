@@ -1,10 +1,6 @@
 import { apiFetch } from "@/lib/api/client";
-import { ThemeResponse } from "@/types/themes";
+import { ThemeList } from "@/types/themes";
 
-type ErrorMsg = {
-    error: string
-}
-
-export async function removeTheme(id: string){
-    return apiFetch<ThemeResponse | ErrorMsg>(`/themes/delete/${id}`, {method: 'DELETE'})
+export async function fetchThemes (){
+    return apiFetch<ThemeList>('/themes')
 }

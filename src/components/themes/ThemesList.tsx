@@ -1,5 +1,13 @@
+import { useThemes } from "@/contexts/ThemesContext"
+
 export default function ThemesList () {
+
+    const { themes } = useThemes()
     return (
-        <h1>Themes List</h1>
+        <div>
+            {themes.map(theme => 
+                <p key={theme._id}>{theme.theme}, {theme.dream.title}</p>
+            )}
+        </div>
     )
 }
