@@ -5,6 +5,7 @@ import { fetchFullDream, updateDream } from "@/lib/api/dreams";
 import DreamForm from "@/components/dreams/DreamForm";
 import { DreamFormType } from '@/types/dreams'
 import { useDreams } from "@/contexts/DreamsContext";
+import { useRouter } from "next/navigation"
 
 export default function EditDreamPage({
   	params,
@@ -16,6 +17,7 @@ export default function EditDreamPage({
 	const [themes, setThemes] = useState<string[]>([])
 	const [msg, setMsg] = useState<string>('')
 	const { setDreams } = useDreams()
+	const router = useRouter()
 
 	// Get existing dream
 	useEffect(() => {
@@ -59,6 +61,8 @@ export default function EditDreamPage({
 				handleSubmit={handleSubmit}
 				msg={msg}
 				setMsg={setMsg}
+				handleGoBack={() => {router.replace(`/dreams/${params.id}`)}}
+				backText="Back to Dream"
 			/>
 		</div>
    );

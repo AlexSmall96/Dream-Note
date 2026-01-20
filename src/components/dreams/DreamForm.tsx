@@ -1,9 +1,9 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react'
 import { DreamFormType } from "@/types/dreams";
 import { ThemeBadge } from '@/components/ui/ThemeBadge';
 
 export default function DreamForm({ 
-    dream, setDream, themes, setThemes, handleSubmit, msg, setMsg
+    dream, setDream, themes, setThemes, handleSubmit, msg, setMsg, handleGoBack, backText
 }:{ 
     dream: DreamFormType, 
     setDream: Dispatch<SetStateAction<DreamFormType>>,
@@ -11,7 +11,9 @@ export default function DreamForm({
     setThemes: Dispatch<SetStateAction<string[]>>
     handleSubmit: (event:React.FormEvent) => Promise<any>,
     msg: string,
-    setMsg: Dispatch<SetStateAction<string>>
+    setMsg: Dispatch<SetStateAction<string>>,
+    handleGoBack: MouseEventHandler<HTMLButtonElement>
+    backText: string
 }){ 
 
     const [currentTheme, setCurrentTheme] = useState<string>('')
@@ -100,6 +102,13 @@ export default function DreamForm({
                 className='bg-blue-500' 
             >
                 Save
+            </button>
+            <button 
+                type='button'
+                onClick={handleGoBack}
+                className='bg-gray-500'
+            >
+                {backText}
             </button>
         </form>
     )
