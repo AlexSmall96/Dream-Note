@@ -1,5 +1,6 @@
 'use client';
 import { DreamsProvider } from '@/contexts/DreamsContext';
+import { ThemesAsideProvider } from '@/contexts/ThemesAsideContext';
 import { ThemesProvider } from '@/contexts/ThemesContext';
 import React from 'react';
 
@@ -14,9 +15,11 @@ export default function DreamsLayout({
 		<DreamsProvider>
 			<ThemesProvider>
 				<div className="flex h-screen">
-					<aside>
-						{aside}
-					</aside>
+					<ThemesAsideProvider>
+						<aside>
+							{aside}
+						</aside>
+					</ThemesAsideProvider>
 					<main className="flex-1 p-6">
 						{children}
 					</main>
