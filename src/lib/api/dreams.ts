@@ -1,57 +1,24 @@
 import { apiFetch } from "@/lib/api/client";
 import { DreamFullView } from "@/types/dreams";
-import { ThemeResponse } from "@/types/themes";
-
-export type DreamBodyType = {
-    dream:{
-        title: string | null,
-        description: string | null,
-        notes: string | null,
-        date: Date
-    },
-    themes: string[]
-}
-
-export type DreamOverview = {
-    title: string,
-    date: Date,
-    _id: string
-}
-
-
-export type DreamList = {
-    dreams: DreamOverview[]
-}
-
-type DreamResponseType = {
-    dream: DreamFullView,
-    themes?: ThemeResponse[]
-}
-
-type ErrorMsg = {
-    error: string
-}
-
-type DreamAnalysisBody = {
-    description: string
-    tone?: string,
-    style?: string
-}
-
-type DreamAnalysisResponse = {
-    analysis: string
-}   
+import { 
+    DreamBodyType, 
+    DreamAnalysisResponse, 
+    DreamResponseType, 
+    ErrorMsg, 
+    DreamList, 
+    DreamAnalysisBody 
+} from "@/types/dreams";
 
 export async function logNewDream(body: DreamBodyType){
     return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>('/dreams/log', {method: 'POST', body})
 }
 
-export const options:{[key: string]: number} = {'Last year': 365, 'Last 6 months': 183, 'Last 2 months': 61, 'Last month': 31, 'Last 7 days': 7}
+export const options:{[key: string]: number} = {'Last 7 days': 7, 'Last month': 31, 'Last 2 months': 61,'Last 6 months': 183, 'Last year': 365, 'All time': 22000}
 export const optionKeys = Object.keys(options)
 
-export async function fetchDreams(from: string) {
+export async function fetchDreams({from, limit}:{from: string, limit: number}) {
     const daysAgo = options[from]
-    return apiFetch<DreamList>(`/dreams?daysAgo=${daysAgo}`)
+    return apiFetch<DreamList>(`/dreams?daysAgo=${daysAgo}&limit=${limit}`)
 }
 
 export async function fetchFullDream(id: string){
