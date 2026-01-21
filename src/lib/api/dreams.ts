@@ -46,8 +46,12 @@ export async function logNewDream(body: DreamBodyType){
     return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>('/dreams/log', {method: 'POST', body})
 }
 
-export async function fetchDreams() {
-    return apiFetch<DreamList>('/dreams')
+export const options:{[key: string]: number} = {'Last year': 365, 'Last 6 months': 183, 'Last 2 months': 61, 'Last month': 31, 'Last 7 days': 7}
+export const optionKeys = Object.keys(options)
+
+export async function fetchDreams(from: string) {
+    const daysAgo = options[from]
+    return apiFetch<DreamList>(`/dreams?daysAgo=${daysAgo}`)
 }
 
 export async function fetchFullDream(id: string){

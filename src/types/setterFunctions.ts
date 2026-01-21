@@ -1,0 +1,1 @@
+export type setterFunction<T> = React.Dispatch<React.SetStateAction<T>>

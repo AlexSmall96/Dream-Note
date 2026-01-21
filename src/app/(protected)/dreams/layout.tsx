@@ -12,20 +12,20 @@ export default function DreamsLayout({
 	aside: React.ReactNode
 }) {
 	return (
-		<DreamsProvider>
-			<ThemesProvider>
-				<div className="flex h-screen">
-					<ThemesAsideProvider>
+		<ThemesProvider>
+			<div className="flex h-screen">
+				<ThemesAsideProvider>
+					<DreamsProvider>
 						<aside>
 							{aside}
 						</aside>
 						<main className="flex-1 p-6">
 							{children}
 						</main>
-					</ThemesAsideProvider>
-				</div>
-			</ThemesProvider>
-		</DreamsProvider>
+					</DreamsProvider>
+				</ThemesAsideProvider>
+			</div>
+		</ThemesProvider>
 	);
 }
 

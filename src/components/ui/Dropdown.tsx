@@ -1,12 +1,12 @@
+import { setterFunction } from '@/types/setterFunctions'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { Dispatch, SetStateAction } from 'react'
 
 export default function Dropdown({
     parameter, setParameter, options, parameterName
 }:{
     parameter: string,
-    setParameter: Dispatch<SetStateAction<string>>,
+    setParameter: setterFunction<string>,
     options: string[],
     parameterName: string
 }) {

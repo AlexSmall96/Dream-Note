@@ -8,7 +8,8 @@ import { DreamService } from "../services/dream.service.js";
 import { ThemeService } from "../services/theme.service.js";
 import { prompts } from "../services/dream.service.js"
 import { Dream } from "../models/dream.model.js";
-    
+import { getFromDate } from "../services/utils/dateRange.js";
+
 // Router class for Dream model
 @injectable()
 export class DreamRouter {
@@ -86,10 +87,8 @@ export class DreamRouter {
             // Get title query parameter
             const title = req.query.title? new RegExp(req.query.title.toString().trim(), "i") : new RegExp('')
             // Get daysAgo query parameter and construct start date to take documents from
-            const fromDate = req.query.daysAgo ? 
-                new Date(Date.now() - Number(req.query.daysAgo) * 24 * 60 * 60 * 1000)
-            :
-                new Date("1970-01-01")
+            const daysAgo = req.query.daysAgo? Number(req.query.daysAgo) : undefined
+            const fromDate = getFromDate(daysAgo)
             // Get limit and skip parameters
             const limit = req.query.limit? Number(req.query.limit) : 100
             const skip = req.query.skip? Number(req.query.skip) : 0
