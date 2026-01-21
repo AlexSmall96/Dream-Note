@@ -11,7 +11,7 @@ export default function ThemesList () {
     return (
         <div>
             {uniqueThemes.map(theme =>
-                <div>
+                <div key={theme}>
                     <button className='bg-blue-200 m-1 p-2' onClick={() => setSelectedTheme(theme)}>{theme}</button>
                 </div> 
             )}
