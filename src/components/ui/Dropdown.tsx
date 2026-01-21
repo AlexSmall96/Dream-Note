@@ -2,12 +2,12 @@ import { setterFunction } from '@/types/setterFunctions'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
-export default function Dropdown({
+export default function Dropdown<parameterType extends string>({
     parameter, setParameter, options, parameterName
 }:{
-    parameter: string,
-    setParameter: setterFunction<string>,
-    options: string[],
+    parameter: parameterType,
+    setParameter: setterFunction<parameterType>,
+    options: parameterType[],
     parameterName: string
 }) {
 

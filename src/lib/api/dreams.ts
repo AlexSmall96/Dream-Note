@@ -8,16 +8,14 @@ import {
     DreamList, 
     DreamAnalysisBody 
 } from "@/types/dreams";
+import { DATE_RANGE_OPTIONS, DateRangeLabel } from '@/lib/filters/dateRanges'
 
 export async function logNewDream(body: DreamBodyType){
     return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>('/dreams/log', {method: 'POST', body})
 }
 
-export const options:{[key: string]: number} = {'Last 7 days': 7, 'Last month': 31, 'Last 2 months': 61,'Last 6 months': 183, 'Last year': 365, 'All time': 22000}
-export const optionKeys = Object.keys(options)
-
-export async function fetchDreams({from, limit}:{from: string, limit: number}) {
-    const daysAgo = options[from]
+export async function fetchDreams({from, limit}:{from: DateRangeLabel, limit: number}) {
+    const daysAgo = DATE_RANGE_OPTIONS[from]
     return apiFetch<DreamList>(`/dreams?daysAgo=${daysAgo}&limit=${limit}`)
 }
 

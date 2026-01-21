@@ -4,7 +4,7 @@ import ThemesList from '@/components/themes/ThemesList';
 import Dropdown from '@/components/ui/Dropdown';
 import { useThemesAside } from '@/contexts/ThemesAsideContext';
 import { useRouter } from "next/navigation";
-import { optionKeys } from '@/lib/api/dreams'
+import { DATE_RANGE_KEYS, DateRangeLabel } from '@/lib/filters/dateRanges';
 
 export default function Aside() {
     const router = useRouter()
@@ -30,7 +30,7 @@ export default function Aside() {
             >
                 {view === 'themes'? 'View all dreams': 'View by theme'}
             </button>
-            <Dropdown parameter={from} setParameter={setFrom} parameterName='From' options={optionKeys}/>
+            {(view === 'dreams' || selectedTheme) && <Dropdown<DateRangeLabel> parameter={from} setParameter={setFrom} parameterName='From' options={DATE_RANGE_KEYS}/>}
             {view === 'themes' && <ThemesList />}
             {(view === 'dreams' || selectedTheme) && <DreamsList />}
         </div>
