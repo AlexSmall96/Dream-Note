@@ -1,5 +1,6 @@
 import request from 'supertest';
-import { wipeDBAndSaveData, userOne, userOneId, userOneAuth, userThreeAuth, userThreeId } from '../utils/test-utils/testData.js'
+import { wipeDBAndSaveData, } from '../utils/test-utils/setupData.js'
+import { userOne, userOneId, userOneAuth, userThreeAuth, userThreeId } from '../utils/test-utils/data/users.js'
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { User } from '../models/user.model.js';
 import { Dream } from '../models/dream.model.js';

@@ -1,22 +1,27 @@
 import request from 'supertest';
 import { server } from '../utils/test-utils/testServer.js'
-import { beforeEach, describe, expect, test } from 'vitest';
+import { beforeAll, beforeEach, afterAll, describe, expect, test, vi } from 'vitest';
 import { Dream } from '../models/dream.model.js';
 import { Theme } from '../models/theme.model.js';
 import { DreamDocument } from '../interfaces/dream.interfaces.js';
-import { 
-    wipeDBAndSaveData, 
-    userOneId, 
-    userOneAuth, 
-    userThreeAuth, 
-    oldDreamId, 
-    oldDream, 
-    userThreeId,
-    dreamWithNoDescId
- } from '../utils/test-utils/testData.js'
+import { userOneId, userOneAuth, userThreeAuth, userThreeId  } from '../utils/test-utils/data/users.js';
+import { oldDreamId, oldDream, dreamWithNoDescId } from '../utils/test-utils/data/dreams.js';
+import { wipeDBAndSaveData } from '../utils/test-utils/setupData.js'
+
+
+const NOW = new Date('2025-11-29T00:00:00.000Z')
+
+beforeAll(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(NOW)
+})
 
 // Wipe db and save data
 beforeEach(async () => wipeDBAndSaveData())
+
+afterAll(() => {
+    vi.useRealTimers()
+})
 
 // Define base url for dream router
 const baseUrl = '/api/dreams'
@@ -60,7 +65,7 @@ describe('LOG NEW DREAM', () => {
         expect(response.body.error).toBe('At least one of title or description is required.')
     })
 
-    test.only('Logging new dream should succeed if description is provided, with title and themes generated from dev version of openAI API.', async () => {
+    test('Logging new dream should succeed if description is provided, with title and themes generated from dev version of openAI API.', async () => {
         // Assert that no dreams with the correct title are found in DB
         let savedDream = await Dream.findOne({title:'I had a dream I was flying. It...'})
         expect(savedDream).toBeNull()
@@ -115,7 +120,8 @@ describe('LOG NEW DREAM', () => {
         expect(savedDream).toBeNull()
         // Send data with title and no description
         const response = await request(server).post(url).send({
-            dream: {title: 'Flying dream'}
+            dream: {title: 'Flying dream'},
+            themes: []
         }).set(...userOneAuth).expect(201)
         // Only title should be present in response
         const dream = response.body.dream
@@ -178,9 +184,12 @@ describe('GET ALL DREAMS', () => {
         expect(twoDreams[1].title).toBe('In space without a space suit')
     })
 
-    test('Filtering by days ago returns correct dreams.', async () => {
-        // Set days ago to 400
-        const allDreamsResponse = await request(server).get(`${url}?daysAgo=400`).set(...userThreeAuth).expect(200)
+
+    test.only('Filtering by days ago returns correct dreams.', async () => {
+        const DAYS_IN_YEAR = 365;
+        const DAYS_IN_6_MONTHS = 180
+        
+        const allDreamsResponse = await request(server).get(`${url}?daysAgo=${DAYS_IN_YEAR + 10}`).set(...userThreeAuth).expect(200)
         const allDreams = allDreamsResponse.body.dreams
         // All dreams should be returned
         expect(allDreams).toHaveLength(5)
@@ -188,14 +197,15 @@ describe('GET ALL DREAMS', () => {
         expect(allDreams[3].title).toBe('A dream from 6 months ago')
         expect(allDreams[4].title).toBe('A dream from 1 year ago')
         // set days ago to 250
-        const newResponse = await request(server).get(`${url}?daysAgo=250`).set(...userThreeAuth).expect(200)
+        const newResponse = await request(server).get(`${url}?daysAgo=${DAYS_IN_6_MONTHS + 10}`).set(...userThreeAuth).expect(200)
         // Only 4 dreams should be returned
         const newDreams = newResponse.body.dreams
+        console.log(newDreams)
         expect(newDreams).toHaveLength(4)
         // Last dream should be oldest
-        expect(allDreams[3].title).toBe('A dream from 6 months ago')
+        expect(newDreams[3].title).toBe('A dream from 6 months ago')
         // Searching for A dream from 1 year ago with days ago set to 250 returns empty array
-        const emptyResponse = await request(server).get(`${url}?daysAgo=250&title=A dream from 1 year ago`).set(...userThreeAuth).expect(200)
+        const emptyResponse = await request(server).get(`${url}?daysAgo=${DAYS_IN_6_MONTHS + 10}&title=A dream from 1 year ago`).set(...userThreeAuth).expect(200)
         expect(emptyResponse.body.dreams).toHaveLength(0)
     })
 })

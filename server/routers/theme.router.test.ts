@@ -1,21 +1,21 @@
 import request from 'supertest';
 import { server } from '../utils/test-utils/testServer.js'
-import { beforeEach, describe, expect, test } from 'vitest';
+import { beforeEach, beforeAll, describe, expect, test, vi } from 'vitest';
 import { DreamInterface } from '../interfaces/dream.interfaces.js';
 import { Theme } from '../models/theme.model.js';
-
-import { 
-    wipeDBAndSaveData, 
-    userThreeAuth,
-    userFourAuth,
-    newDream, 
-    oldDream,
-    oldDreamTheme1Id
- } from '../utils/test-utils/testData.js'
+import { userThreeAuth, userFourAuth } from '../utils/test-utils/data/users.js'
+import { newDream, oldDream, oldDreamTheme1Id} from '../utils/test-utils/data/dreams.js'
+import { wipeDBAndSaveData } from '../utils/test-utils/setupData.js'
  
+const NOW = new Date('2025-11-29T00:00:00.000Z')
+
+beforeAll(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(NOW)
+})
+
 // Wipe db and save data
 beforeEach(async () => wipeDBAndSaveData())
-
 // Define base url for theme router
 const baseUrl = '/api/themes'
 
@@ -67,6 +67,21 @@ describe('GET ALL USERS THEMES', () => {
             expect(theme.dream.title).toBe('A dream with many themes')
         })   
     })
+    test('Filtering by days ago returns correct theme with dream data documents.', async () => {
+        // Set days ago to 1 year + 10 days
+        const DAYS_IN_YEAR = 365;
+        const allThemesResponse = await request(server).get(`${url}?daysAgo=${DAYS_IN_YEAR + 10}`).set(...userThreeAuth).expect(200)
+        const allThemes = allThemesResponse.body.themes
+        // All 4 themes should be returned
+        expect(allThemes).toHaveLength(4)
+        // Set days ago to 6 months + 10 days
+        const DAYS_IN_6_MONTHS = 180
+        const newThemesResponse = await request(server).get(`${url}?daysAgo=${DAYS_IN_6_MONTHS + 10}`).set(...userThreeAuth).expect(200)
+        const newThemes = newThemesResponse.body.themes
+        // Only 2 themes should be returned
+        expect(newThemes).toHaveLength(2)
+    })
+    
 })
 
 describe('REMOVE THEME', () => {
