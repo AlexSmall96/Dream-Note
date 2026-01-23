@@ -12,19 +12,19 @@ const DreamsContext = createContext<DreamsContextType | null>(null)
 
 export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     const [dreams, setDreams] = useState<DreamOverview[]>([])
-    const { from } = useThemesAside()
+    const { month, year } = useThemesAside()
 
     useEffect(() => {
         const getDreams = async () => {
             try {
-                const response = await fetchDreams(from)
+                const response = await fetchDreams({year, month})
                 setDreams(response.dreams)
             } catch (err) {
                 console.log(err)
             }
         } 
         getDreams()
-    }, [from])  
+    }, [month, year])  
 
     return (
         <DreamsContext.Provider value={{dreams, setDreams}}>

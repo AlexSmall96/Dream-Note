@@ -8,15 +8,15 @@ import {
     DreamList, 
     DreamAnalysisBody 
 } from "@/types/dreams";
-import { DATE_RANGE_OPTIONS, DateRangeLabel } from '@/lib/filters/dateRanges'
+import { MONTH_OPTIONS, MonthLabel } from '@/lib/filters/dateRanges'
 
 export async function logNewDream(body: DreamBodyType){
     return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>('/dreams/log', {method: 'POST', body})
 }
 
-export async function fetchDreams({from, limit}:{from: DateRangeLabel, limit: number}) {
-    const daysAgo = DATE_RANGE_OPTIONS[from]
-    return apiFetch<DreamList>(`/dreams?daysAgo=${daysAgo}&limit=${limit}`)
+export async function fetchDreams({year, month}:{year: number, month: MonthLabel}) {
+    const monthNumber = MONTH_OPTIONS[month]
+    return apiFetch<DreamList>(`/dreams?year=${year}&month=${monthNumber}&limit=${10}`)
 }
 
 export async function fetchFullDream(id: string){
