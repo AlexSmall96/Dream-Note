@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation"
 import { useDreams } from "@/contexts/DreamsContext"
 import { useThemes } from "@/contexts/ThemesContext"
 import { useThemesAside } from "@/contexts/ThemesAsideContext"
+import { formatDate } from "@/lib/utils/formatDate"
 
 export default function DreamsList(){
 
@@ -26,13 +27,11 @@ export default function DreamsList(){
     return (
         <>
             {dreams.length > 0 &&
-            <div className="grid grid-cols-3 gap-4">
-                <div className='text-lg font-bold col-span-2'>Dream</div>
-                <div className='text-lg font-bold'>Date</div>
+            <div className="grid grid-cols-3 gap-1">
                 {dreamsList.map(dream => 
                     <>
-                        <div onClick={() => router.replace(`/dreams/${dream._id}`)} className="col-span-2 hover:underline font-semibold">{dream.title}</div>
-                        <div>{new Date(dream.date).toLocaleDateString()}</div>
+                    <div>{formatDate(dream.date)}</div>
+                    <div onClick={() => router.replace(`/dreams/${dream._id}`)} className="col-span-2 hover:underline">{dream.title}</div>
                     </>)}
             </div>}
         </>

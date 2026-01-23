@@ -14,9 +14,9 @@ export async function logNewDream(body: DreamBodyType){
     return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>('/dreams/log', {method: 'POST', body})
 }
 
-export async function fetchDreams({year, month}:{year: number, month: MonthLabel}) {
+export async function fetchDreams({year, month, sort = false}:{year: number, month: MonthLabel, sort: boolean}) {
     const monthNumber = MONTH_OPTIONS[month]
-    return apiFetch<DreamList>(`/dreams?year=${year}&month=${monthNumber}&limit=${10}`)
+    return apiFetch<DreamList>(`/dreams?year=${year}&month=${monthNumber}&limit=${10}&sort=${sort}`)
 }
 
 export async function fetchFullDream(id: string){

@@ -93,10 +93,11 @@ export class DreamRouter {
             const month = query.month? Number(query.month) : NOW.getMonth() + 1
             const [startDate, endDate] = getStartAndEndDates(year, month)
             // Get limit and skip parameters
-            const limit = req.query.limit? Number(req.query.limit) : 100
-            const skip = req.query.skip? Number(req.query.skip) : 0
+            const limit = query.limit? Number(req.query.limit) : 100
+            const skip = query.skip? Number(req.query.skip) : 0
+            const sort = query.sort === 'true' || false
             try {
-                const dreams = await this.dreamController.handleGetDreams(req.user._id, title, startDate, endDate, limit, skip)
+                const dreams = await this.dreamController.handleGetDreams(req.user._id, title, startDate, endDate, limit, skip, sort)
                 res.json({dreams})
             } catch (err){
                 next(err)
