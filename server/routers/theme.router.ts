@@ -3,7 +3,6 @@ import { injectable, inject } from "inversify";
 import { ThemeController } from "../controllers/theme.controller.js"
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import { auth } from "../middleware/auth.js";
-import { getFromDate } from "../services/utils/dateRange.js";
 
 // Router class for Dream model
 @injectable()
@@ -26,8 +25,7 @@ export class ThemeRouter {
                 const limit = req.query.limit? Number(req.query.limit) : 100
                 const skip = req.query.skip? Number(req.query.skip) : 0
                 const sort = req.query.sort?.toString()
-                const daysAgo = req.query.daysAgo? Number(req.query.daysAgo) : undefined
-                const themes = await this.themeController.handleGetAllThemes(req.user._id, limit, skip, sort, daysAgo)
+                const themes = await this.themeController.handleGetAllThemes(req.user._id, limit, skip, sort)
                 res.json({themes})
             } catch (err){
                 next(err)

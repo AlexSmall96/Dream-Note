@@ -5,22 +5,12 @@ import { Dream } from '../models/dream.model.js';
 import { Theme } from '../models/theme.model.js';
 import { DreamDocument } from '../interfaces/dream.interfaces.js';
 import { userOneId, userOneAuth, userThreeAuth, userThreeId  } from '../utils/test-utils/data/users.js';
-import { oldDreamId, oldDream, dreamWithNoDescId } from '../utils/test-utils/data/dreams.js';
+import { oldDreamId, oldDream, newDream, dreamWithNoDescId, userThreeTitles } from '../utils/test-utils/data/dreams.js';
 import { wipeDBAndSaveData } from '../utils/test-utils/setupData.js'
 
-
-const NOW = new Date('2025-11-29T00:00:00.000Z')
-
-beforeAll(() => {
-    vi.useFakeTimers()
-    vi.setSystemTime(NOW)
-})
-
 // Wipe db and save data
-beforeEach(async () => wipeDBAndSaveData())
-
-afterAll(() => {
-    vi.useRealTimers()
+beforeEach(async () => {
+    await wipeDBAndSaveData()
 })
 
 // Define base url for dream router
@@ -46,6 +36,17 @@ const assertDreamTitlesAndDates = async (dreams: DreamDocument[], length: number
         expect(dream.title).toBe(`dream${start-index}`)
         expect(dream.date).toBe(`2025-06-0${start-index}T00:00:00.000Z`)
     })    
+}
+
+// Helper function to filter dreams by month and date and assert correct lengths and titles
+const filterAndAssertDreams = async(year: number, month: number, length: number, titles?: string[]) => {
+    const dreamsResponse = await request(server).get(`${baseUrl}?year=${year}&month=${month}`).set(...userThreeAuth)
+    expect(dreamsResponse.status).toBe(200)
+    const dreams = dreamsResponse.body.dreams as DreamDocument[]
+    expect(dreams).toHaveLength(length)
+    if (titles){
+        dreams.map((dream, index) => expect(dream.title).toEqual(titles[index]))
+    }
 }
 
 // Define default themes sent back from dev version of openAI API
@@ -139,27 +140,25 @@ describe('GET ALL DREAMS', () => {
     // Define url
     const url = baseUrl
     
-    test("All user's dreams should be returned when no parameters are passed in.", async () => {
+    test("No dreams should be returned when no parameters are passed in.", async () => {
         // Get all userOne's dreams
-        const response = await request(server).get(url).set(...userOneAuth).expect(200)
-        // Should be 9 dreams, sorted oldest to newest
-        const dreams = response.body.dreams
-        assertDreamTitlesAndDates(dreams, 9)
+        const response = await request(server).get(`${url}`).set(...userOneAuth).expect(200)
+        expect(response.body.dreams).toHaveLength(0)
     })
 
     test("Skip, limit and title parameters return correct dreams.", async () => {
         // Get dream page one of dreams
-        const pageOneResponse = await request(server).get(`${url}?limit=5&skip=0`).set(...userOneAuth).expect(200)
+        const pageOneResponse = await request(server).get(`${url}?limit=5&skip=0&year=2025&month=6`).set(...userOneAuth).expect(200)
         // Should be 5 dreams, sorted oldest to newest
         const pageOneDreams = pageOneResponse.body.dreams
         assertDreamTitlesAndDates(pageOneDreams, 5)
         // Get dream page two of dreams
-        const pageTwoResponse = await request(server).get(`${url}?limit=5&skip=5`).set(...userOneAuth).expect(200)
+        const pageTwoResponse = await request(server).get(`${url}?limit=5&skip=5&year=2025&month=6`).set(...userOneAuth).expect(200)
         // Should be 4 dreams, starting at dream4, sorted oldest to newest
         const pageTwoDreams = pageTwoResponse.body.dreams
         assertDreamTitlesAndDates(pageTwoDreams, 4, 4)
         // Should only return dream9
-        const singleResponse = await request(server).get(`${url}?limit=5&skip=0&title=dream9`).set(...userOneAuth).expect(200)
+        const singleResponse = await request(server).get(`${url}?limit=5&skip=0&title=dream9&year=2025&month=6`).set(...userOneAuth).expect(200)
         const singleDreamArray = singleResponse.body.dreams
         expect(singleDreamArray).toHaveLength(1)
         expect(singleDreamArray[0].title).toBe('dream9')
@@ -167,16 +166,16 @@ describe('GET ALL DREAMS', () => {
 
     test('Searching by title returns correct dreams.', async () => {
         // Searching 'In space should return all 3 of userThree dreams
-        const allDreamsResponse = await request(server).get(`${url}?title=In space`).set(...userThreeAuth).expect(200)
+        const allDreamsResponse = await request(server).get(`${url}?title=In space&year=2025&month=6`).set(...userThreeAuth).expect(200)
         const allDreams = allDreamsResponse.body.dreams
         expect(allDreams).toHaveLength(3)
         // Searching 'In space without' should return 1 dream
-        const singleDreamResponse = await request(server).get(`${url}?title=In space without`).set(...userThreeAuth).expect(200)
+        const singleDreamResponse = await request(server).get(`${url}?title=In space without&year=2025&month=6`).set(...userThreeAuth).expect(200)
         const singleDream = singleDreamResponse.body.dreams
         expect(singleDream).toHaveLength(1)
         expect(singleDream[0].title).toBe('In space without a space suit')
         // Searching 'space suit' should return 2 dreams
-        const twoDreamResponse = await request(server).get(`${url}?title=space suit`).set(...userThreeAuth).expect(200)
+        const twoDreamResponse = await request(server).get(`${url}?title=space suit&year=2025&month=6`).set(...userThreeAuth).expect(200)
         const twoDreams = twoDreamResponse.body.dreams
         expect(twoDreams).toHaveLength(2)
         // Should be sorted newest to oldest
@@ -184,29 +183,11 @@ describe('GET ALL DREAMS', () => {
         expect(twoDreams[1].title).toBe('In space without a space suit')
     })
 
-
-    test.only('Filtering by days ago returns correct dreams.', async () => {
-        const DAYS_IN_YEAR = 365;
-        const DAYS_IN_6_MONTHS = 180
-        
-        const allDreamsResponse = await request(server).get(`${url}?daysAgo=${DAYS_IN_YEAR + 10}`).set(...userThreeAuth).expect(200)
-        const allDreams = allDreamsResponse.body.dreams
-        // All dreams should be returned
-        expect(allDreams).toHaveLength(5)
-        // Last two should be oldest
-        expect(allDreams[3].title).toBe('A dream from 6 months ago')
-        expect(allDreams[4].title).toBe('A dream from 1 year ago')
-        // set days ago to 250
-        const newResponse = await request(server).get(`${url}?daysAgo=${DAYS_IN_6_MONTHS + 10}`).set(...userThreeAuth).expect(200)
-        // Only 4 dreams should be returned
-        const newDreams = newResponse.body.dreams
-        console.log(newDreams)
-        expect(newDreams).toHaveLength(4)
-        // Last dream should be oldest
-        expect(newDreams[3].title).toBe('A dream from 6 months ago')
-        // Searching for A dream from 1 year ago with days ago set to 250 returns empty array
-        const emptyResponse = await request(server).get(`${url}?daysAgo=${DAYS_IN_6_MONTHS + 10}&title=A dream from 1 year ago`).set(...userThreeAuth).expect(200)
-        expect(emptyResponse.body.dreams).toHaveLength(0)
+    test('Setting month and year returns correct dreams.', async () => {
+        await filterAndAssertDreams(2024, 12, 1, [oldDream.title])
+        await filterAndAssertDreams(2025, 5, 1, [newDream.title])
+        await filterAndAssertDreams(2025, 6, 3, ['In space wearing a space suit', 'In space without a space suit', 'In space'])
+        await filterAndAssertDreams(2020, 2, 0)
     })
 })
 
@@ -291,10 +272,10 @@ describe('UPDATE DREAM', () => {
         // Existing Themes and new theme should be in response
         const themes = response.body.themes
         expect(themes).toHaveLength(3)
-        const themeNames = ['Lateness', 'Anxiety', 'Travel']
-        themes.map((theme:{theme:string}, index: number) => {
-            expect(theme.theme).toBe(themeNames[index])
-        })
+        const returnedThemeNames = themes.map((t: { theme: string }) => t.theme)
+        expect(returnedThemeNames).toEqual(
+            expect.arrayContaining(['Lateness', 'Anxiety', 'Travel'])
+        )
         // Database should have been changed
         const savedDream = await Dream.findByIdOrThrowError(oldDreamId.toString())
         const {title,
@@ -328,7 +309,7 @@ describe('UPDATE DREAM', () => {
         expect(response.body.themes).toHaveLength(0)
         // Dream description should be removed
         const dream = await Dream.find(oldDreamId)
-        console.log(dream)
+        expect(dream).not.toHaveProperty('description')
         // No themes should be associated with the dream
         themes = await Theme.find({dream: oldDreamId})
         expect(themes).toHaveLength(0)

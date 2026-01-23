@@ -1,7 +1,6 @@
 import { injectable } from "inversify";
 import { Theme } from "../models/theme.model.js";
 import { Dream } from "../models/dream.model.js";
-import { getFromDate } from "../services/utils/dateRange.js";
 
 // Controller clas for Theme model
 @injectable()
@@ -21,10 +20,9 @@ export class ThemeController {
     }
 
     // Get all a users themes
-    public async handleGetAllThemes(userId: string, limit: number, skip: number, sort?: string, daysAgo?: number) {
-        const fromDate = getFromDate(daysAgo)
+    public async handleGetAllThemes(userId: string, limit: number, skip: number, sort?: string) {
         const dreamIds = await Dream.find({ 
-            owner: userId, date: {$gte: fromDate} 
+            owner: userId
         }).distinct('_id');
         const themes = await Theme.find({ 
             dream: { $in: dreamIds } 

@@ -67,21 +67,6 @@ describe('GET ALL USERS THEMES', () => {
             expect(theme.dream.title).toBe('A dream with many themes')
         })   
     })
-    test('Filtering by days ago returns correct theme with dream data documents.', async () => {
-        // Set days ago to 1 year + 10 days
-        const DAYS_IN_YEAR = 365;
-        const allThemesResponse = await request(server).get(`${url}?daysAgo=${DAYS_IN_YEAR + 10}`).set(...userThreeAuth).expect(200)
-        const allThemes = allThemesResponse.body.themes
-        // All 4 themes should be returned
-        expect(allThemes).toHaveLength(4)
-        // Set days ago to 6 months + 10 days
-        const DAYS_IN_6_MONTHS = 180
-        const newThemesResponse = await request(server).get(`${url}?daysAgo=${DAYS_IN_6_MONTHS + 10}`).set(...userThreeAuth).expect(200)
-        const newThemes = newThemesResponse.body.themes
-        // Only 2 themes should be returned
-        expect(newThemes).toHaveLength(2)
-    })
-    
 })
 
 describe('REMOVE THEME', () => {

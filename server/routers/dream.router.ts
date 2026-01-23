@@ -8,7 +8,7 @@ import { DreamService } from "../services/dream.service.js";
 import { ThemeService } from "../services/theme.service.js";
 import { prompts } from "../services/dream.service.js"
 import { Dream } from "../models/dream.model.js";
-import { getFromDate } from "../services/utils/dateRange.js";
+import { getStartAndEndDates } from "../services/utils/dateRange.js";
 
 // Router class for Dream model
 @injectable()
@@ -86,14 +86,17 @@ export class DreamRouter {
         this.router.get('/', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             // Get title query parameter
             const title = req.query.title? new RegExp(req.query.title.toString().trim(), "i") : new RegExp('')
-            // Get daysAgo query parameter and construct start date to take documents from
-            const daysAgo = req.query.daysAgo? Number(req.query.daysAgo) : undefined
-            const fromDate = getFromDate(daysAgo)
+            // Get year and month query parameters
+            const NOW = new Date()
+            const query = req.query
+            const year = query.year? Number(query.year) : NOW.getFullYear() 
+            const month = query.month? Number(query.month) : NOW.getMonth() + 1
+            const [startDate, endDate] = getStartAndEndDates(year, month)
             // Get limit and skip parameters
             const limit = req.query.limit? Number(req.query.limit) : 100
             const skip = req.query.skip? Number(req.query.skip) : 0
             try {
-                const dreams = await this.dreamController.handleGetDreams(req.user._id, title, fromDate, limit, skip)
+                const dreams = await this.dreamController.handleGetDreams(req.user._id, title, startDate, endDate, limit, skip)
                 res.json({dreams})
             } catch (err){
                 next(err)

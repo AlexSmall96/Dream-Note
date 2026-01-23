@@ -1,4 +1,5 @@
-export function getFromDate(daysAgo?: number): Date {
-    if (!daysAgo) return new Date("1970-01-01")
-    return new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000)
+export function getStartAndEndDates(year: number,  month: number): [Date, Date] {
+    const startDate = new Date(Date.UTC(year, month - 1, 1))
+    const endDate = new Date(Date.UTC(year, month, 1))
+    return [startDate, endDate]
 }

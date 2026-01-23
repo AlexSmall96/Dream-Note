@@ -87,5 +87,6 @@ export {
     oldDreamTheme1Id, 
     newDreamId, 
     dreamWithManyThemesId,
-    newDream
+    newDream,
+    userThreeTitles
 }
