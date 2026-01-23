@@ -2,7 +2,21 @@ import Dropdown from "@/components/ui/Dropdown"
 import { useDreamView } from "@/contexts/DreamViewContext"
 import { useRouter } from "next/navigation";
 
-export default function DreamView ({getAnalysis, id}:{getAnalysis: () => Promise<void>, id: string}){
+export default function DreamView ({
+    getAnalysis, 
+    onNext, 
+    onPrev, 
+    index,
+    maxIndex,
+    id
+}:{
+    getAnalysis: () => Promise<void>, 
+    onNext: () => void,
+    onPrev: () => void,
+    index: number,
+    maxIndex: number,
+    id: string
+}){
 
     const {dream, themes, analysis, showSettings, setShowSettings, tone, setTone, style, setStyle, tones, styles } = useDreamView()
     const router = useRouter()
@@ -41,6 +55,10 @@ export default function DreamView ({getAnalysis, id}:{getAnalysis: () => Promise
             <button className='bg-blue-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/edit`)}>Edit</button>
             <button className='bg-green-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/delete`)}>Delete</button>
             <button className='bg-gray-300 p-1 m-1' onClick={() => router.replace(`/dreams/`)}>Back to Dashboard</button>
+            <span>
+                <button disabled={index === 0} onClick={onPrev} className='bg-gray-200 px-2 py-1 m-1'>Previous dream</button>
+                <button disabled={index === maxIndex} onClick={onNext} className='bg-gray-200 px-2 py-1 m-1'>Next dream</button>
+            </span>
         </div>
     )
 }

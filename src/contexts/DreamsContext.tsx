@@ -2,10 +2,11 @@ import { DreamOverview } from '@/types/dreams'
 import { createContext, useState, useEffect, useContext} from 'react'
 import { fetchDreams } from '@/lib/api/dreams'
 import { useThemesAside } from './ThemesAsideContext'
+import { setterFunction } from '@/types/setterFunctions'
 
 type DreamsContextType = {
     dreams: DreamOverview[],
-    setDreams: React.Dispatch<React.SetStateAction<DreamOverview[]>>
+    setDreams: setterFunction<DreamOverview[]>,
 }
 
 const DreamsContext = createContext<DreamsContextType | null>(null)
