@@ -8,11 +8,13 @@ import { useRouter } from "next/navigation";
 
 export default function LogNewDream() {
     // State and contexts
-    const [dream, setDream] = useState<DreamFormType>({title: '', description: '', notes: '', date: new Date().toISOString().split('T')[0]})
+    const defaultDreamState = {title: '', description: '', notes: '', date: new Date().toISOString().split('T')[0]}
+    const [dream, setDream] = useState<DreamFormType>(defaultDreamState)
     const [themes, setThemes] = useState<string[]>([])
     const [msg, setMsg] = useState<string>('')
-    const {setDreams} = useDreams()
+    const {setDreams, setRefetch} = useDreams()
     const router = useRouter()
+    
     // Log new dream
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
@@ -29,6 +31,9 @@ export default function LogNewDream() {
         // Extract overview and add to dreams list to appear in side bar
         const dreamOverview = {title: result.dream.title, date: result.dream.date, _id: result.dream._id}
         setDreams(prev => [dreamOverview, ... prev])
+        setDream(defaultDreamState)
+        setThemes([])
+        setRefetch(prev => !prev)
         setMsg('Dream logged')
     }
 

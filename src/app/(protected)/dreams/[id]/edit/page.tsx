@@ -16,7 +16,7 @@ export default function EditDreamPage({
 	const [dream, setDream] = useState<DreamFormType>({title: '', description: '', notes: '', date: ''})
 	const [themes, setThemes] = useState<string[]>([])
 	const [msg, setMsg] = useState<string>('')
-	const { setDreams } = useDreams()
+	const { setDreams, setRefetch } = useDreams()
 	const router = useRouter()
 
 	// Get existing dream
@@ -48,6 +48,7 @@ export default function EditDreamPage({
 		// Update dreams list sidebar
 		const dreamOverview = {title: result.dream.title, date: result.dream.date, _id: result.dream._id}
 		setDreams(prev => [dreamOverview, ... prev.filter(dream => dream._id !==dreamOverview._id)])
+		setRefetch(prev => !prev)
 		setMsg('Dream updated')
 	}
 

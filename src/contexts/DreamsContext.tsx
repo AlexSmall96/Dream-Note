@@ -7,7 +7,8 @@ import { setterFunction } from '@/types/setterFunctions'
 type DreamsContextType = {
     dreams: DreamOverview[],
     setDreams: setterFunction<DreamOverview[]>,
-    searchResults: DreamOverview[]
+    searchResults: DreamOverview[],
+    setRefetch: setterFunction<boolean>
 }
 
 const DreamsContext = createContext<DreamsContextType | null>(null)
@@ -15,6 +16,7 @@ const DreamsContext = createContext<DreamsContextType | null>(null)
 export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     const [dreams, setDreams] = useState<DreamOverview[]>([])
     const [searchResults, setSearchResults] = useState<DreamOverview[]>([])
+    const [refetch, setRefetch] = useState<boolean>(false)
     const { month, year, sort, search, setSearchView } = useThemesAside()
 
     useEffect(() => {
@@ -27,7 +29,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
             }
         } 
         getDreams()
-    }, [month, year, sort])  
+    }, [month, year, sort, refetch])  
 
     useEffect(() => {
         if (search.trim() === ''){
@@ -49,7 +51,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     }, [search])
 
     return (
-        <DreamsContext.Provider value={{dreams, setDreams, searchResults}}>
+        <DreamsContext.Provider value={{dreams, setDreams, searchResults, setRefetch}}>
             {children}
         </DreamsContext.Provider>
     )
