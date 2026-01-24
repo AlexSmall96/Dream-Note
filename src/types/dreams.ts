@@ -15,8 +15,13 @@ export type DreamOverview = {
     _id: string
 }
 
+export type monthlyTotalType = {
+    [month: string]: number
+}
+
 export type DreamList = {
     dreams: DreamOverview[]
+    monthlyTotals: monthlyTotalType
 }
 
 // Main dream view

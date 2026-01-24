@@ -84,27 +84,26 @@ export class DreamService {
 
     public async getMonthlyDreamStats(
             owner: string,
-            startDate: Date,
-            endDate: Date
         ) {
-        return Dream.aggregate([
-            {
-                $match: {
-                    owner,
-                    date: { $gte: startDate, $lt: endDate }
-                }
-            },
-            {
-                $group: {
-                    _id: {
-                    year: { $year: '$date' },
-                    month: { $month: '$date' }
-                    },
-                    count: { $sum: 1 }
-                }
-            },
-            { $sort: { '_id.year': 1, '_id.month': 1 } }
-        ])
+            const results = await Dream.aggregate([
+                {
+                    $match: {owner}
+                },
+                {
+                    $group: {
+                        _id: {
+                            month: { $month: '$date' }
+                        },
+                        count: { $sum: 1 }
+                    }
+                },
+                { $sort: { '_id.year': 1, '_id.month': 1 } }
+            ])
+
+            return results.reduce<Record<number, number>>((acc, item) => {
+                acc[item._id.month] = item.count
+                return acc
+            }, {})
     }
 
     public async getDreamsWithStats(params: {
@@ -127,9 +126,7 @@ export class DreamService {
                 params.sort
             ),
             this.getMonthlyDreamStats(
-                params.owner,
-                params.startDate,
-                params.endDate
+                params.owner
             )
         ])
 

@@ -9,7 +9,7 @@ export const MONTH_OPTIONS = {
     'Aug': 8,
     'Sep': 9,
     'Oct': 10,
-    'Nov': 1,
+    'Nov': 11,
     'Dec': 12
 } as const
 
