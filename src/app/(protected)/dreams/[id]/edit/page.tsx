@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchFullDream, updateDream } from "@/lib/api/dreams";
+import { fetchFullDream  } from "@/lib/api/dreams";
 import DreamForm from "@/components/dreams/DreamForm";
 import { DreamFormType } from '@/types/dreams'
-import { useDreams } from "@/contexts/DreamsContext";
 import { useRouter } from "next/navigation"
+import { useDreamSubmit } from "@/app/hooks/useDreamSubmit";
 
 export default function EditDreamPage({
   	params,
@@ -15,8 +15,7 @@ export default function EditDreamPage({
 	
 	const [dream, setDream] = useState<DreamFormType>({title: '', description: '', notes: '', date: ''})
 	const [themes, setThemes] = useState<string[]>([])
-	const [msg, setMsg] = useState<string>('')
-	const { setDreams, setRefetch } = useDreams()
+	const { submitDream, msg, setMsg } = useDreamSubmit()
 	const router = useRouter()
 
 	// Get existing dream
@@ -32,24 +31,14 @@ export default function EditDreamPage({
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault()
-		const payload = {
-			dream: {
-				title: dream.title,
-				description: dream.description.trim() || null,
-				notes: dream.notes.trim() || null,
-				date: new Date(dream.date)
-			},
-			themes: dream.description ? themes : []
-		}
-		const result = await updateDream(params.id, payload) 
-		if ('error' in result){
-			return setMsg(result.error)
-		}
-		// Update dreams list sidebar
-		const dreamOverview = {title: result.dream.title, date: result.dream.date, _id: result.dream._id}
-		setDreams(prev => [dreamOverview, ... prev.filter(dream => dream._id !==dreamOverview._id)])
-		setRefetch(prev => !prev)
-		setMsg('Dream updated')
+		await submitDream({
+			id: params.id,
+			title: dream.title,
+			description: dream.description,
+			notes: dream.notes,
+			date: new Date(dream.date),
+			themes: themes
+		})		
 	}
 
   	return (
