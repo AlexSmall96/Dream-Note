@@ -1,38 +1,19 @@
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
 import { DreamInterface } from "../interfaces/dream.interfaces.js"
 import { Dream } from "../models/dream.model.js";
+import { DreamService } from "../services/dream.service.js";
 
 // Controller clas for Dream model
 @injectable()
 export class DreamController {
-    
+    constructor(
+        @inject(DreamService) private dreamService: DreamService,
+    ){}
     // Log new dream
     public async handleLogDream(data: DreamInterface, owner: string){
         const dream = new Dream({...data, owner});
         await dream.save()
         return dream
-    }
-
-    // Get a users dreams
-    public async handleGetDreams(owner: string, title: RegExp, startDate: Date, endDate: Date, limit: number, skip: number, sort: boolean){
-        // Use aggregate to apply limit and skip first, then date and then search by title
-        const dreams = await Dream.aggregate([
-            {
-                $match: {
-                    owner: owner,
-                    date: { $gte: startDate, $lt: endDate }
-                }
-            },
-            {$sort: { date: sort? 1: -1 }},
-            {$skip: skip},
-            {$limit: limit},
-            {
-                $match: {
-                    title: { $regex: title }
-                }
-            }
-        ]).project({title: 1, date: 1}) // Only return title and date for all dreams view
-        return dreams
     }
 
     // View details for a single dream

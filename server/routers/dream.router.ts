@@ -98,8 +98,8 @@ export class DreamRouter {
             const skip = query.skip? Number(req.query.skip) : 0
             const sort = query.sort === 'true' || false
             try {
-                const dreams = await this.dreamController.handleGetDreams(req.user._id, title, startDate, endDate, limit, skip, sort)
-                res.json({dreams})
+                const { dreams, monthlyTotals } = await this.dreamService.getDreamsWithStats({owner: req.user._id, title, startDate, endDate, limit, skip, sort})
+                res.json({dreams, monthlyTotals})
             } catch (err){
                 next(err)
             }

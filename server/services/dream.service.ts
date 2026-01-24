@@ -1,6 +1,7 @@
 import { injectable, inject } from "inversify";
 import OpenAI from "openai";
 import { ThemeService } from "./theme.service.js";
+import { Dream } from "../models/dream.model.js";
 
 export enum prompts {
     title = 'Return exactly one short title for the provided dream.',
@@ -58,6 +59,81 @@ export class DreamService {
         }
         // Return generated string
         return response.output_text.trim() ?? null
+    }
+
+    public async getFilteredDreams (owner: string, title: RegExp, startDate: Date, endDate: Date, limit: number, skip: number, sort: boolean){
+        // Use aggregate to apply limit and skip first, then date and then search by title
+        const dreams = await Dream.aggregate([
+            {
+                $match: {
+                    owner: owner,
+                    date: { $gte: startDate, $lt: endDate }
+                }
+            },
+            {$sort: { date: sort? 1: -1 }},
+            {$skip: skip},
+            {$limit: limit},
+            {
+                $match: {
+                    title: { $regex: title }
+                }
+            }
+        ]).project({title: 1, date: 1}) // Only return title and date for all dreams view
+        return dreams
+    }
+
+    public async getMonthlyDreamStats(
+            owner: string,
+            startDate: Date,
+            endDate: Date
+        ) {
+        return Dream.aggregate([
+            {
+                $match: {
+                    owner,
+                    date: { $gte: startDate, $lt: endDate }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                    year: { $year: '$date' },
+                    month: { $month: '$date' }
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { '_id.year': 1, '_id.month': 1 } }
+        ])
+    }
+
+    public async getDreamsWithStats(params: {
+        owner: string
+        title: RegExp
+        startDate: Date
+        endDate: Date
+        limit: number
+        skip: number
+        sort: boolean
+    }) {
+        const [dreams, monthlyTotals] = await Promise.all([
+            this.getFilteredDreams(
+                params.owner,
+                params.title,
+                params.startDate,
+                params.endDate,
+                params.limit,
+                params.skip,
+                params.sort
+            ),
+            this.getMonthlyDreamStats(
+                params.owner,
+                params.startDate,
+                params.endDate
+            )
+        ])
+
+        return { dreams, monthlyTotals }
     }
 
     async addThemesToDream(description: string, dreamId: string, existingThemes: string[] | null): Promise<string[]> {
