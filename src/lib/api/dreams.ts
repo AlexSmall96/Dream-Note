@@ -19,6 +19,10 @@ export async function fetchDreams({year, month, sort = false}:{year: number, mon
     return apiFetch<DreamList>(`/dreams?year=${year}&month=${monthNumber}&limit=${10}&sort=${sort}`)
 }
 
+export async function fetchSearchResults(search: string){
+    return apiFetch<DreamList>(`/dreams?title=${search}`)
+}
+
 export async function fetchFullDream(id: string){
     const response = await apiFetch<DreamResponseType>(`/dreams/view/${id}`)
     return {

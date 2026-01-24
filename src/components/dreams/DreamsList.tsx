@@ -10,7 +10,7 @@ export default function DreamsList(){
 
     const { dreams } = useDreams()
     const { themes } = useThemes()
-    const { selectedTheme } = useThemesAside()
+    const { selectedTheme, setSearchView} = useThemesAside()
 
 
     const dreamsList = selectedTheme ? 
@@ -24,6 +24,11 @@ export default function DreamsList(){
 
     const router = useRouter()
 
+    const handleClick = (dreamId: string) => {
+        router.replace(`/dreams/${dreamId}`)
+        setSearchView(false)
+    }
+
     return (
         <>
             {dreams.length > 0 &&
@@ -31,7 +36,7 @@ export default function DreamsList(){
                 {dreamsList.map(dream => 
                     <>
                     <div>{formatDate(dream.date)}</div>
-                    <div onClick={() => router.replace(`/dreams/${dream._id}`)} className="col-span-2 hover:underline">{dream.title}</div>
+                    <div onClick={() => handleClick(dream._id)} className="col-span-2 hover:underline">{dream.title}</div>
                     </>)}
             </div>}
         </>

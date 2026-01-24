@@ -15,6 +15,10 @@ type ThemesAsideContextType = {
     setShowDreams: setterFunction<boolean>,
     sort: boolean,
     setSort: setterFunction<boolean>
+    search: string,
+    setSearch: setterFunction<string>,
+    searchView: boolean,
+    setSearchView: setterFunction<boolean>
 }
 
 const ThemesAsideContext = createContext<ThemesAsideContextType | null>(null)
@@ -24,10 +28,12 @@ export function ThemesAsideProvider ({ children }:{ children: React.ReactNode })
     const [selectedTheme, setSelectedTheme] = useState<string | null>(null)
     const [view, setView] = useState<'themes' | 'dreams'>('dreams')
     const [month, setMonth] = useState<MonthLabel>('Jan') // make current month
-    const [year, setYear] = useState(2026)
+    const [year, setYear] = useState(2026) // make current year
     const [showDreams, setShowDreams] = useState(true)
     const [sort, setSort] = useState(false)
-    
+    const [search, setSearch] = useState('')
+    const [searchView, setSearchView] = useState(false)
+
     return (
         <ThemesAsideContext.Provider value={{
             selectedTheme, 
@@ -41,7 +47,11 @@ export function ThemesAsideProvider ({ children }:{ children: React.ReactNode })
             showDreams, 
             setShowDreams,
             sort,
-            setSort
+            setSort,
+            search,
+            setSearch,
+            searchView,
+            setSearchView
         }}>
             {children}
         </ThemesAsideContext.Provider>
