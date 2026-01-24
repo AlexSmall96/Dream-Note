@@ -87,11 +87,12 @@ export class DreamRouter {
             // Get title query parameter
             const title = req.query.title? new RegExp(req.query.title.toString().trim(), "i") : new RegExp('')
             // Get year and month query parameters
-            const NOW = new Date()
             const query = req.query
-            const year = query.year? Number(query.year) : NOW.getFullYear() 
-            const month = query.month? Number(query.month) : NOW.getMonth() + 1
-            const [startDate, endDate] = getStartAndEndDates(year, month)
+            const year = query.year? Number(query.year) : undefined 
+            const month = query.month? Number(query.month) : undefined
+            const NOW = new Date()
+            // If month and year are supplied calculate date range, otherwise take all time
+            const [startDate, endDate] = year && month ? getStartAndEndDates(year, month) : [new Date("1900-01-01"), NOW]
             // Get limit and skip parameters
             const limit = query.limit? Number(req.query.limit) : 100
             const skip = query.skip? Number(req.query.skip) : 0

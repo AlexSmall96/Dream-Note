@@ -140,10 +140,10 @@ describe('GET ALL DREAMS', () => {
     // Define url
     const url = baseUrl
     
-    test("No dreams should be returned when no parameters are passed in.", async () => {
+    test("All dreams should be returned when no parameters are passed in.", async () => {
         // Get all userOne's dreams
         const response = await request(server).get(`${url}`).set(...userOneAuth).expect(200)
-        expect(response.body.dreams).toHaveLength(0)
+        expect(response.body.dreams).toHaveLength(9)
     })
 
     test("Skip, limit and title parameters return correct dreams.", async () => {
@@ -166,16 +166,16 @@ describe('GET ALL DREAMS', () => {
 
     test('Searching by title returns correct dreams.', async () => {
         // Searching 'In space should return all 3 of userThree dreams
-        const allDreamsResponse = await request(server).get(`${url}?title=In space&year=2025&month=6`).set(...userThreeAuth).expect(200)
+        const allDreamsResponse = await request(server).get(`${url}?title=In space`).set(...userThreeAuth).expect(200)
         const allDreams = allDreamsResponse.body.dreams
         expect(allDreams).toHaveLength(3)
         // Searching 'In space without' should return 1 dream
-        const singleDreamResponse = await request(server).get(`${url}?title=In space without&year=2025&month=6`).set(...userThreeAuth).expect(200)
+        const singleDreamResponse = await request(server).get(`${url}?title=In space without`).set(...userThreeAuth).expect(200)
         const singleDream = singleDreamResponse.body.dreams
         expect(singleDream).toHaveLength(1)
         expect(singleDream[0].title).toBe('In space without a space suit')
         // Searching 'space suit' should return 2 dreams
-        const twoDreamResponse = await request(server).get(`${url}?title=space suit&year=2025&month=6`).set(...userThreeAuth).expect(200)
+        const twoDreamResponse = await request(server).get(`${url}?title=space suit`).set(...userThreeAuth).expect(200)
         const twoDreams = twoDreamResponse.body.dreams
         expect(twoDreams).toHaveLength(2)
         // Should be sorted newest to oldest
