@@ -13,10 +13,11 @@ beforeEach(async () => {
     await wipeDBAndSaveData()
 })
 
+// Define url
+const url = baseUrl + '/update'
+
 // Update dream
-describe('UPDATE DREAM', () => {
-    // Define url
-    const url = baseUrl + '/update'
+describe('UPDATE DREAM FAILURE', () => {
 
     test('Update dream fails if request body does not contain "dream" as a field.', async () => {
         const response = await request(server).patch(`${url}/${oldDreamId}`).send({
@@ -39,6 +40,9 @@ describe('UPDATE DREAM', () => {
         }).set(...userThreeAuth).expect(400)
         expect(response.body.error).toBe("Dream data must contain title.")        
     })
+})
+
+describe('UPDATE DREAM SUCCESS', () => {
 
     test('Update dream succeeds with valid data, all fields can be changed and themes added.', async () => {
         // Assert theme 'Travel' associated with oldDreamId is not yet in database

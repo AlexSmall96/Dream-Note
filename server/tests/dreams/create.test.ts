@@ -15,18 +15,20 @@ beforeEach(async () => {
 // Define default themes sent back from dev version of openAI API
 const defaultThemes = ['theme1', 'theme2', 'theme3']
 
-// Log dream
-describe('LOG NEW DREAM', () => {
-    // Define url
-    const url = baseUrl + '/log'
+// Define url
+const url = baseUrl + '/log'
 
+// Log dream
+describe('LOG NEW DREAM FAILURE', () => {
     test('Logging new dream should fail if title and description are missing.', async () => {
         // Send incomplete data
         const response = await request(server).post(url).send({dream: {}}).set(...userOneAuth).expect(400)
         // Correct error message is returned
         expect(response.body.error).toBe('At least one of title or description is required.')
     })
+})
 
+describe('LOG NEW DREAM SUCCESS', () => {
     test('Logging new dream should succeed if description is provided, with title and themes generated from dev version of openAI API.', async () => {
         // Assert that no dreams with the correct title are found in DB
         let savedDream = await Dream.findOne({title:'I had a dream I was flying. It...'})
