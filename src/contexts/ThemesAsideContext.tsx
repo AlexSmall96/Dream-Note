@@ -24,11 +24,13 @@ type ThemesAsideContextType = {
 const ThemesAsideContext = createContext<ThemesAsideContextType | null>(null)
 
 export function ThemesAsideProvider ({ children }:{ children: React.ReactNode }) {
-
+    const now = new Date()
     const [selectedTheme, setSelectedTheme] = useState<string | null>(null)
     const [view, setView] = useState<'themes' | 'dreams'>('dreams')
-    const [month, setMonth] = useState<MonthLabel>('Jan') // make current month
-    const [year, setYear] = useState(2026) // make current year
+    const [month, setMonth] = useState<MonthLabel>(
+        now.toLocaleString('default', { month: 'short' }) as MonthLabel
+    )
+    const [year, setYear] = useState(now.getFullYear())
     const [showDreams, setShowDreams] = useState(true)
     const [sort, setSort] = useState(false)
     const [search, setSearch] = useState('')
