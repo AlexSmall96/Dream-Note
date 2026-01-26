@@ -43,6 +43,9 @@ export default function DreamForm({
         setThemes(prev => prev.filter(theme => theme !== themeToRemove))
     }
 
+    // Dont allow date input to be in future
+    const now = new Date().toISOString().split('T')[0]
+
     return (
         <form className="flex flex-col gap-2 w-80">
             <input 
@@ -64,6 +67,7 @@ export default function DreamForm({
                 value={dream.date}
                 name='date'
                 onChange={handleChange}
+                max={now}
             />
             <input 
                 type='text'
