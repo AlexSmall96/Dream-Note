@@ -2,6 +2,7 @@ import { injectable, inject } from "inversify";
 import OpenAI from "openai";
 import { ThemeService } from "./theme.service.js";
 import { Dream } from "../models/dream.model.js";
+import { getYearRange } from "./utils/dateRange.js";
 
 export enum prompts {
     title = 'Return exactly one short title for the provided dream.',
@@ -82,17 +83,22 @@ export class DreamService {
         return dreams
     }
 
+    
+
     public async getMonthlyDreamStats(
             owner: string,
+            year: number
         ) {
+            const { startDate, endDate } = getYearRange(year)
+
             const results = await Dream.aggregate([
                 {
-                    $match: {owner}
+                    $match: {owner, date: { $gte: startDate, $lt: endDate }}
                 },
                 {
                     $group: {
                         _id: {
-                            month: { $month: '$date' }
+                            month: { $month: '$date' },
                         },
                         count: { $sum: 1 }
                     }
@@ -106,9 +112,9 @@ export class DreamService {
             }, {})
     }
 
-    public async getDreamsWithStats(params: {
+    public async getDreamsWithStats({owner, title, startDate, endDate, limit, skip, sort}: {
         owner: string
-        title: RegExp
+        title: RegExp,
         startDate: Date
         endDate: Date
         limit: number
@@ -116,18 +122,8 @@ export class DreamService {
         sort: boolean
     }) {
         const [dreams, monthlyTotals] = await Promise.all([
-            this.getFilteredDreams(
-                params.owner,
-                params.title,
-                params.startDate,
-                params.endDate,
-                params.limit,
-                params.skip,
-                params.sort
-            ),
-            this.getMonthlyDreamStats(
-                params.owner
-            )
+            this.getFilteredDreams(owner, title, startDate, endDate, limit, skip, sort),
+            this.getMonthlyDreamStats(owner, startDate.getFullYear())
         ])
 
         return { dreams, monthlyTotals }
