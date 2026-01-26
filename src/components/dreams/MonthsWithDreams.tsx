@@ -9,9 +9,14 @@ export default function MonthsWithDreams(){
 
     const { month, setMonth, year, setYear, showDreams, setShowDreams, sort, setSort } = useThemesAside()
     const { stats } = useDreams()
+    const now = new Date()
+    const currentYear = now.getFullYear()
 
     const handleYearChange = (up: boolean) => {
-        setYear(prev => prev + (up? 1: -1))
+        const oldYear = year
+        if ((up && oldYear < currentYear) || (!up && oldYear > 1900)){
+            setYear(prev => prev + (up? 1: -1))
+        }
     }
 
     const handleMonthSelect = (m:MonthLabel) => {
@@ -23,15 +28,15 @@ export default function MonthsWithDreams(){
             setShowDreams(true)
         }
     }
-    
+
     return (
         <div>
-            <button onClick={() => handleYearChange(false)} className='bg-gray-200 m-1 p-2'>-</button>
+            {year > 1900 && <button onClick={() => handleYearChange(false)} className='bg-gray-200 m-1 p-2'>-</button>}
             <span className='bg-gray-400 m-1 p-2'>{year}</span>
-            <button onClick={() => handleYearChange(true)}  className='bg-gray-200 m-1 p-2'>+</button>
+            {year < currentYear && <button onClick={() => handleYearChange(true)}  className='bg-gray-200 m-1 p-2'>+</button>}
             <button onClick={() => setSort(prev => !prev)}className='bg-green-300 m-1 p-2'>{sort? '↑ Oldest first' : '↓ Newest first' }</button>
             <div>
-                {MONTH_KEYS.map(m => 
+                {Object.keys(stats).length !==0 ? MONTH_KEYS.map(m => 
                     stats[m] > 0 &&
                     <div key={m}>
                         <button 
@@ -42,7 +47,7 @@ export default function MonthsWithDreams(){
                         </button>
                         {m === month && showDreams && <DreamsList key={`${year}-${month}`} /> }
                     </div>
-                )}
+                ): `No dreams recorded in ${year}.`}
             </div>
         </div>
     )
