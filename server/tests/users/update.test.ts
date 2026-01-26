@@ -9,10 +9,12 @@ import { userOneAuth, userOneId } from './data.js';
 // Wipe db and save data
 beforeEach(async () => wipeDBAndSaveData())
 
-// Update account
-describe('UPDATE', async () => {
-    // Define url
-    const url = baseUrl + '/update'
+// Define url
+const url = baseUrl + '/update'
+
+// Tests
+
+describe('UPDATE FAILURE', async () => {
 
     test('Update should fail when current password value is incorrect and new password value is supplied.', async () => {
         // Send data with current password incorrect
@@ -55,16 +57,6 @@ describe('UPDATE', async () => {
         }).expect(401)
         assertErrors(response.body.errors, [{param: 'token', msg: 'Please provide json web token to authenticate.'}])
     })
-    test('Password update should succeed with valid data.', async () => {
-        // Send valid data
-        const response = await request(server).patch(url).send({
-            currPassword: 'apple123',
-            password: 'strawberrry123'
-        }).set(...userOneAuth).expect(200)
-        // New password should and tokens not be returned in response
-        expect(response.body.user).not.toHaveProperty('password')
-        expect(response.body.user).not.toHaveProperty('tokens')
-    })
 
     test('Email update should fail with taken email address.', async () => {
         // Send data with taken email address
@@ -82,6 +74,19 @@ describe('UPDATE', async () => {
         }).set(...userOneAuth).expect(400)
         // Correct error message is returned  
         assertErrors(response.body.errors, [{param: 'email', msg: 'Please provide a valid email address.'}])        
+    })
+})
+
+describe('UPDATE SUCCESS', async () => {
+    test('Password update should succeed with valid data.', async () => {
+        // Send valid data
+        const response = await request(server).patch(url).send({
+            currPassword: 'apple123',
+            password: 'strawberrry123'
+        }).set(...userOneAuth).expect(200)
+        // New password should and tokens not be returned in response
+        expect(response.body.user).not.toHaveProperty('password')
+        expect(response.body.user).not.toHaveProperty('tokens')
     })
 
     test('Email update should be successful wtih valid and available data.', async () => {

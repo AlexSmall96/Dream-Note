@@ -22,11 +22,13 @@ vi.mock("nodemailer", () => {
 // Import server after mock
 import { server } from './../setup/testServer.js'
 
+const url = baseUrl + '/sendOTP'
+
 // Send OTP for password reset or email verification
 // The below tests mock nodemailer and do not send an email
-// The purpose of this test block is to assert request data is appropriately validated and error/success messages are returned
-describe('SEND OTP', () => {
-    const url = baseUrl + '/sendOTP'
+// The purpose of this test file is to assert request data is appropriately validated and error/success messages are returned
+describe('SEND OTP FAILURE', () => {
+    
     test('Send OTP fails if email address, OTP or expiresIn are missing.', async () => {
         // Expected error message
         const expErrorMsg = "Please provide a OTP, email address and expiresIn value."
@@ -66,7 +68,9 @@ describe('SEND OTP', () => {
         // Correct error message is recieved
         expect(response.body.error).toBe('Email address taken. Please choose a different email address.')
     })
+})
 
+describe('SEND OTP SUCCESS', () => {
     test("Send OTP is successful if correct data is sent.", async () => {
         // Extract mocked sendMail property
         const sendMailMock = nodemailer.createTransport().sendMail;
