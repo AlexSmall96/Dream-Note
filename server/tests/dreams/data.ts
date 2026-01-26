@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
-import { Dream } from '../../../models/dream.model.js';
-import { userOneId, userThreeId } from '../data/users.js';
-import { userFourId } from './users.js';
+import { Dream } from '../../models/dream.model.js';
+import { userOneId, userThreeId, userFourId } from '../users/data.js';
 
 const oldDreamId = new mongoose.Types.ObjectId()
 const newDreamId = new mongoose.Types.ObjectId()

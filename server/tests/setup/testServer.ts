@@ -1,6 +1,6 @@
 import express from 'express';
-import { connectToDB } from '../connectToDB.js'
-import { setupServer } from '../setupServer.js';
+import { connectToDB } from '../../utils/connectToDB.js'
+import { setupServer } from '../../utils/setupServer.js'
 import { addRoutes } from '../../config/routes.config.js';
 
 // Create Express server

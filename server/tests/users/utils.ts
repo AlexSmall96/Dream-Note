@@ -1,6 +1,20 @@
-import { expect, test } from "vitest";
-import { EmailService } from "./email.service.js";
+import { expect } from 'vitest';
+import { EmailService } from "../../services/email.service.js";
 import { MailSlurp } from 'mailslurp-client';
+
+// Define base url for user router
+const baseUrl = '/api/users'
+
+// Helper function to make assertions on email, password and token errors
+const assertErrors = (
+    errorsResponse: {param: string, msg: string}[], 
+    errorMsgs : {param: string, msg: string}[]
+) => {
+    expect(errorsResponse).toHaveLength(errorMsgs.length)
+    errorsResponse.forEach((error, index) => {
+        expect(error).toMatchObject(errorMsgs[index])
+    })
+}
 
 // Create instance of EmailService
 const emailService = new EmailService()
@@ -25,13 +39,6 @@ const sendAndAssertEmail = async (resetPassword: boolean, OTP: number, expiresIn
     expect(email.to[0]).toBe(inbox.emailAddress)
 }
 
-// Tests
-
-test('Email should be sent with correct data for password reset.', async () => {
-    sendAndAssertEmail(true, 123456, 10)
-})
-test('Email should be sent with correct data for email address update.', async () => {
-    sendAndAssertEmail(false, 358652, 5)
-})
-
-
+export {
+    baseUrl, assertErrors, sendAndAssertEmail
+}

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
-import { User } from '../../../models/user.model.js';
+import { User } from '../../models/user.model.js';
 
 // Create user ids 
 const userOneId = new mongoose.Types.ObjectId()

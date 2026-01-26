@@ -1,9 +1,9 @@
 import { User } from '../../models/user.model.js';
 import { Dream } from '../../models/dream.model.js';
 import { Theme } from '../../models/theme.model.js';
-import { saveUsers } from './data/users.js'
-import { saveDreams } from './data/dreams.js'
-import { saveThemes } from './data/themes.js'
+import { saveUsers } from '../users/data.js'
+import { saveDreams } from '../dreams/data.js'
+import { saveThemes } from '../themes/data.js'
 
 // Wipe DB, save data
 export const wipeDBAndSaveData = async () => {

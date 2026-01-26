@@ -1,5 +1,5 @@
-import { Theme } from '../../../models/theme.model.js';
-import { oldDreamId, newDreamId, oldDreamTheme1Id, dreamWithManyThemesId } from './dreams.js';
+import { Theme } from '../../models/theme.model.js'
+import { oldDreamId, newDreamId, oldDreamTheme1Id, dreamWithManyThemesId } from '../dreams/data.js'
 
 const manyThemeTitles: string[] = []
 

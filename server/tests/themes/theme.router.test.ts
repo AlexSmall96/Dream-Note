@@ -1,21 +1,16 @@
 import request from 'supertest';
-import { server } from '../utils/test-utils/testServer.js'
-import { beforeEach, beforeAll, describe, expect, test, vi } from 'vitest';
-import { DreamInterface } from '../interfaces/dream.interfaces.js';
-import { Theme } from '../models/theme.model.js';
-import { userThreeAuth, userFourAuth } from '../utils/test-utils/data/users.js'
-import { newDream, oldDream, oldDreamTheme1Id} from '../utils/test-utils/data/dreams.js'
-import { wipeDBAndSaveData } from '../utils/test-utils/setupData.js'
+import { server } from '../setup/testServer.js'
+import { beforeEach, describe, expect, test } from 'vitest';
+import { DreamInterface } from '../../interfaces/dream.interfaces.js';
+import { Theme } from '../../models/theme.model.js';
+import { userThreeAuth, userFourAuth } from '../users/data.js'
+import { newDream, oldDream, oldDreamTheme1Id} from '../dreams/data.js'
+import { wipeDBAndSaveData } from '../setup/setupData.js'
  
-const NOW = new Date('2025-11-29T00:00:00.000Z')
-
-beforeAll(() => {
-    vi.useFakeTimers()
-    vi.setSystemTime(NOW)
-})
 
 // Wipe db and save data
 beforeEach(async () => wipeDBAndSaveData())
+
 // Define base url for theme router
 const baseUrl = '/api/themes'
 
