@@ -20,7 +20,7 @@ export default function DreamView ({
 }){
 
     const {dream, themes, analysis, showSettings, setShowSettings, tone, setTone, style, setStyle, tones, styles } = useDreamView()
-    const { searchView } = useThemesAside()
+    const { chronView } = useThemesAside()
     const router = useRouter()
 
     return (
@@ -57,7 +57,7 @@ export default function DreamView ({
             <button className='bg-blue-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/edit`)}>Edit</button>
             <button className='bg-green-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/delete`)}>Delete</button>
             <button className='bg-gray-300 p-1 m-1' onClick={() => router.replace(`/dreams/`)}>Back to Dashboard</button>
-            {!searchView &&
+            {chronView &&
             <span>
                 {index !== 0 && <button onClick={onPrev} className='bg-gray-200 px-2 py-1 m-1'>Previous dream</button>}
                 {index !== maxIndex && <button onClick={onNext} className='bg-gray-200 px-2 py-1 m-1'>Next dream</button>}

@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 export default function Aside() {
     const router = useRouter()
-    const { selectedTheme, setSelectedTheme, view, setView, search, setSearch, setSearchView } = useThemesAside()
+    const { selectedTheme, setSelectedTheme, view, setView, search, setSearch, setChronView } = useThemesAside()
     const { searchResults } = useDreams()
 
     const handleChangeView = () => {
@@ -22,7 +22,7 @@ export default function Aside() {
 
     const handleClick = (dreamId: string) => {
         router.replace(`/dreams/${dreamId}`)
-        setSearchView(true)
+        setChronView(false)
         setSearch('')
     }
 

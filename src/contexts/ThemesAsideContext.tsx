@@ -17,8 +17,8 @@ type ThemesAsideContextType = {
     setSort: setterFunction<boolean>
     search: string,
     setSearch: setterFunction<string>,
-    searchView: boolean,
-    setSearchView: setterFunction<boolean>
+    chronView: boolean ,
+    setChronView: setterFunction<boolean>
 }
 
 const ThemesAsideContext = createContext<ThemesAsideContextType | null>(null)
@@ -34,7 +34,7 @@ export function ThemesAsideProvider ({ children }:{ children: React.ReactNode })
     const [showDreams, setShowDreams] = useState(true)
     const [sort, setSort] = useState(false)
     const [search, setSearch] = useState('')
-    const [searchView, setSearchView] = useState(false)
+    const [chronView, setChronView] = useState(false)
 
     return (
         <ThemesAsideContext.Provider value={{
@@ -52,8 +52,8 @@ export function ThemesAsideProvider ({ children }:{ children: React.ReactNode })
             setSort,
             search,
             setSearch,
-            searchView,
-            setSearchView
+            chronView,
+            setChronView
         }}>
             {children}
         </ThemesAsideContext.Provider>

@@ -10,7 +10,7 @@ export default function DreamsList(){
 
     const { dreams } = useDreams()
     const { themes } = useThemes()
-    const { selectedTheme, setSearchView} = useThemesAside()
+    const { selectedTheme, setChronView, view } = useThemesAside()
 
 
     const dreamsList = selectedTheme ? 
@@ -26,7 +26,7 @@ export default function DreamsList(){
 
     const handleClick = (dreamId: string) => {
         router.replace(`/dreams/${dreamId}`)
-        setSearchView(false)
+        setChronView(view === 'dreams')
     }
 
     return (

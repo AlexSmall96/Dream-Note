@@ -22,7 +22,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     const [searchResults, setSearchResults] = useState<DreamOverview[]>([])
     const [stats, setStats] = useState<monthlyTotalType>({})
     const [refetch, setRefetch] = useState<boolean>(false)
-    const { month, year, sort, search, setSearchView } = useThemesAside()
+    const { month, year, sort, search } = useThemesAside()
 
     useEffect(() => {
         const getDreams = async () => {
@@ -52,7 +52,6 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
             try {
                 const response = await fetchSearchResults(search)
                 setSearchResults(response.dreams)
-                setSearchView(true)
             } catch (err) {
                 console.log(err)
             }            
