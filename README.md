@@ -9,6 +9,8 @@ Email: demo-user@email.com
 
 Password: demo1234
 
+**Note:** The mock version of Open AI dream analysis is currently being used to minimize costs while application is in development.
+
 ## Repository
 [https://github.com/AlexSmall96/Dream-Note](https://github.com/AlexSmall96/Dream-Note)
 ## Author
