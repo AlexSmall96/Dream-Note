@@ -1,7 +1,14 @@
 # Dream Note
 
 ## Live Site
-[https://dream-note-uh6p.onrender.com//](https://dream-note-uh6p.onrender.com/)
+[https://dream-note-uh6p.onrender.com/](https://dream-note-uh6p.onrender.com/)
+
+Credentials for demo account with sample data:
+
+Email: demo-user@email.com
+
+Password: demo1234
+
 ## Repository
 [https://github.com/AlexSmall96/Dream-Note](https://github.com/AlexSmall96/Dream-Note)
 ## Author

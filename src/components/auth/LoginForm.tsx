@@ -19,21 +19,26 @@ export default function LoginForm() {
   }
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
-        <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-        />
-        {error.param === 'email' ? error.msg : ''}
-        <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-        />
-        {error.param === 'password' ? error.msg : ''}
-        <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold'>Login</button>
-        </form>
+        <>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
+                <input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
+                />
+                {error.param === 'email' ? error.msg : ''}
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                />
+                {error.param === 'password' ? error.msg : ''}
+                <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold'>Login</button>
+            </form>
+			<h3>Credentials for demo account with sample data:</h3>
+			<p>Email: demo-user@email.com</p>
+			<p>Password: demo1234</p>
+        </>
     )
 }
