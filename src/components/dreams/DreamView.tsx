@@ -57,9 +57,10 @@ export default function DreamView ({
             <button className='bg-blue-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/edit`)}>Edit</button>
             <button className='bg-green-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/delete`)}>Delete</button>
             <button className='bg-gray-300 p-1 m-1' onClick={() => router.replace(`/dreams/`)}>Back to Dashboard</button>
-            {!searchView &&<span>
-                <button disabled={index === 0} onClick={onPrev} className='bg-gray-200 px-2 py-1 m-1'>Previous dream</button>
-                <button disabled={index === maxIndex} onClick={onNext} className='bg-gray-200 px-2 py-1 m-1'>Next dream</button>
+            {!searchView &&
+            <span>
+                {index !== 0 && <button onClick={onPrev} className='bg-gray-200 px-2 py-1 m-1'>Previous dream</button>}
+                {index !== maxIndex && <button onClick={onNext} className='bg-gray-200 px-2 py-1 m-1'>Next dream</button>}
             </span>}
         </div>
     )
