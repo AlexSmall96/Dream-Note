@@ -23,7 +23,8 @@ export default function LogNewDream() {
 			date: new Date(dream.date),
 			themes: themes
 		})
-        setDream(defaultDreamState)		
+        setDream(defaultDreamState)
+        setThemes([])		
 	}
 
     return (
