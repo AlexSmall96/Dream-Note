@@ -40,7 +40,7 @@ Descriptions of the database tables and fields are as follows:
 
 ![Database Schema](documentation/database/db-diagram.png)
 ### 📑 Methodology
-The project followed an agile methodology, with n distinct sprints . Throughout, a kanban board was used to plan and track progress.
+The project followed an agile methodology, with 7 distinct sprints . Throughout, a kanban board was used to plan and track progress.
 ![Initial Kanban Board](documentation/methodology/kanban1.png)
 
 ### Sprint 1: 📖 Planning and Initial Documentation 
@@ -55,6 +55,7 @@ User endpoints               | Dream and Theme endpoints
 ![](documentation/methodology/postman-users.png)              |![](documentation/methodology/postman-all.png)   | 
 
 ### Sprint 3: 🧪 Backend Testing 
+The majority of the functionality of the backend API was tested using Vitest. The supertest package was used to mock incoming HTTP requests, with send one time passcode requests being mocked in mailslurp. The remaining features not covered by automated tests were tested manually. See [TESTING.MD](TESTING.MD) for details.
 ### Sprint 4: 💻 Frontend Functionality 
 ### Sprint 5: 🎨 Frontend Styling 
 ### Sprint 6: 🧪 Frontend Testing 
