@@ -16,18 +16,52 @@ Password: demo1234
 ## Author
 Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
 ## Table of Contents
-
+- [Dream Note](#dream-note)
+  * [Live Site](#live-site)
+  * [Repository](#repository)
+  * [Author](#author)
+  * [Table of Contents](#table-of-contents)
+  * [🧪 Testing](#-testing)
+  * [🥅 Project Goals and Planning](#-project-goals-and-planning)
+    + [➡️ Process Flow Diagrams](#%EF%B8%8F-process-flow-diagrams)
+    + [🗃️ Database Schema](#%EF%B8%8F-database-schema)
+  * [📑 Methodology](#-methodology)
+    + [Sprint 1: 📖 Planning and Initial Documentation](#sprint-1--planning-and-initial-documentation)
+    + [Sprint 2: 🔧 Backend API](#sprint-2--backend-api)
+    + [Sprint 3: 🧪 Backend Testing](#sprint-3--backend-testing)
+    + [Sprint 4: 💻 Frontend Functionality](#sprint-4--frontend-functionality)
+    + [Sprint 5: 🎨 Frontend Styling](#sprint-5--frontend-styling)
+    + [Sprint 6: 🧪 Frontend Testing](#sprint-6--frontend-testing)
+    + [Sprint 7: 📖 Remaining Documentation](#sprint-7--remaining-documentation)
+  * [👤UX](#ux)
+    + [👥 User Stories](#-user-stories)
+    + [🎯 Target Audience](#-target-audience)
+    + [🖼️ Wireframes](#%EF%B8%8F-wireframes)
+    + [🔤 Fonts](#-fonts)
+    + [📷 Images](#-images)
+  * [🖥️  Programming Languages, Frameworks, and Libraries used](#%EF%B8%8F--programming-languages-frameworks-and-libraries-used)
+  * [Other technologies used](#other-technologies-used)
+  * [🤝 Credits](#-credits)
+    + [Courses](#courses)
+    + [APIs](#apis)
+    + [Code](#code)
 ## 🧪 Testing 
 Testing is detailed fully in [TESTING.MD](TESTING.MD)
 ## 🥅 Project Goals and Planning
 
 ### ➡️ Process Flow Diagrams
 To plan the end to end processes involved in the site, the following diagrams were created.
-#### Home Page
+
+**Home Page**
+
 ![Home Page](documentation/process-flows/HomePage.png)
-#### Log New Dream
+
+**Log New Dream**
+
 ![Log New Dream](documentation/process-flows/LogNewDream.png)
-#### View Dreams Page
+
+**View Dreams Page**
+
 ![View Dreams Page](documentation/process-flows/ViewDreamsPage.png)
 ### 🗃️ Database Schema
 The below diagram was used to model the database schema.
@@ -35,11 +69,10 @@ Descriptions of the database tables and fields are as follows:
 
 - **Users:** Contains User's login data.
 - **Dreams:** Dreams the user will record. Contains description, date, and optional title, notes, and AI analysis. Related to the User model via a many to one relationship.
-
 - **Themes:** Themes related to dream, either chosen by the user or AI generated. Related to the Dream model via a many to one relationship.
 
 ![Database Schema](documentation/database/db-diagram.png)
-### 📑 Methodology
+## 📑 Methodology
 The project followed an agile methodology, with 7 distinct sprints . Throughout, a kanban board was used to plan and track progress.
 ![Initial Kanban Board](documentation/methodology/kanban1.png)
 
