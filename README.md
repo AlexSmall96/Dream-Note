@@ -98,6 +98,7 @@ The majority of the functionality of the backend API was tested using Vitest. Th
 ## 🤝 Credits
 ### Courses
 ### APIs
+- The [Open AI API](https://openai.com/api) was used to generate dream analysis in production. A mock version was used during development to minimize costs. 
 ### Code
 
 Code was taken from/inspired by the below articles. Whenever the code is used, it is referenced as a comment.
