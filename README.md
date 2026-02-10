@@ -51,6 +51,9 @@ Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.l
 ## 🧪 Testing 
 Testing is detailed fully in [TESTING.MD](TESTING.MD)
 ## 🥅 Project Goals and Planning
+The goal of this project was to create a user-friendly dream recording app where organizing and viewing dreams is intuitive and simple, and AI integration is smooth, immediate, and impactful.
+
+This project also allowed me to develop my abilities in TypeScript and Next JS, and further refine my React skills.
 
 ### ➡️ Process Flow Diagrams
 To plan the end to end processes involved in the site, the following diagrams were created.
