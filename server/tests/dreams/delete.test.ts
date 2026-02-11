@@ -1,16 +1,31 @@
 import request from 'supertest';
 import { beforeEach, describe, expect, test } from 'vitest';
-import { wipeDBAndSaveData } from '../setup/setupData.js'
+import { wipeDB } from '../setup/wipeDB.js'
 import { server } from '../setup/testServer.js'
-import { userOneAuth, userThreeAuth } from '../users/data.js';
-import { oldDreamId } from './data.js';
+import { userOneCreds, userThreeCreds, createUser, getAuthHeader } from '../users/data.js';
 import { Theme } from '../../models/theme.model.js';
 import { Dream } from '../../models/dream.model.js';
 import { baseUrl } from './utils.js';
+import { oldDreamData } from './data.js';
+import { Types } from 'mongoose';
+
+let userOneAuth: [string, string]
+let userThreeAuth: [string, string]
+let oldDreamId: Types.ObjectId
 
 // Wipe db and save data
 beforeEach(async () => {
-    await wipeDBAndSaveData()
+    await wipeDB()
+
+    // Create two users to test authorized case vs unauthorized
+    const userOne = await createUser(userOneCreds)
+    userOneAuth = getAuthHeader(userOne.tokens[0])
+    const userThree = await createUser(userThreeCreds)
+    userThreeAuth = getAuthHeader(userThree.tokens[0])
+
+    // Create a dream owned by one of the saved users
+    const oldDream = await new Dream({...oldDreamData, owner: userThree._id}).save()
+    oldDreamId = oldDream._id
 })
 
 // Delete dream
