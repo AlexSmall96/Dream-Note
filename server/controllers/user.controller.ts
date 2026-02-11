@@ -14,9 +14,20 @@ export class UserController {
     }
 
     // Log in
-    public async handleLogIn(user: UserDocument){
+    public async handleLogIn(user: UserDocument): Promise<{user: UserDocument, token: string, isGuest: boolean}>{
         const token = await user.generateAuthToken()
-        return {user, token}
+        return {user, token, isGuest: false}
+    }
+
+    // Login as guest
+    public async handleGuestLogIn(): Promise<{user: UserDocument, token: string, isGuest: boolean}> {
+        const guestEmail = process.env.GUEST_USER_EMAIL
+        if (!guestEmail) {
+            throw new Error('GUEST_USER_EMAIL is not configured')
+        }
+        const user = await User.findByEmailOrThrowError(guestEmail)
+        const token = await user.generateAuthToken(true)
+        return {user, token, isGuest: true}
     }
 
     // Logout
