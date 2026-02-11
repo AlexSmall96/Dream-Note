@@ -10,7 +10,7 @@ export interface UserInterface {
 
 // New interface to define methods
 export interface UserMethods {
-    generateAuthToken(): Promise<string>;
+    generateAuthToken(isGuest?: boolean): Promise<string>;
 }
 
 // Create new interface from UserInterface + mongoose Document
@@ -25,5 +25,6 @@ export interface UserModel extends Model<UserDocument> {
         password: string
     ): Promise<UserDocument>;
     findByIdOrThrowError(_id: string): Promise<UserDocument>
+    findByEmailOrThrowError(email: string): Promise<UserDocument>
 }
 
