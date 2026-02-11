@@ -1,12 +1,20 @@
 import nodemailer from 'nodemailer';
 
 import request from 'supertest';
-import { wipeDBAndSaveData } from '../setup/setupData.js'
+import { wipeDB } from '../setup/wipeDB.js'
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { baseUrl } from './utils.js';
+import { userFourCreds, createUser, userOneCreds } from './data.js';
 
 // Wipe db and save data
-beforeEach(async () => wipeDBAndSaveData())
+beforeEach(async () => {
+    wipeDB()
+
+    // Create a user to test failure for taken email address
+    await createUser(userFourCreds)
+    // Create a user to test success for valid email address
+    await createUser(userOneCreds)
+})
 
 // Mock nodemailer with vi 
 vi.mock("nodemailer", () => {
