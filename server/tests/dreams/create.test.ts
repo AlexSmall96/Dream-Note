@@ -5,11 +5,12 @@ import { Dream } from '../../models/dream.model.js';
 import { Theme } from '../../models/theme.model.js';
 import { wipeDB } from '../setup/wipeDB.js'
 import { assertThemesInDB, baseUrl } from './utils.js';
-import { createUser, getAuthHeader, userOneCreds } from '../users/data.js';
+import { createUser, getAuthHeader, userOneCreds, guestUserCreds } from '../users/data.js';
 import { Types } from 'mongoose';
 
 let userOneAuth: [string, string]
 let userOneId : Types.ObjectId
+let guestAuth: [string, string]
 
 // Wipe db and save data
 beforeEach(async () => {
@@ -19,6 +20,10 @@ beforeEach(async () => {
     const userOne = await createUser(userOneCreds)
     userOneAuth = getAuthHeader(userOne.tokens[0])
     userOneId = userOne._id
+
+    // Create guest user to test that guests can create dreams
+    const guest = await createUser({...guestUserCreds, isGuest: true})
+    guestAuth = getAuthHeader(guest.tokens[0])
 })
 
 // Define default themes sent back from dev version of openAI API
@@ -104,5 +109,13 @@ describe('LOG NEW DREAM SUCCESS', () => {
         // Assert that the dream was added to the database
         savedDream = await Dream.findOne({title:'Flying dream'})
         expect(savedDream).not.toBeNull()     
+    })
+
+    test('Logging new dream should be successful as guest if dream data is valid.', async () => {
+        // Send data as guest - should get a 201 status
+        await request(server).post(url).send({
+            dream: {title: 'Flying dream'},
+            themes: []
+        }).set(...guestAuth).expect(201)
     })
 })
