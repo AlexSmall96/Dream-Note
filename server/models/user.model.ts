@@ -64,6 +64,14 @@ userSchema.statics.findByIdOrThrowError = async function (this: UserModel, _id: 
     return user
 }
 
+userSchema.statics.findByEmailOrThrowError = async function (this: UserModel, email: string) : Promise<UserDocument> {
+    const user = await this.findOne({email})
+    if (!user) {
+        throw new Error('Invalid email.')
+    }
+    return user
+}
+
 // Filters the user data to hide private data from response
 userSchema.methods.toJSON = function () {
     const user = this.toObject();
@@ -74,13 +82,13 @@ userSchema.methods.toJSON = function () {
 };
 
 // Method to generate JSON web token
-userSchema.methods.generateAuthToken = async function (this: UserDocument): Promise<string> {
+userSchema.methods.generateAuthToken = async function (this: UserDocument, isGuest: boolean = false): Promise<string> {
     const secretKey =  process.env.JWT_SECRET
     const user = this
     if (!secretKey){
         throw new Error('Please provide a json web token secret key.')
     }
-    const token = jwt.sign({ _id:user._id.toString() }, secretKey, { expiresIn: "24h" })
+    const token = jwt.sign({ _id:user._id.toString(), isGuest }, secretKey, { expiresIn: "24h" })
     user.tokens.push(token)
     await user.save()
     return token
