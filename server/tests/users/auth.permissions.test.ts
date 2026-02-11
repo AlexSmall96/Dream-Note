@@ -11,7 +11,7 @@ let userOneAuth: [string, string]
 
 // Wipe db and save data
 beforeEach(async () => {
-    wipeDB()
+    await wipeDB()
     userOne = await createUser(userOneCreds)
     userOneAuth = getAuthHeader(userOne.tokens[0])
 })

@@ -13,7 +13,7 @@ const guestUserCreds = {email: 'demo-test@email.com', password: 'demotest123'}
 
 // Wipe db and save data
 beforeEach(async () => {
-    wipeDB()
+    await wipeDB()
     userOne = await createUser({...userOneCreds, withTokens: false})
     guestUser = await createUser({...guestUserCreds, isGuest: true, withTokens: false})
 })

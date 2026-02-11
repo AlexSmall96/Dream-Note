@@ -8,7 +8,7 @@ import { userFourCreds, createUser, userOneCreds } from './data.js';
 
 // Wipe db and save data
 beforeEach(async () => {
-    wipeDB()
+    await wipeDB()
 
     // Create a user to test failure for taken email address
     await createUser(userFourCreds)

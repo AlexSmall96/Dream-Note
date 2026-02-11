@@ -13,7 +13,7 @@ let userOneId : Types.ObjectId
 
 // Wipe db and save data
 beforeEach(async () => {
-    wipeDB()
+    await wipeDB()
 
     // Create a standard user to test update success and failure
     const userOne = await createUser(userOneCreds)

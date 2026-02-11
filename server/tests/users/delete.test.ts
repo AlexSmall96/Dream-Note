@@ -17,7 +17,7 @@ let dreamId : Types.ObjectId
 
 // Wipe db and save data
 beforeEach(async () => {
-    wipeDB()
+    await wipeDB()
 
     // Create a user to be owner of dreams
     const userThree = await createUser(userThreeCreds)
