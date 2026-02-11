@@ -3,7 +3,6 @@ import { expect } from 'vitest';
 import { Theme } from '../../models/theme.model';
 import { DreamDocument } from '../../interfaces/dream.interfaces';
 import { server } from '../setup/testServer.js'
-import { userThreeAuth } from '../users/data.js';
 
 // Define base url for dream router
 const baseUrl = '/api/dreams'
@@ -30,8 +29,8 @@ const assertDreamTitlesAndDates = async (dreams: DreamDocument[], length: number
 }
 
 // Helper function to filter dreams by month and date and assert correct lengths and titles
-const filterAndAssertDreams = async(year: number, month: number, length: number, titles?: string[]) => {
-    const dreamsResponse = await request(server).get(`${baseUrl}?year=${year}&month=${month}`).set(...userThreeAuth)
+const filterAndAssertDreams = async (year: number, month: number, length: number, auth: [string, string], titles?: string[] ) => {
+    const dreamsResponse = await request(server).get(`${baseUrl}?year=${year}&month=${month}`).set(...auth)
     expect(dreamsResponse.status).toBe(200)
     const dreams = dreamsResponse.body.dreams as DreamDocument[]
     expect(dreams).toHaveLength(length)
