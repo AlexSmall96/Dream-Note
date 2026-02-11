@@ -27,6 +27,7 @@ export const auth = async (req:AuthenticatedRequest, res: Response, next: NextFu
         }
         req.user = user
         req.token = token
+        req.isGuest = decoded.isGuest
         next()
     } catch (e) {
         res.status(401).json({errors: [{param: 'token', msg:'Invalid token.'}]})
