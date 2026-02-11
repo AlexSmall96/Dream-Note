@@ -1,16 +1,43 @@
 import request from 'supertest';
 import { beforeEach, describe, expect, test } from 'vitest';
-import { wipeDBAndSaveData } from '../setup/setupData.js'
+import { wipeDB } from '../setup/wipeDB.js'
 import { server } from '../setup/testServer.js'
-import { oldDreamId, dreamWithNoDescId } from './data.js';
-import { userOneAuth, userThreeAuth } from '../users/data.js';
+import { createUser, getAuthHeader, userOneCreds, userThreeCreds } from '../users/data.js';
+import { oldDreamData, dreamWithNoDescData } from './data.js';
 import { Theme } from '../../models/theme.model.js';
 import { Dream } from '../../models/dream.model.js';
 import { baseUrl } from './utils.js';
+import { Types } from 'mongoose';
+
+// Wipe db and save data
+let userOneAuth: [string, string]
+let userOneId: Types.ObjectId
+let userThreeAuth: [string, string]
+let oldDreamId: Types.ObjectId
+let dreamWithNoDescId: Types.ObjectId
 
 // Wipe db and save data
 beforeEach(async () => {
-    await wipeDBAndSaveData()
+    await wipeDB()
+
+    // Create two users to test authorized vs unauthorized updates
+    const userOne = await createUser(userOneCreds)
+    userOneAuth = getAuthHeader(userOne.tokens[0])
+    userOneId = userOne._id
+    const userThree = await createUser(userThreeCreds)
+    userThreeAuth = getAuthHeader(userThree.tokens[0])
+
+    // Create a dream owned by userThree
+    const oldDream = await new Dream({...oldDreamData, owner: userThree._id}).save()
+    oldDreamId = oldDream._id
+
+    // Create themes associated with old dream
+    await new Theme({theme: 'Lateness', dream: oldDreamId}).save()
+    await new Theme({theme: 'Anxiety', dream: oldDreamId}).save()
+
+    // Create a dream with no description
+    const dreamWithNoDesc = await new Dream({...dreamWithNoDescData, owner: userThree._id}).save()
+    dreamWithNoDescId = dreamWithNoDesc._id
 })
 
 // Define url
