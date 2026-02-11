@@ -9,6 +9,13 @@ import { findByCredentials } from "../middleware/findByCredentials.js";
 import { AuthenticatedRequest, RequestWithUser } from "../interfaces/auth.interfaces.js";
 import { EmailService } from "../services/email.service.js";
 
+const sessionCookieOptions = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict' as const,
+    maxAge: 1000 * 60 * 60 * 24,
+};
+
 // Router class for User model
 @injectable()
 export class UserRouter {
@@ -38,25 +45,28 @@ export class UserRouter {
             } catch (err){
                 next(err);
             }
-        }
-        )
+        })
 
         // Log in
         this.router.post('/login', findByCredentials, async (req: RequestWithUser, res: Response, next: NextFunction) => {
             try {
                 const result = await this.userController.handleLogIn(req.user);
-                
                 // Set Http cookie
-                res.cookie('session', result.token, {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
-                    sameSite: 'strict',
-                    maxAge: 1000 * 60 * 60 * 24, // 1 day
-                })
-
+                res.cookie('session', result.token, sessionCookieOptions)
                 res.json(result) 
             } catch (err){
                 next(err);
+            }
+        })
+
+        // Login to guest account
+        this.router.post('/login-guest', async (_req: Request, res: Response, next: NextFunction) => {
+            try {
+                const result = await this.userController.handleGuestLogIn();
+                res.cookie('session', result.token, sessionCookieOptions)
+                res.json(result)
+            } catch (err) {
+                next(err)
             }
         })
 
@@ -88,8 +98,10 @@ export class UserRouter {
         The code to validate and send to an email address was taken from the following article
         https://medium.com/@elijahechekwu/sending-emails-in-node-express-js-with-nodemailer-gmail-part-1-67b7da4ae04b
         */
-        this.router.post('/sendOTP', async (req: Request, res: Response, next: NextFunction) => {
-
+        this.router.post('/sendOTP', async (req: Request | AuthenticatedRequest, res: Response, next: NextFunction) => {
+            if ('isGuest' in req && req.isGuest){
+                return res.status(403).send({error: 'Guest users are not authorized to send emails.'})
+            }
             // Get purpose, email and OTP from request body
             const {email, OTP, resetPassword, expiresIn} = req.body
 
@@ -120,6 +132,9 @@ export class UserRouter {
 
         // Update user details
         this.router.patch('/update', auth, signupOrUpdateValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+            if (req.isGuest){
+                return res.status(403).send({error: 'Guest users are not authorized to update profile details.'})
+            }
             // Check if password has been supplied and current password is correct
             const currPassword = req.body.currPassword
             const newPassword = req.body.password
@@ -148,6 +163,9 @@ export class UserRouter {
 
         // Delete account
         this.router.delete('/delete', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+            if (req.isGuest){
+                return res.status(403).send({error: 'Guest users are not authorized to delete account.'})
+            }
             try {
                 const result = await this.userController.handleDeleteAccount(req.user._id);
                 res.json(result) 
