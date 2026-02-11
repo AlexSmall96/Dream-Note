@@ -3,13 +3,22 @@ import { server } from '../setup/testServer.js'
 import { beforeEach, describe, expect, test } from 'vitest';
 import { Dream } from '../../models/dream.model.js';
 import { Theme } from '../../models/theme.model.js';
-import { userOneId, userOneAuth  } from '../users/data.js';
-import { wipeDBAndSaveData } from '../setup/setupData.js'
+import { wipeDB } from '../setup/wipeDB.js'
 import { assertThemesInDB, baseUrl } from './utils.js';
+import { createUser, getAuthHeader, userOneCreds } from '../users/data.js';
+import { Types } from 'mongoose';
+
+let userOneAuth: [string, string]
+let userOneId : Types.ObjectId
 
 // Wipe db and save data
 beforeEach(async () => {
-    await wipeDBAndSaveData()
+    await wipeDB()
+
+    // Create a user to authenticate as while creating dreams
+    const userOne = await createUser(userOneCreds)
+    userOneAuth = getAuthHeader(userOne.tokens[0])
+    userOneId = userOne._id
 })
 
 // Define default themes sent back from dev version of openAI API
