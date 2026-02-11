@@ -3,8 +3,9 @@ import nodemailer from 'nodemailer';
 import request from 'supertest';
 import { wipeDB } from '../setup/wipeDB.js'
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { baseUrl } from './utils.js';
-import { userFourCreds, createUser, userOneCreds } from './data.js';
+import { baseUrl } from './data.js';
+import { createUser } from './utils/userCreation.js';
+import { userFourCreds, userOneCreds } from './data.js';
 
 // Wipe db and save data
 beforeEach(async () => {

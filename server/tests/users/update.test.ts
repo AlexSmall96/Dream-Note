@@ -2,8 +2,9 @@ import request from 'supertest';
 import { server } from '../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { User } from '../../models/user.model.js';
-import { baseUrl, assertErrors } from './utils.js';
-import { createUser, getAuthHeader, userOneCreds, guestUserCreds } from './data.js';
+import { assertErrors } from './utils/assertErrors.js';
+import { createUser, getAuthHeader } from './utils/userCreation.js';
+import { baseUrl, userOneCreds, guestUserCreds } from './data.js';
 import { wipeDB } from '../setup/wipeDB.js';
 import { Types } from 'mongoose';
 

@@ -1,5 +1,5 @@
 import { test } from "vitest";
-import { sendAndAssertEmail } from "./utils";
+import { sendAndAssertEmail } from './utils/emailUtils.js';
 
 // Tests
 

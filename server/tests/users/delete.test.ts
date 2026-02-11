@@ -3,9 +3,9 @@ import { server } from '../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { Theme } from '../../models/theme.model.js';
 import { Dream } from '../../models/dream.model.js';
-import { baseUrl, assertErrors } from './utils.js';
-import { getAuthHeader, userThreeCreds, createUser, guestUserCreds } from './data.js';
-import { User } from '../../models/user.model.js';
+import { assertErrors } from './utils/assertErrors.js'
+import { getAuthHeader, createUser } from './utils/userCreation.js';
+import { baseUrl, userThreeCreds, guestUserCreds } from './data.js';
 import { oldDreamData } from '../dreams/data.js';
 import { Types } from 'mongoose';
 import { wipeDB } from '../setup/wipeDB.js';

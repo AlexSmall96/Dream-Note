@@ -2,8 +2,9 @@ import request from 'supertest';
 import { server } from '../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { User } from '../../models/user.model.js';
-import { baseUrl } from './utils.js';
-import { userType, userOneCreds, createUser } from './data.js';
+import { userOneCreds, baseUrl } from './data.js';
+import { userType, createUser } from './utils/userCreation.js';
+
 import { wipeDB } from '../setup/wipeDB.js';
 
 let userOne: userType

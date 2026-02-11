@@ -1,20 +1,6 @@
 import { expect } from 'vitest';
-import { EmailService } from "../../services/email.service.js";
+import { EmailService } from "../../../services/email.service.js";
 import { MailSlurp } from 'mailslurp-client';
-
-// Define base url for user router
-const baseUrl = '/api/users'
-
-// Helper function to make assertions on email, password and token errors
-const assertErrors = (
-    errorsResponse: {param: string, msg: string}[], 
-    errorMsgs : {param: string, msg: string}[]
-) => {
-    expect(errorsResponse).toHaveLength(errorMsgs.length)
-    errorsResponse.forEach((error, index) => {
-        expect(error).toMatchObject(errorMsgs[index])
-    })
-}
 
 // Create instance of EmailService
 const emailService = new EmailService()
@@ -23,7 +9,7 @@ const emailService = new EmailService()
 const mailslurp = new MailSlurp({ apiKey: process.env.MAIL_SLURP_API_KEY || '' });
 
 // Function to send email using transporter and assert data is correct
-const sendAndAssertEmail = async (resetPassword: boolean, OTP: number, expiresIn: number) => {
+export const sendAndAssertEmail = async (resetPassword: boolean, OTP: number, expiresIn: number) => {
     // Create inbox with mailslurp
     const inbox = await mailslurp.inboxController.createInboxWithDefaults();
     // Send email using transporter
@@ -37,8 +23,4 @@ const sendAndAssertEmail = async (resetPassword: boolean, OTP: number, expiresIn
     expect(email.subject).toBe(`Your Dream Note OTP for ${resetPassword? 'password reset': 'email address verification'}`)
     expect(email.from).toBe(process.env.SMTP_MAIL)
     expect(email.to[0]).toBe(inbox.emailAddress)
-}
-
-export {
-    baseUrl, assertErrors, sendAndAssertEmail
 }
