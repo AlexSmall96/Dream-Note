@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { login } from '@/lib/api/auth'
+import { login, loginGuest } from '@/lib/api/auth'
+import { useRouter } from "next/navigation"
 
 export default function LoginForm() {
     const [email, setEmail] = useState("")
@@ -16,7 +17,18 @@ export default function LoginForm() {
            return setError(result.errors[0])
         }   
         window.location.href = "/dreams"
-  }
+    }
+
+    async function handleLoginGuest() {
+        try {
+            await loginGuest()
+            window.location.href = "/dreams"
+        } catch (err){
+            console.log(err)
+        }
+    }
+    
+    const router = useRouter()
 
     return (
         <>
@@ -35,10 +47,10 @@ export default function LoginForm() {
                 />
                 {error.param === 'password' ? error.msg : ''}
                 <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold'>Login</button>
+                <button type="button" onClick={handleLoginGuest} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Continue as Guest</button>
+                <p>Don't have an account?</p>
+                <button type="button" onClick={() => router.replace('/auth/signup')} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Signup</button>
             </form>
-			<h3>Credentials for demo account with sample data:</h3>
-			<p>Email: demo-user@email.com</p>
-			<p>Password: demo1234</p>
         </>
     )
 }

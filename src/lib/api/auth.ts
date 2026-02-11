@@ -22,6 +22,10 @@ export async function login(data: authInput){
     return apiFetch<user | errorMsgs, authInput>('/users/login', {method: 'POST', body: data})
 }
 
+export async function loginGuest(){
+    return apiFetch<user>('/users/login-guest', {method: 'POST'})
+}
+
 export async function getCurrentUser() {
     return apiFetch<user | errorMsgs>('/users/auth/me');
 }
