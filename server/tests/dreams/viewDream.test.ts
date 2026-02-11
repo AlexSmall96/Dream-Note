@@ -1,19 +1,42 @@
 import request from 'supertest';
 import { beforeEach, describe, expect, test } from 'vitest';
-import { wipeDBAndSaveData } from '../setup/setupData.js'
-import { oldDream, oldDreamId } from './data.js';
+import { wipeDB } from '../setup/wipeDB.js'
 import { server } from '../setup/testServer.js'
-import { userOneAuth, userThreeId, userThreeAuth } from '../users/data.js';
 import { baseUrl } from './utils.js';
+import { Types } from 'mongoose';
+import { userOneCreds, userThreeCreds, createUser, getAuthHeader } from '../users/data.js';
+import { Dream } from '../../models/dream.model.js';
+import { oldDreamData } from './data.js';
+import { Theme } from '../../models/theme.model.js';
+
+let userOneAuth: [string, string]
+let userThreeAuth: [string, string]
+let oldDreamId: Types.ObjectId
+let userThreeId: Types.ObjectId
 
 // Wipe db and save data
 beforeEach(async () => {
-    await wipeDBAndSaveData()
+    await wipeDB()
+
+    // Create two users to test authorized case vs unauthorized
+    const userOne = await createUser(userOneCreds)
+    userOneAuth = getAuthHeader(userOne.tokens[0])
+    const userThree = await createUser(userThreeCreds)
+    userThreeAuth = getAuthHeader(userThree.tokens[0])
+    userThreeId = userThree._id
+
+    // Create a dream owned by one of the saved users
+    const oldDream = await new Dream({...oldDreamData, owner: userThree._id}).save()
+    oldDreamId = oldDream._id
+
+    // Create themes associated with old dream
+    await new Theme({theme: 'Lateness', dream: oldDreamId}).save()
+    await new Theme({theme: 'Anxiety', dream: oldDreamId}).save()
 })
 
-// View a dream
+// Tests
+
 describe('VIEW DREAM DETAILS', () => {
-    // Define url
     const url = baseUrl + '/view'
 
     test('View dream should succeed with valid id if user is owner of dream.', async () => {
@@ -22,9 +45,9 @@ describe('VIEW DREAM DETAILS', () => {
         const { dream, themes } = response.body
         const { title, description, date, owner } = dream
         // Assert that dream response matches test data
-        expect(title).toBe(oldDream.title)
-        expect(description).toBe(oldDream.description)
-        expect(date).toBe(oldDream.date)
+        expect(title).toBe(oldDreamData.title)
+        expect(description).toBe(oldDreamData.description)
+        expect(date).toBe(oldDreamData.date)
         expect(owner).toBe(userThreeId.toString())
         // Assert themes are correct - should be 2 in total
         expect(themes).toHaveLength(2)
