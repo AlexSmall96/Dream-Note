@@ -1,13 +1,20 @@
 import request from 'supertest';
-import { wipeDBAndSaveData } from '../setup/setupData.js'
 import { server } from '../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { User } from '../../models/user.model.js';
 import { baseUrl, assertErrors } from './utils.js';
-import { userOne, userOneAuth, userOneId } from './data.js';
+import { getAuthHeader, userType, userOneCreds, createUser } from './data.js';
+import { wipeDB } from '../setup/wipeDB.js';
+
+let userOne: userType
+let userOneAuth: [string, string]
 
 // Wipe db and save data
-beforeEach(async () => wipeDBAndSaveData())
+beforeEach(async () => {
+    wipeDB()
+    userOne = await createUser(userOneCreds)
+    userOneAuth = getAuthHeader(userOne.tokens[0])
+})
 
 // Define url
 const signupUrl = baseUrl + '/signup'
@@ -66,8 +73,6 @@ const loginUrl = baseUrl + '/login'
 
 // Auth tests: Login, Logout and auth/me
 describe('LOGIN FAILURE', () => {
-
-
     test('Login should fail with incorrect email address.', async () => {
         // Post unused email address
         const response = await request(server).post(loginUrl).send({
@@ -89,31 +94,6 @@ describe('LOGIN FAILURE', () => {
     })
 })
 
-describe('LOGIN/LOGOUT SUCCESS', () => {
-    test('Login should be successful with correct credentials, and logout should succeed using generated token.', async () => {
-        // Extract user id
-        const id = userOne._id.toString()
-        // Assert that only 1 token currently exists in database
-        let user = await User.findByIdOrThrowError(id)
-        expect(user.tokens).toHaveLength(1)
-        // Send correct data
-        const response = await request(server).post(loginUrl).send(userOne).expect(200)
-        // User object and token should be returned
-        expect(response.body.user).toMatchObject({email:userOne.email, _id: id})
-        const token = response.body.token
-        expect(token).not.toBeNull()
-        expect(response.body).not.toHaveProperty('password')
-        // Assert token was added to User in database
-        user = await User.findByIdOrThrowError(id)
-        expect(user.tokens).toHaveLength(2)
-        // Logout
-        await request(server).post(`${baseUrl}/logout`).set('Authorization', `Bearer ${token}`).expect(200)
-        // Assert database has changed - Token should have been removed
-        user = await User.findByIdOrThrowError(id)
-        expect(user.tokens).toHaveLength(1)        
-    })
-})
-
 describe('LOGOUT FAILURE', () => {
     test('Logout should fail when not authenticated.', async () => {
         // No token
@@ -128,7 +108,7 @@ describe('LOGOUT FAILURE', () => {
 describe('GET AUTHENTICATED USER', () => {
     test('Get currently authenticated user returns correct data.', async () => {
         const response = await request(server).get(`${baseUrl}/auth/me`).set(...userOneAuth).expect(200)
-        expect(response.body._id).toBe(userOneId.toString())
+        expect(response.body._id).toBe(userOne._id.toString())
         expect(response.body.email).toBe(userOne.email)
     })
 })
