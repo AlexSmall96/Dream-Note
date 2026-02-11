@@ -3,13 +3,63 @@ import { server } from '../setup/testServer.js'
 import { beforeEach, describe, expect, test } from 'vitest';
 import { DreamInterface } from '../../interfaces/dream.interfaces.js';
 import { Theme } from '../../models/theme.model.js';
-import { userThreeAuth, userFourAuth } from '../users/data.js'
-import { newDream, oldDream, oldDreamTheme1Id} from '../dreams/data.js'
-import { wipeDBAndSaveData } from '../setup/setupData.js'
+import { createUser, userThreeCreds, userFourCreds, getAuthHeader } from '../users/data.js'
+import { oldDreamData, newDreamData, dreamWithManyThemesData } from '../dreams/data.js';
+import { wipeDB } from '../setup/wipeDB.js'
+import { Types } from 'mongoose';
+import { Dream } from '../../models/dream.model.js';
  
+type dreamType = {
+    title: string,
+    description: string,
+    date: Date,
+    owner: Types.ObjectId,
+    _id: Types.ObjectId
+}
+
+let userThreeAuth: [string, string]
+let userFourAuth: [string, string]
+let oldDream: dreamType
+let newDream: dreamType
+let oldDreamTheme1Id : Types.ObjectId
 
 // Wipe db and save data
-beforeEach(async () => wipeDBAndSaveData())
+beforeEach(async () => {
+    wipeDB()
+
+    // Create two users to test get all dreams and pagination & sorting
+    const userThree = await createUser(userThreeCreds)
+    userThreeAuth = getAuthHeader(userThree.tokens[0])
+    const userFour = await createUser(userFourCreds)
+    userFourAuth = getAuthHeader(userFour.tokens[0])
+
+    // Create two dreams owned by userThree
+    oldDream = await new Dream({...oldDreamData, owner: userThree._id}).save()
+    newDream = await new Dream({...newDreamData, owner: userThree._id}).save()
+
+    // Create two themes to associate with each dream
+    const oldDreamTheme1 = await new Theme({theme: 'Lateness', dream: oldDream._id}).save()
+    oldDreamTheme1Id = oldDreamTheme1._id
+    await new Theme({theme: 'Anxiety', dream: oldDream._id}).save()
+    await new Theme({theme: 'Fear', dream: newDream._id}).save()
+    await new Theme({theme: 'Animals', dream: newDream._id}).save()
+
+    // Create a dream owned by userFour and associated themes to test sorting and pagination
+    const dreamWithManyThemes = await new Dream({...dreamWithManyThemesData, owner: userFour._id}).save()
+    const manyThemeTitles: string[] = []
+    for (let i=0; i<10; i++){
+        manyThemeTitles.push(i < 5? `b-theme-${i}` : i < 8 ? `a-theme-${i}` : `c-theme-${i}`)
+    }
+    await Promise.all(
+        manyThemeTitles.map(async (theme, i) => {
+            await new Theme({
+                theme,
+                dream: dreamWithManyThemes._id,
+            }).save()
+        })
+    )
+    
+})
 
 // Define base url for theme router
 const baseUrl = '/api/themes'
