@@ -1,14 +1,57 @@
 import request from 'supertest';
 import { server } from '../setup/testServer.js'
 import { beforeEach, describe, expect, test } from 'vitest';
-import { userOneAuth, userThreeAuth  } from '../users/data.js';
-import { oldDream, newDream } from './data.js';
-import { wipeDBAndSaveData } from '../setup/setupData.js'
+import { createUser, getAuthHeader, userOneCreds, userThreeCreds  } from '../users/data.js';
+import { wipeDB } from '../setup/wipeDB.js'
 import { assertDreamTitlesAndDates, baseUrl, filterAndAssertDreams } from './utils.js';
+import { oldDreamData, newDreamData } from './data.js';
+import { Dream } from '../../models/dream.model.js';
+import { Types } from 'mongoose';
+
+let userOneAuth: [string, string]
+let userOneId: Types.ObjectId
+let userThreeAuth: [string, string]
+let oldDreamTitle: string
+let newDreamTitle: string
 
 // Wipe db and save data
 beforeEach(async () => {
-    await wipeDBAndSaveData()
+    await wipeDB()
+
+    // Create two users to test pagination, search functionality and date filter
+    const userOne = await createUser(userOneCreds)
+    userOneAuth = getAuthHeader(userOne.tokens[0])
+    userOneId = userOne._id
+    const userThree = await createUser(userThreeCreds)
+    userThreeAuth = getAuthHeader(userThree.tokens[0])
+
+    // For pagination:
+    const userOneTitles: string[] = []
+    for (let i=1; i<10; i++){
+        userOneTitles.push(`dream${i}`)
+    }
+    await Promise.all(
+        userOneTitles.map(async (title, index) => {
+            const date = `2025-06-0${index + 1}T00:00:00.000Z`
+            await new Dream({title, date, owner: userOne._id}).save()
+        })
+    )
+
+    // For title search:
+    const userThreeTitles = ['In space', 'In space without a space suit', 'In space wearing a space suit']
+    await Promise.all(
+        userThreeTitles.map(async (title, index) => {
+            const date = `2025-06-0${index + 1}T00:00:00.000Z`
+            await new Dream({title, owner: userThree._id, date}).save()
+        })
+    )
+
+    // For date (month & year) filtering
+    const oldDream = await new Dream({...oldDreamData, owner: userThree._id}).save()
+    oldDreamTitle = oldDream.title
+    const newDream = await new Dream({...newDreamData, owner: userThree._id}).save()
+    newDreamTitle = newDream.title
+
 })
 
 // Get dreams
@@ -60,9 +103,9 @@ describe('GET ALL DREAMS', () => {
     })
 
     test('Setting month and year returns correct dreams.', async () => {
-        await filterAndAssertDreams(2024, 12, 1, [oldDream.title])
-        await filterAndAssertDreams(2025, 5, 1, [newDream.title])
-        await filterAndAssertDreams(2025, 6, 3, ['In space wearing a space suit', 'In space without a space suit', 'In space'])
-        await filterAndAssertDreams(2020, 2, 0)
+        await filterAndAssertDreams(2024, 12, 1, userThreeAuth,  [oldDreamTitle])
+        await filterAndAssertDreams(2025, 5, 1, userThreeAuth, [newDreamTitle])
+        await filterAndAssertDreams(2025, 6, 3, userThreeAuth, ['In space wearing a space suit', 'In space without a space suit', 'In space'])
+        await filterAndAssertDreams(2020, 2, 0, userThreeAuth)
     })
 })
