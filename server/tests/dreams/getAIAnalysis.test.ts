@@ -1,13 +1,19 @@
 import request from 'supertest';
 import { beforeEach, describe, expect, test } from 'vitest';
-import { wipeDBAndSaveData } from '../setup/setupData.js'
+import { wipeDB } from '../setup/wipeDB.js'
 import { server } from '../setup/testServer.js'
-import { userOneAuth } from '../users/data.js';
+import { createUser, getAuthHeader, userOneCreds } from '../users/data.js';
 import { baseUrl } from './utils.js';
+
+let userOneAuth: [string, string]
 
 // Wipe db and save data
 beforeEach(async () => {
-    await wipeDBAndSaveData()
+    await wipeDB()
+
+    // Create two users to test authorized case vs unauthorized
+    const userOne = await createUser(userOneCreds)
+    userOneAuth = getAuthHeader(userOne.tokens[0])
 })
 
 describe('GET ANALYSIS', () => {
