@@ -10,6 +10,7 @@ export interface RequestWithUser extends Request {
 // Extend express Request interface with user and token
 export interface AuthenticatedRequest extends RequestWithUser {
     token?: string;
+    isGuest?: boolean;
 }
 
 // Extend JwtPayload with id
