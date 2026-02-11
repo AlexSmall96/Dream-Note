@@ -1,15 +1,30 @@
 import request from 'supertest';
-import { wipeDBAndSaveData } from '../setup/setupData.js'
 import { server } from '../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { User } from '../../models/user.model.js';
 import { baseUrl, assertErrors } from './utils.js';
-import { userOneAuth, userOneId } from './data.js';
+import { createUser, getAuthHeader, userOneCreds, guestUserCreds } from './data.js';
+import { wipeDB } from '../setup/wipeDB.js';
+import { Types } from 'mongoose';
+
+let userOneAuth: [string, string]
+let guestAuth: [string, string]
+let userOneId : Types.ObjectId
 
 // Wipe db and save data
-beforeEach(async () => wipeDBAndSaveData())
+beforeEach(async () => {
+    wipeDB()
 
-// Define url
+    // Create a standard user to test update success and failure
+    const userOne = await createUser(userOneCreds)
+    userOneAuth = getAuthHeader(userOne.tokens[0])
+    userOneId = userOne._id
+    
+    // Create guest user to test that update is forbidden
+    const guest = await createUser({...guestUserCreds, isGuest: true})
+    guestAuth = getAuthHeader(guest.tokens[0])
+})
+
 const url = baseUrl + '/update'
 
 // Tests
@@ -51,11 +66,20 @@ describe('UPDATE FAILURE', async () => {
     })
 
     test('Update should fail when not authenticated.', async () => {
+        // Send unauthenticated response
         const response = await request(server).patch(url).send({
             currPassword: 'apple123',
             password: 'strawberrry123'
         }).expect(401)
         assertErrors(response.body.errors, [{param: 'token', msg: 'Please provide json web token to authenticate.'}])
+    })
+
+    test('Update should fail when signed in as guest.', async () => {
+        // Send response as guest
+        const response = await request(server).patch(url).send({
+            email: 'demo-test2@email.com'
+        }).set(...guestAuth).expect(403)
+        expect(response.body.error).toBe('Guest users are not authorized to update profile details.')
     })
 
     test('Email update should fail with taken email address.', async () => {
@@ -68,7 +92,7 @@ describe('UPDATE FAILURE', async () => {
     })
 
     test('Email update should fail with invalid email address.', async () => {
-        // Send data with taken invalid address
+        // Send data with taken address
         const response = await request(server).patch(url).send({
             email: 'user1',
         }).set(...userOneAuth).expect(400)
