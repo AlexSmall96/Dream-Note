@@ -74,8 +74,11 @@ export class UserRouter {
         this.router.get('/auth/me', auth, (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
                 res.json({
-                    _id: req.user._id,
-                    email: req.user.email,
+                    user: {
+                        _id: req.user._id,
+                        email: req.user.email
+                    }, 
+                    isGuest: req.isGuest
                 })
             } catch (err){
                 next(err)
