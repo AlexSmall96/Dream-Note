@@ -1,12 +1,19 @@
+import LandingPage from '@/components/LandingPage';
+import { getCurrentUser } from '@/lib/api/auth';
 import React from 'react';
+import { redirect } from "next/navigation"
 
-export default function Home() {
+export default async function Home() {
+	const result = await getCurrentUser()
+
+	if (!('errors' in result)){
+		redirect('/dreams')
+	}
+
   	return (
 		<div className="flex flex-col items-center m-4">
 			<h1>Home page</h1>  
-			<h3>Credentials for demo account with sample data:</h3>
-			<p>Email: demo-user@email.com</p>
-			<p>Password: demo1234</p>
+			<LandingPage />
 		</div>
   	);
 }
