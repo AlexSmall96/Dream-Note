@@ -1,31 +1,28 @@
 "use client"
-import { fetchCurrentUser, loginGuest } from "@/lib/api/auth"
+import { useCurrentUser } from "@/contexts/CurrentUserContext"
+import { loginGuest } from "@/lib/api/auth"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 export default function LandingPage(){
 
     const router = useRouter()
-    const [loading, setLoading] = useState(true)
+    const {currentUser, loading } = useCurrentUser()
 
+    // Redirect to dreams dashboard if logged in
     useEffect(() => {
-        const redirect = async () => {
-            const result = await fetchCurrentUser()  
-            if (!('errors' in result)){
-                router.replace('/dreams')
-            } else {
-                setLoading(false)
-            }
+        if (!loading && currentUser) {
+            router.replace("/dreams");
         }
-        redirect()
-    }, [])
+    }, [loading, currentUser, router])
 
     if (loading) return (<div>...Loading</div>)
-        
+    
+    
     async function handleLoginGuest() {
         try {
             await loginGuest()
-            window.location.href = "/dreams"
+            router.replace("/dreams")
         } catch (err){
             console.log(err)
         }
