@@ -1,14 +1,7 @@
 import LandingPage from '@/components/home/LandingPage';
-import { getCurrentUser } from '@/lib/api/auth';
 import React from 'react';
-import { redirect } from "next/navigation"
 
-export default async function Home() {
-	const result = await getCurrentUser()
-
-	if (!('errors' in result)){
-		redirect('/dreams')
-	}
+export default  function Home() {
 
   	return (
 		<div className="flex flex-col items-center m-4">
