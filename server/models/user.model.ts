@@ -88,7 +88,7 @@ userSchema.methods.generateAuthToken = async function (this: UserDocument, isGue
     if (!secretKey){
         throw new Error('Please provide a json web token secret key.')
     }
-    const token = jwt.sign({ _id:user._id.toString(), isGuest }, secretKey, { expiresIn: "24h" })
+    const token = jwt.sign({ _id:user._id.toString(), isGuest }, secretKey, { expiresIn: isGuest? '30m' : "24h" })
     user.tokens.push(token)
     await user.save()
     return token
