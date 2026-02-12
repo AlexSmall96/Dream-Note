@@ -3,7 +3,8 @@ import { server } from '../setup/testServer.js'
 import { beforeEach, describe, expect, test } from 'vitest';
 import { DreamInterface } from '../../interfaces/dream.interfaces.js';
 import { Theme } from '../../models/theme.model.js';
-import { createUser, userThreeCreds, userFourCreds, getAuthHeader } from '../users/data.js'
+import { userThreeCreds, userFourCreds  } from '../users/data.js'
+import { createUser, getAuthHeader } from '../users/utils/userCreation.js';
 import { oldDreamData, newDreamData, dreamWithManyThemesData } from '../dreams/data.js';
 import { wipeDB } from '../setup/wipeDB.js'
 import { Types } from 'mongoose';

@@ -2,7 +2,8 @@ import request from 'supertest';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { wipeDB } from '../setup/wipeDB.js'
 import { server } from '../setup/testServer.js'
-import { createUser, getAuthHeader, userOneCreds, userThreeCreds } from '../users/data.js';
+import { userOneCreds, userThreeCreds } from '../users/data.js';
+import { createUser, getAuthHeader } from '../users/utils/userCreation.js'
 import { oldDreamData, dreamWithNoDescData } from './data.js';
 import { Theme } from '../../models/theme.model.js';
 import { Dream } from '../../models/dream.model.js';

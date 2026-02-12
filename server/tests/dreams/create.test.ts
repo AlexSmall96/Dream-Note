@@ -5,7 +5,9 @@ import { Dream } from '../../models/dream.model.js';
 import { Theme } from '../../models/theme.model.js';
 import { wipeDB } from '../setup/wipeDB.js'
 import { assertThemesInDB, baseUrl } from './utils.js';
-import { createUser, getAuthHeader, userOneCreds, guestUserCreds } from '../users/data.js';
+import { userOneCreds, guestUserCreds } from '../users/data.js';
+import {createUser, getAuthHeader} from '../users/utils/userCreation.js'
+
 import { Types } from 'mongoose';
 
 let userOneAuth: [string, string]

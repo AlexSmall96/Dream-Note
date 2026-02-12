@@ -4,7 +4,8 @@ import { wipeDB } from '../setup/wipeDB.js'
 import { server } from '../setup/testServer.js'
 import { baseUrl } from './utils.js';
 import { Types } from 'mongoose';
-import { userOneCreds, userThreeCreds, createUser, getAuthHeader } from '../users/data.js';
+import { userOneCreds, userThreeCreds } from '../users/data.js';
+import { createUser, getAuthHeader } from '../users/utils/userCreation.js'
 import { Dream } from '../../models/dream.model.js';
 import { oldDreamData } from './data.js';
 import { Theme } from '../../models/theme.model.js';

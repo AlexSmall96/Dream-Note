@@ -1,7 +1,8 @@
 import request from 'supertest';
 import { server } from '../setup/testServer.js'
 import { beforeEach, describe, expect, test } from 'vitest';
-import { createUser, getAuthHeader, userOneCreds, userThreeCreds  } from '../users/data.js';
+import { userOneCreds, userThreeCreds  } from '../users/data.js';
+import { createUser, getAuthHeader } from '../users/utils/userCreation.js'
 import { wipeDB } from '../setup/wipeDB.js'
 import { assertDreamTitlesAndDates, baseUrl, filterAndAssertDreams } from './utils.js';
 import { oldDreamData, newDreamData } from './data.js';

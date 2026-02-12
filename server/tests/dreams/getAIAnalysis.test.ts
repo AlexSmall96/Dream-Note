@@ -2,7 +2,8 @@ import request from 'supertest';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { wipeDB } from '../setup/wipeDB.js'
 import { server } from '../setup/testServer.js'
-import { createUser, getAuthHeader, userOneCreds } from '../users/data.js';
+import { userOneCreds } from '../users/data.js';
+import {createUser, getAuthHeader} from '../users/utils/userCreation.js'
 import { baseUrl } from './utils.js';
 
 let userOneAuth: [string, string]
