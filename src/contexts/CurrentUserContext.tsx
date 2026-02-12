@@ -1,4 +1,4 @@
-"use-client"
+"use client"
 import { fetchCurrentUser } from '@/lib/api/auth'
 import { setterFunction } from '@/types/setterFunctions'
 import { createContext, useState, useEffect, useContext} from 'react'
