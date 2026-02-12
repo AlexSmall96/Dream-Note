@@ -19,6 +19,6 @@ export default function ProtectedLayout({
     }, [loading, currentUser, router])
 
     return (
-        <>{loading? null : children}</>
+        <>{loading? null : currentUser ? children: null}</>
     )
     }
