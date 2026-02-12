@@ -1,5 +1,5 @@
 "use client"
-import { getCurrentUser, loginGuest } from "@/lib/api/auth"
+import { fetchCurrentUser, loginGuest } from "@/lib/api/auth"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -10,7 +10,7 @@ export default function LandingPage(){
 
     useEffect(() => {
         const redirect = async () => {
-            const result = await getCurrentUser()  
+            const result = await fetchCurrentUser()  
             if (!('errors' in result)){
                 router.replace('/dreams')
             } else {
