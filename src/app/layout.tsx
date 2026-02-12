@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import Link from 'next/link';
-
 import "./globals.css";
 import Navbar from "@/components/nav/Navbar";
+import RootClientWrapper from "./RootClientWrapper";
 
 export const metadata: Metadata = {
 	title: "Dream Note",
@@ -18,9 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
 		<body>
-			<Navbar />
-        	{children}
-      	</body>
+			<RootClientWrapper>
+				<Navbar />
+				{children}
+			</RootClientWrapper>
+		</body>
     </html>
   );
 }
