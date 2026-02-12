@@ -1,10 +1,11 @@
 import { fetchThemes } from "@/lib/api/themes"
+import { setterFunction } from "@/types/setterFunctions"
 import { ThemeWithDreamDataResponse } from "@/types/themes"
 import { createContext, useContext, useEffect, useState } from 'react'
 
 type ThemesContextType = {
     themes: ThemeWithDreamDataResponse[]
-    setThemes: React.Dispatch<React.SetStateAction<ThemeWithDreamDataResponse[]>>
+    setThemes: setterFunction<ThemeWithDreamDataResponse[]>
 }
 
 const ThemesContext = createContext<ThemesContextType | null>(null)
@@ -23,7 +24,7 @@ export function ThemesProvider({ children }:{ children: React.ReactNode }) {
             }
         }
         getThemes()
-    })
+    }, [])
 
     return (
         <ThemesContext.Provider value={{themes, setThemes}}>
