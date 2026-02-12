@@ -86,8 +86,8 @@ export class UserRouter {
         // Logout 
         this.router.post('/logout', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
-                const result = await this.userController.handleLogOut(req);
-                res.json(result) 
+                await this.userController.handleLogOut(req);
+                res.json({message: 'Logged out successfully'}) 
             } catch (err){
                 next(err)
             }
