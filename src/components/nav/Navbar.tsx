@@ -1,13 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import Link from "next/link"
-import { getCurrentUser } from "@/lib/api/auth"
-
-type User = {
-  id: string
-  email: string
-}
+import { useCurrentUser } from "@/contexts/CurrentUserContext"
 
 function LoggedOutNav() {
   return (
@@ -43,27 +37,8 @@ function LoggedInNav() {
 
 
 export default function Navbar() {
-    const [authorized, setAuthorized] = useState(false)
-    const [loading, setLoading] = useState(true)
+    const {currentUser, loading } = useCurrentUser()
 
-    useEffect(() => {
-      const checkAuth = async () => {
-        try {
-          const result = await getCurrentUser()
-          if (!('errors' in result)){
-            setAuthorized(true)
-          }
-          setLoading(false)
-        } catch(err){
-          console.log(err)
-        }
-      }
-      checkAuth()
-    }, [])
-
-    if (loading) {
-        return null
-    }
 
   return (
     <nav className="w-full border-b bg-white">
@@ -72,7 +47,7 @@ export default function Navbar() {
           DreamNote
         </Link>
         <div className="flex gap-4">
-          {authorized ? <LoggedInNav /> : <LoggedOutNav />}
+          {loading? null : currentUser ? <LoggedInNav /> : <LoggedOutNav />}
         </div>
       </div>
     </nav>
