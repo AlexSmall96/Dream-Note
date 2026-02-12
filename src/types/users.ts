@@ -3,6 +3,11 @@ export type user = {
     email: string
 }
 
+export type currentUser = {
+    user: user,
+    isGuest: boolean
+}
+
 export type userError = {
     errors: {value: string, param: string, msg: string}[]
 }
