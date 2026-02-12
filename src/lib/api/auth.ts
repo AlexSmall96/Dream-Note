@@ -1,27 +1,12 @@
 import { apiFetch } from "@/lib/api/client";
-
-type authInput = {
-    email: string,
-    password: string
-}
-
-type user = {
-    id: string,
-    email: string
-}
-
-type errorMsgs = {
-    errors: {value: string, param: string, msg: string}[]
-}
-
-type logoutSuccess = {message: string }
+import {userError, authInput, user, logoutSuccess} from "@/types/users"
 
 export async function signup(data: authInput) {
-    return apiFetch<user | errorMsgs, authInput>('/users/signup', {method: 'POST', body: data})
+    return apiFetch<user | userError, authInput>('/users/signup', {method: 'POST', body: data})
 }
 
 export async function login(data: authInput){
-    return apiFetch<user | errorMsgs, authInput>('/users/login', {method: 'POST', body: data})
+    return apiFetch<user | userError, authInput>('/users/login', {method: 'POST', body: data})
 }
 
 export async function loginGuest(){
@@ -29,7 +14,7 @@ export async function loginGuest(){
 }
 
 export async function fetchCurrentUser() {
-    return apiFetch<user | errorMsgs>('/users/auth/me');
+    return apiFetch<user | userError>('/users/auth/me');
 }
 
 export async function logout(){
