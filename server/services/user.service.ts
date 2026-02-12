@@ -1,7 +1,7 @@
 import { injectable } from "inversify";
-import { Dream } from "../models/dream.model";
-import { Theme } from "../models/theme.model";
-import { User } from "../models/user.model";
+import { Dream } from "../models/dream.model.js";
+import { Theme } from "../models/theme.model.js";
+import { User } from "../models/user.model.js";
 
 type dataType = {
     dream: {title: string, description: string, notes?: string, date: Date}
