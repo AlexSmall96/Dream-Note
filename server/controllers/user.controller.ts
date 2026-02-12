@@ -1,11 +1,17 @@
-import { injectable } from "inversify";
+import { injectable, inject } from "inversify";
 import { UserDocument, UserInterface } from "../interfaces/user.interfaces.js"
 import { User } from "../models/user.model.js";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
+import { UserService } from "../services/user.service.js";
 
 // Controller clas for User model
 @injectable()
 export class UserController {
+
+    constructor(
+        @inject(UserService) private userService: UserService,
+    ){}
+
     // Sign up
     public async handleSignUp(data: UserInterface){
         const user = new User(data);
@@ -24,8 +30,9 @@ export class UserController {
         const guestEmail = process.env.GUEST_USER_EMAIL
         if (!guestEmail) {
             throw new Error('GUEST_USER_EMAIL is not configured')
-        }
+        }    
         const user = await User.findByEmailOrThrowError(guestEmail)
+        await this.userService.resetGuestData(user._id.toString())
         const token = await user.generateAuthToken(true)
         return {user, token, isGuest: true}
     }
@@ -35,6 +42,8 @@ export class UserController {
         const { user, token } = req
         user.tokens = user.tokens.filter((oldToken: string) => oldToken !== token)
         await user.save()
+
+
     }
 
     // Send one time passcode (OTP) to email address

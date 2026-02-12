@@ -8,6 +8,7 @@ import { DreamRouter } from "../routers/dream.router.js";
 import { DreamService } from "../services/dream.service.js";
 import { ThemeRouter } from "../routers/theme.router.js";
 import { ThemeService } from "../services/theme.service.js";
+import { UserService } from "../services/user.service.js";
 
 export const container: Container = new Container();
 
@@ -31,3 +32,6 @@ container.bind(DreamService).toSelf().inTransientScope()
 
 // Theme service
 container.bind(ThemeService).toSelf().inTransientScope()
+
+// User service
+container.bind(UserService).toSelf().inTransientScope()
