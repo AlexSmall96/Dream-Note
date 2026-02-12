@@ -1,4 +1,4 @@
-import LandingPage from '@/components/LandingPage';
+import LandingPage from '@/components/home/LandingPage';
 import { getCurrentUser } from '@/lib/api/auth';
 import React from 'react';
 import { redirect } from "next/navigation"
