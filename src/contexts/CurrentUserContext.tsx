@@ -11,6 +11,7 @@ type UserContextType = {
     currentUser: user | null,
     setCurrentUser: setterFunction<user | null>,
     loading: boolean,
+    isGuest: boolean
 }
 
 const CurrentUserContext = createContext<UserContextType | null>(null)
@@ -18,6 +19,7 @@ const CurrentUserContext = createContext<UserContextType | null>(null)
 export function CurrentUserProvider({children}: { children: React.ReactNode }){
     
     const [currentUser, setCurrentUser] = useState<user | null>(null)
+    const [isGuest, setIsGuest] = useState<boolean>(true)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -25,7 +27,8 @@ export function CurrentUserProvider({children}: { children: React.ReactNode }){
             try {
                 const result = await fetchCurrentUser()
                 if (!('errors' in result)){
-                    setCurrentUser(result)
+                    setCurrentUser(result.user)
+                    setIsGuest(result.isGuest)
                 } else {
                     setCurrentUser(null)
                 }
@@ -39,7 +42,7 @@ export function CurrentUserProvider({children}: { children: React.ReactNode }){
     }, [])
     
     return (
-        <CurrentUserContext.Provider value={{ currentUser, setCurrentUser, loading }}>
+        <CurrentUserContext.Provider value={{ currentUser, setCurrentUser, loading, isGuest }}>
             {children}
         </CurrentUserContext.Provider>
     )
