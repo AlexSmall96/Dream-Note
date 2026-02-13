@@ -5,7 +5,7 @@ export interface OtpInterface {
     email: string,
     otp: string,
     purpose: "update-email" | "reset-password",
-    expireAt: Date,
+    expiresAt: Date,
     used: boolean
     userId: UserDocument['_id']
 }

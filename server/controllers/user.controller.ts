@@ -6,6 +6,7 @@ import { UserService } from "../services/user.service.js";
 import { EmailService } from "../services/email.service.js"
 import { Otp } from "../models/OTP.model.js"
 import { generateOtp } from "../services/utils/otp.js";
+import { OtpDocument } from "../interfaces/otp.interfaces.js";
 
 export type purposeType = "email-update" | "password-reset"
 
@@ -54,30 +55,45 @@ export class UserController {
         return User.findOne({email})
     }
     
+    // Sends and generates a OTP for either email update or password reset, depending on the provided purpose. 
+    // UserId is only required for email update as password reset is for unauthenticated users.
     public async handleSendOTP(email: string, purpose: purposeType, userId?: string){
         const otp = generateOtp()
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 mins
-          await Otp.create({
-            userId,
-            email,
-            otp,
-            purpose,
-            expiresAt,
-        })
+            await Otp.create({
+                userId,
+                email,
+                otp,
+                purpose,
+                expiresAt,
+            })
         await this.emailService.sendMailWithData(purpose, email, otp, 10)
     }
-
-    // Edit profile
-    public async handleUpdateProfile(update: UserInterface, user: UserDocument){
-        const { email, password } = update;
-        if (email){
-            user.email = email
-        }
-        if (password){
-            user.password = password
-        }
+    
+    // Find saved OTP record based on userId and provied otp value
+    public async handleFindOtp(otp: string, userId: string, purpose: purposeType): Promise<OtpDocument | null>{
+        const otpRecord = await Otp.findOne({
+            userId, 
+            otp, 
+            purpose, 
+            used: false, 
+            expiresAt: { $gt: new Date() }
+        })
+        return otpRecord
+    }
+    
+    public async handleUpdatePassword(password: string, userId: string){
+        const user = await User.findByIdOrThrowError(userId)
+        user.password = password
         await user.save()
-        return { user }
+        return user
+    }
+
+    public async handleUpdateEmail(email: string, userId: string){
+        const user = await User.findByIdOrThrowError(userId)
+        user.email = email
+        await user.save()
+        return user
     }
 
     // Delete account
