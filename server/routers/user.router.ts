@@ -127,14 +127,35 @@ export class UserRouter {
                 if (existing){
                     await this.userController.handleSendOTP(email, 'password-reset')
                 }    
+                // Always return success message to prevent email enumeration, even if email doesn't exist or error occurs when sending OTP
                 return res.json({ message: "If an account is associated with the provided email address, a OTP will be sent." })            
             } catch (err){
                 next(err)
             }
         })
 
-        // Update user details
-        this.router.patch('/update', auth, signupOrUpdateValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+        // Update email after verifying OTP - requires OTP that was sent to new email address, and user must be authenticated to verify ownership of account
+        this.router.post('/update-email', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+            const otp = req.body.otp
+            if (!otp){
+                return res.status(400).json({error: 'Please provide the OTP that was sent to your email address.'})
+            }   
+            try {
+                const otpRecord = await this.userController.handleFindOtp(otp, req.user._id.toString(), 'email-update')
+                if (!otpRecord){
+                    return res.status(400).json({error: 'Invalid or expired OTP.'})
+                }
+                await this.userController.handleUpdateEmail(otpRecord.email, req.user._id)
+                otpRecord.used = true
+                await otpRecord.save()
+                res.json({message: 'Email updated successfully.'})
+            } catch (err){
+                next(err)
+            }
+        })
+
+        // Update password - requires current password for verification, and new password that meets complexity requirements
+        this.router.patch('/update-password', auth, signupOrUpdateValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             if (req.isGuest){
                 return res.status(403).send({error: 'Guest users are not authorized to update profile details.'})
             }
@@ -157,7 +178,7 @@ export class UserRouter {
             }
             // Save new details
             try {
-                const result = await this.userController.handleUpdateProfile(req.body, req.user);
+                const result = await this.userController.handleUpdatePassword(newPassword, req.user._id);
                 res.json(result) 
             } catch (err){
                 next(err);
