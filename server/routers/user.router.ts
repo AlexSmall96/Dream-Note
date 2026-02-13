@@ -96,38 +96,38 @@ export class UserRouter {
             }
         })
 
-        /* Send one time passcode (OTP) to email address
-        Used to either verify an email address or reset password when logged out
-        The code to validate and send to an email address was taken from the following article
-        https://medium.com/@elijahechekwu/sending-emails-in-node-express-js-with-nodemailer-gmail-part-1-67b7da4ae04b
-        */
-        this.router.post('/sendOTP', async (req: Request | AuthenticatedRequest, res: Response, next: NextFunction) => {
-            if ('isGuest' in req && req.isGuest){
-                return res.status(403).send({error: 'Guest users are not authorized to send emails.'})
-            }
-            // Get purpose, email and OTP from request body
-            const {email, OTP, resetPassword, expiresIn} = req.body
-
-            // Check if email and OTP are present
-            if (!email || !OTP || !expiresIn){
-                return res.status(400).send({error: "Please provide a OTP, email address and expiresIn value."})
+        // Request email update by sending OTP to new email address
+        this.router.post('/request-email-update', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+            const { email } = req.body
+            if (!email){
+                return res.status(400).json({error: 'Email required'})
             }
             try {
-
-                // Check for account associated with email address
-                const account = await this.userController.findUserByEmail(req.body.email)
-
-                // If aim is to reset password, check if email address belongs to an account
-                if (resetPassword && !account){
-                    return res.status(400).send({ error: 'No account was found associated with the given email address.' });
-
-                // If aim is to verify new email, check if email address has not yet been taken
-                } else if (!resetPassword && account){
-                    return res.status(400).send({ error: 'Email address taken. Please choose a different email address.' });
+                const existing = await this.userController.findUserByEmail(email)
+                if (existing){
+                    return res.status(400).json({
+                        error: 'Email address taken'
+                    })
                 }
-                // Send email
-                await this.emailService.sendMailWithData(resetPassword, email, OTP, expiresIn)
-                res.json({ message: "OTP sent successfully." });
+                await this.userController.handleSendOTP(email, 'email-update', req.user._id)
+                res.json({ message: "OTP sent successfully." })
+            } catch (err){
+                next(err)
+            }
+        })
+
+        // Request password reset by sending OTP to existing email address
+        this.router.post('/request-password-reset', async (req: Request, res: Response, next: NextFunction) => {
+            const { email } = req.body
+            if (!email){
+                return res.status(400).json({error: 'Email required'})
+            }
+            try {
+                const existing = await this.userController.findUserByEmail(email)
+                if (existing){
+                    await this.userController.handleSendOTP(email, 'password-reset')
+                }    
+                return res.json({ message: "If an account is associated with the provided email address, a OTP will be sent." })            
             } catch (err){
                 next(err)
             }
