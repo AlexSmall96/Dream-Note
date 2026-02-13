@@ -109,7 +109,8 @@ describe('LOGOUT FAILURE', () => {
 describe('GET AUTHENTICATED USER', () => {
     test('Get currently authenticated user returns correct data.', async () => {
         const response = await request(server).get(`${baseUrl}/auth/me`).set(...userOneAuth).expect(200)
-        expect(response.body._id).toBe(userOne._id.toString())
-        expect(response.body.email).toBe(userOne.email)
+        expect(response.body.user._id).toBe(userOne._id.toString())
+        expect(response.body.user.email).toBe(userOne.email)
+        expect(response.body.isGuest).toBe(false)
     })
 })
