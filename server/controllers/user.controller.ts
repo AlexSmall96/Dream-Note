@@ -3,6 +3,11 @@ import { UserDocument, UserInterface } from "../interfaces/user.interfaces.js"
 import { User } from "../models/user.model.js";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import { UserService } from "../services/user.service.js";
+import { EmailService } from "../services/email.service.js"
+import { Otp } from "../models/OTP.model.js"
+import { generateOtp } from "../services/utils/otp.js";
+
+export type purposeType = "email-update" | "password-reset"
 
 // Controller clas for User model
 @injectable()
@@ -10,6 +15,7 @@ export class UserController {
 
     constructor(
         @inject(UserService) private userService: UserService,
+        @inject(EmailService) private emailService: EmailService
     ){}
 
     // Sign up
@@ -42,15 +48,25 @@ export class UserController {
         const { user, token } = req
         user.tokens = user.tokens.filter((oldToken: string) => oldToken !== token)
         await user.save()
-
-
     }
 
-    // Send one time passcode (OTP) to email address
     public findUserByEmail(email: string){
         return User.findOne({email})
     }
     
+    public async handleSendOTP(email: string, purpose: purposeType, userId?: string){
+        const otp = generateOtp()
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 mins
+          await Otp.create({
+            userId,
+            email,
+            otp,
+            purpose,
+            expiresAt,
+        })
+        await this.emailService.sendMailWithData(purpose, email, otp, 10)
+    }
+
     // Edit profile
     public async handleUpdateProfile(update: UserInterface, user: UserDocument){
         const { email, password } = update;
