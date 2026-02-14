@@ -1,5 +1,5 @@
 "use client"
-import ProfileForm from "@/components/profile/ProfileForm";
+import PasswordForm from "@/components/profile/PasswordForm";
 import { useCurrentUser } from "@/contexts/CurrentUserContext";
 
 export default function Profile(){
@@ -9,7 +9,7 @@ export default function Profile(){
         <div className="flex flex-col items-center">
             <h1 className="text-l font-bold m-4">Profile</h1>
             {!isGuest ?
-                <ProfileForm /> 
+                <PasswordForm /> 
             : 
                 <>
                     Email and password updates and account deletion are disabled for guests. Create an account to access these features.

@@ -1,10 +1,11 @@
 "use client"
 import { useCurrentUser } from "@/contexts/CurrentUserContext"
-import { updateProfile } from "@/lib/api/profile"
+import { updatePassword } from "@/lib/api/account"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
-export default function ProfileForm(){
-
+export default function PasswordForm(){
+    const router = useRouter()
     const {currentUser} = useCurrentUser()
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
@@ -46,7 +47,7 @@ export default function ProfileForm(){
     const handlePasswordSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
         try {
-            const result = await updateProfile({
+            const result = await updatePassword({
                 currPassword: formData.password0,
                 password: formData.password1
             })
@@ -78,7 +79,7 @@ export default function ProfileForm(){
                     disabled
                     className='p-2 bg-gray-100'
                 />
-                <button type='button' className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 m-2'>Update Email</button>
+                <button type='button' onClick={() => router.replace('/profile/update/email')} className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 m-2'>Update Email</button>
                 <input 
                     type='password'
                     name='password0'
