@@ -1,5 +1,5 @@
 "use client"
-import PasswordForm from "@/components/profile/PasswordForm";
+import PasswordForm from "@/components/account/PasswordForm";
 import { useCurrentUser } from "@/contexts/CurrentUserContext";
 
 export default function Profile(){

@@ -1,4 +1,4 @@
-import EmailForm from "@/components/profile/EmailForm";
+import EmailForm from "@/components/account/EmailForm";
 
 export default function UpdateEmail(){
     return (
