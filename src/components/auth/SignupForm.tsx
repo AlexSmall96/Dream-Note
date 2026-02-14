@@ -6,10 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function SignupForm() {
     const router = useRouter();
-
-    const [email, setEmail] = useState("");
-    const [password1, setPassword1] = useState('');
-    const [password2, setPassword2] = useState('');
+    const [formData, setFormData] = useState({email: '', password1: '', password2: ''});
     const [errors, setErrors] = useState({password: '', email: ''});
 
     const getError = (array: {value: string, msg: string, param: string}[], param: string) => {
@@ -22,8 +19,15 @@ export default function SignupForm() {
         return errorObj[0]?.msg ?? ''
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.target
+        setFormData({...formData, [name]: value})
+        setErrors({password: '', email: ''}) // Clear error messages
+    }
+
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        const {email, password1, password2} = formData
         if (password1 !== password2){
             return setErrors({password: 'Password and confirm password must match.', email: errors.email})
         } 
@@ -40,21 +44,24 @@ export default function SignupForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
         <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={handleChange}
+            name="email"
             placeholder="Email"
         />
         {errors.email?? ''}
         <input
             type="password"
-            value={password1}
-            onChange={(e) => setPassword1(e.target.value)}
+            value={formData.password1}
+            onChange={handleChange}
+            name="password1"
             placeholder="Password"
         />
         <input
             type="password"
-            value={password2}
-            onChange={(e) => setPassword2(e.target.value)}
+            value={formData.password2}
+            onChange={handleChange}
+            name="password2"
             placeholder="Confirm Password"
         />
         {errors.password?? ''}
