@@ -5,13 +5,12 @@ import { login, loginGuest } from '@/lib/api/auth'
 import { useRouter } from "next/navigation"
 
 export default function LoginForm() {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState('')
-    
+    const [formData, setFormData] = useState({email: '', password: ''})
     const [error, setError] = useState({param: '', msg: ''})
     
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
+        const {email, password} = formData
         const result = await login({ email, password })
         if ('errors' in result){
            return setError(result.errors[0])
@@ -27,6 +26,12 @@ export default function LoginForm() {
             console.log(err)
         }
     }
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target
+        setError({param: '', msg: ''}) // Clear error message if user inputs new data
+        setFormData(prevData => ({ ...prevData, [name]: value }))
+    }
     
     const router = useRouter()
 
@@ -34,15 +39,17 @@ export default function LoginForm() {
         <>
             <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
                 <input
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={formData.email}
+                    onChange={handleChange}
+                    name="email"
                     placeholder="Email"
                 />
                 {error.param === 'email' ? error.msg : ''}
                 <input
                     type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={formData.password}
+                    onChange={handleChange}
+                    name="password"
                     placeholder="Password"
                 />
                 {error.param === 'password' ? error.msg : ''}
