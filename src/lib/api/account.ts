@@ -7,7 +7,7 @@ export async function requestEmailUpdate(email: string){
 }
 
 export async function verifyOTPAndUpdateEmail(otp: string) {
-    return apiFetch<accountError | accountMessage, {otp: string}>('/users/update-email', {method: 'POST', body: {otp}})
+    return apiFetch<accountError | accountMessage, {otp: string}>('/users/update-email', {method: 'PATCH', body: {otp}})
 }
 
 export async function updatePassword(data:passwordUpdateInput) {
