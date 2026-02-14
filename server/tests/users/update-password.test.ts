@@ -81,5 +81,6 @@ describe('Password update should succeed when:', async () => {
         nullProperties.map(prop => {
             expect(response.body).not.toHaveProperty(prop)
         })
+        expect(response.body.message).toBe('Password updated successfully.')
     })
 })
