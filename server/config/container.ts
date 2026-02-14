@@ -1,6 +1,7 @@
 import { Container } from "inversify";
 import { UserController } from "../controllers/user.controller.js";
-import { UserRouter } from "../routers/user.router.js";
+import { AuthRouter } from "../routers/auth.router.js";
+import { AccountRouter } from "../routers/account.router.js";
 import { EmailService } from "../services/email.service.js";
 import { DreamController } from "../controllers/dream.controlller.js";
 import { ThemeController } from "../controllers/theme.controller.js"
@@ -12,9 +13,10 @@ import { UserService } from "../services/user.service.js";
 
 export const container: Container = new Container();
 
-// User router + controller
+// User router (accounts & auth) + controller
 container.bind(UserController).toSelf().inTransientScope()
-container.bind(UserRouter).toSelf().inTransientScope()
+container.bind(AuthRouter).toSelf().inTransientScope()
+container.bind(AccountRouter).toSelf().inTransientScope()
 
 // Email Service for user router
 container.bind(EmailService).toSelf().inTransientScope()
