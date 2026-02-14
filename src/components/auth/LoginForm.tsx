@@ -57,6 +57,8 @@ export default function LoginForm() {
                 <button type="button" onClick={handleLoginGuest} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Continue as Guest</button>
                 <p>Don't have an account?</p>
                 <button type="button" onClick={() => router.replace('/auth/signup')} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Signup</button>
+                Forgotten password?
+                <button type="button" onClick={() => router.replace('/auth/reset-password')} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Reset Password</button>
             </form>
         </>
     )
