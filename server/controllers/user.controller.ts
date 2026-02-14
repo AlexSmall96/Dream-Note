@@ -86,7 +86,6 @@ export class UserController {
         const user = await User.findByIdOrThrowError(userId)
         user.password = password
         await user.save()
-        return user
     }
 
     public async handleUpdateEmail(email: string, userId: string){

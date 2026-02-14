@@ -110,8 +110,8 @@ export class AccountRouter {
                 return res.status(400).json({ errors: errors.array() });
             }
             try {
-                const result = await this.userController.handleUpdatePassword(newPassword, req.user._id);
-                res.json(result) 
+                await this.userController.handleUpdatePassword(newPassword, req.user._id);
+                res.json({message: 'Password updated successfully.'}) 
             } catch (err){
                 next(err);
             }            
