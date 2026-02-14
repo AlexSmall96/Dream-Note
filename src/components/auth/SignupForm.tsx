@@ -38,7 +38,7 @@ export default function SignupForm() {
             
             return setErrors({email: emailError, password: pwdError})
         }   
-        router.push("/");
+        router.push("/auth/login");
   }
 
   return (
