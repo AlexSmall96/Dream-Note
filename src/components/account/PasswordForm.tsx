@@ -2,10 +2,9 @@
 import { useCurrentUser } from "@/contexts/CurrentUserContext"
 import { updatePassword } from "@/lib/api/account"
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import UpdateEmailLink from "./UpdateEmailLink"
 
 export default function PasswordForm(){
-    const router = useRouter()
     const {currentUser} = useCurrentUser()
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
@@ -71,15 +70,7 @@ export default function PasswordForm(){
     return (
         currentUser ? 
             <form className="flex flex-col gap-2 w-80" onSubmit={handlePasswordSubmit}>  
-                <label htmlFor="email" className='m-2'>Email:</label>
-                <input
-                    type='text'
-                    name='email'
-                    value={currentUser.email}
-                    disabled
-                    className='p-2 bg-gray-100'
-                />
-                <button type='button' onClick={() => router.replace('/profile/update/email')} className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 m-2'>Update Email</button>
+                <UpdateEmailLink email={currentUser.email} />
                 <input 
                     type='password'
                     name='password0'
