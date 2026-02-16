@@ -14,3 +14,17 @@ export type accountErrorArray = {
 export type accountMessage = {
     message: string
 }
+
+export type resetTokenRes = {
+    resetToken: string
+}
+
+export type resetPasswordInput = {
+    password: string, 
+    resetToken: string
+}
+
+export type verifyResetOTPInput = {
+    otp: string, 
+    email: string
+}
