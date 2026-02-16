@@ -6,6 +6,7 @@ import { UserController } from "../controllers/user.controller.js";
 import { auth } from "../middleware/auth.js";
 import { signupOrUpdateValidator } from "../middleware/signupOrUpdate.validator.js";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
+import jwt from "jsonwebtoken"
 
 // Router class for User model
 @injectable()
@@ -24,18 +25,16 @@ export class AccountRouter {
     // Routes
     private initializeRoutes(){
         // Request email update by sending OTP to new email address
-        this.router.post('/request-email-update', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+        this.router.post('/request-email-update', auth, signupOrUpdateValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             const { email } = req.body
             if (!email){
                 return res.status(400).json({error: 'Email required'})
             }
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
             try {
-                const existing = await this.userController.findUserByEmail(email)
-                if (existing){
-                    return res.status(400).json({
-                        error: 'Email address taken'
-                    })
-                }
                 await this.userController.handleSendOTP(email, 'email-update', req.user._id)
                 res.json({ message: "OTP sent successfully." })
             } catch (err){
@@ -61,8 +60,8 @@ export class AccountRouter {
             }
         })
 
-        // Update email after verifying OTP - requires OTP that was sent to new email address, and user must be authenticated to verify ownership of account
-        this.router.patch('/update-email', auth, signupOrUpdateValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+        // Verify OTP and update email - requires OTP that was sent to new email address, and user must be authenticated to verify ownership of account
+        this.router.patch('/update-email', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             if (req.isGuest){
                 return res.status(403).send({error: 'Guest users are not authorized to update profile details.'})
             }
@@ -71,18 +70,89 @@ export class AccountRouter {
                 return res.status(400).json({error: 'Please provide the OTP that was sent to your email address.'})
             }   
             try {
-                const otpRecord = await this.userController.handleFindOtp(otp, req.user._id.toString(), 'email-update')
+                const otpRecord = await this.userController.handleFindOtpById(otp, 'email-update', req.user._id.toString())
                 if (!otpRecord){
                     return res.status(400).json({error: 'Invalid or expired OTP.'})
                 }
                 await this.userController.handleUpdateEmail(otpRecord.email, req.user._id)
-                otpRecord.used = true
-                await otpRecord.save()
+                await this.userController.handleDeleteOtp(otpRecord._id.toString())
                 res.json({message: 'Email updated successfully.'})
             } catch (err){
                 next(err)
             }
         })
+
+        // Verify otp for password reset, requires email that otp was sent to and otp value
+        this.router.post('/verify-reset-otp', async (req: Request, res:Response, next: NextFunction) => {
+            const otp = req.body.otp
+            if (!otp){
+                return res.status(400).json({error: 'Please provide the OTP that was sent to your email address.'})
+            }   
+            const email = req.body.email
+            if (!email){
+                return res.status(400).json({error: 'Email must be provided to verify otp.'})
+            }
+            try {
+                const otpRecord = await this.userController.handleFindOtpByEmailAndUpdate(otp, email, 'password-reset')
+                if (!otpRecord){
+                    return res.status(400).json({error: 'Invalid or expired OTP.'})
+                }
+                const resetSecret = process.env.RESET_TOKEN_SECRET!
+                if (!resetSecret){
+                    throw new Error('RESET_TOKEN_SECRET is not configured.')
+                }
+                const resetToken = jwt.sign(
+                    { userId: otpRecord.userId, otpId: otpRecord._id },
+                    resetSecret,
+                    { expiresIn: "10m" }
+                )
+                res.json({ resetToken })
+            } catch (err) {
+                next(err)
+            }
+        })
+        
+        // Reset password for unauthenticated user using token from verified otp
+        this.router.patch('/reset-password', signupOrUpdateValidator, async (req: Request, res:Response, _next: NextFunction) => {
+            const resetToken = req.body.resetToken
+            if (!resetToken){
+                return res.status(400).json({error: 'Reset token must be provided.'})
+            }
+            const newPassword = req.body.password
+            if (!newPassword){
+                return res.status(400).json({error: 'New password must be provided.'})
+            }
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({ errors: errors.array() });
+            }
+            const resetSecret = process.env.RESET_TOKEN_SECRET
+            if (!resetSecret){
+                throw new Error('RESET_TOKEN_SECRET is not configured.')
+            }
+            try {
+                const payload = jwt.verify(
+                    resetToken,
+                    resetSecret
+                ) as { userId: string, otpId: string}
+            const {userId, otpId} = payload
+            const user = await this.userController.findUserById(userId)
+            if (!user) {
+                return res.status(400).json({error: "Invalid reset session."})
+            }
+            const otp = await this.userController.handleFindUsedOtp(otpId, userId, 'password-reset')
+            
+            if (!otp){
+                return res.status(400).json({error: "Invalid reset session."})
+            }
+            await this.userController.handleDeleteOtp(otpId)
+            await this.userController.handleUpdatePassword(newPassword, userId)
+            res.json({ message: "Password updated successfully." })
+            } catch (err){
+                return res.status(400).json({ error: "Invalid or expired reset session." })
+            }
+        })
+
 
         // Update password - requires current password for verification, and new password that meets complexity requirements
         this.router.patch('/update-password', auth, signupOrUpdateValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
