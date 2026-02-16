@@ -50,7 +50,9 @@ describe('STATUS & FEEDBACK MESSAGES', () => {
 
     test('Error message should be returned if email is taken.', async () => {
         const response = await request(server).post(url).send({email: userOneCreds.email}).set(...userOneAuth).expect(400)
-        expect(response.body.error).toBe('Email address taken')
+        expect(response.body.errors[0].msg).toBe('Email address already in use.')
+        expect(response.body.errors[0].value).toBe(userOneCreds.email)
+        expect(response.body.errors[0].param).toBe('email')
     })
 
     test('Success message is returned if email is not taken.', async () => {
