@@ -29,7 +29,7 @@ function LoggedInNav() {
   return (
     <>
         <Link href="/dreams" className="text-sm hover:underline">Dreams</Link>
-        <Link href="/profile" className="text-sm hover:underline">Profile</Link>
+        <Link href="/account" className="text-sm hover:underline">Account</Link>
         <LogoutButton />
     </>
   )
