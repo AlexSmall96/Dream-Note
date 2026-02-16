@@ -4,7 +4,7 @@ import { createUser, getAuthHeader } from './utils/userCreation.js';
 import { baseUrl, userOneCreds, guestUserCreds, userThreeCreds } from './data.js';
 import { wipeDB } from '../setup/wipeDB.js';
 import { Types } from 'mongoose';
-import { sendData } from './utils/sendData.js';
+import { patchDataWithAuth, sendData } from './utils/sendData.js';
 import { Otp } from '../../models/OTP.model.js';
 import { User } from '../../models/user.model.js';
 
@@ -12,6 +12,7 @@ let userOneAuth: [string, string]
 let userThreeAuth: [string, string]
 let guestAuth: [string, string]
 let userOneId : Types.ObjectId
+let otpId: string
 
 // Wipe db and save data
 beforeEach(async () => {
@@ -30,13 +31,15 @@ beforeEach(async () => {
     guestAuth = getAuthHeader(guest.tokens[0])
 
     // Create 3 otps for userOne: valid, expired and used
-    await new Otp({
+    const otp = await new Otp({
         userId: userOneId,
         email: 'user1-new@email.com',
         otp: '123456',
         purpose: 'email-update',
         expiresAt: new Date(Date.now() + 10 * 60 * 1000)
     }).save()
+
+    otpId = otp._id.toString()
 
     await new Otp({
         userId: userOneId,
@@ -66,46 +69,49 @@ describe('Updating email address should fail if:', async () => {
     })
     test('User is authenticated as guest.', async () => {
         // Send response as guest
-        const response = await sendData(server, url, {otp: '123456'}, 403, guestAuth)
+        const response = await patchDataWithAuth(server, url, {otp: '123456'}, 403, guestAuth)
         expect(response.body.error).toBe('Guest users are not authorized to update profile details.')
     })
     test('OTP is missing from request body.', async () => {
         // Send response without OTP
-        const response = await sendData(server, url, {}, 400, userOneAuth)
+        const response = await patchDataWithAuth(server, url, {}, 400, userOneAuth)
         expect(response.body.error).toBe('Please provide the OTP that was sent to your email address.')
     })
     test('Provided OTP is invalid.', async () => {
         // Send incorrect otp value
-        const response = await sendData(server, url, {otp: '113355'}, 400, userOneAuth)
+        const response = await patchDataWithAuth(server, url, {otp: '113355'}, 400, userOneAuth)
         expect(response.body.error).toBe('Invalid or expired OTP.')
     })
     test('Provided OTP does not belong to currently authenticated user.', async () => {
         // Send existing otp value belonging to userOne but authenticated as userThree
-        const response = await sendData(server, url, {otp: '123456'}, 400, userThreeAuth)
+        const response = await patchDataWithAuth(server, url, {otp: '123456'}, 400, userThreeAuth)
         expect(response.body.error).toBe('Invalid or expired OTP.')
     })
     test('OTP is found in database but expired.', async () => {
         // Send request with expired otp value
-        const response = await sendData(server, url, {otp: '445566'}, 400, userOneAuth)
+        const response = await patchDataWithAuth(server, url, {otp: '445566'}, 400, userOneAuth)
         expect(response.body.error).toBe('Invalid or expired OTP.')
     })
     test('OTP is found in database but has been used.', async () => {
-        const response = await sendData(server, url, {otp: '778899'}, 400, userOneAuth)
+        const response = await patchDataWithAuth(server, url, {otp: '778899'}, 400, userOneAuth)
         expect(response.body.error).toBe('Invalid or expired OTP.')
     })
 })
 
 describe('Updating email address should succeed if:', () => {
-    test('Otp value is associated with a valid otp in databse associated with the correct user.', async () => {
+    test('Otp value is associated with a valid otp in database associated with the correct user.', async () => {
         // Assert userOne has original email address before request is sent
         const user = await User.findByIdOrThrowError(userOneId.toString())
         expect(user.email).toBe(userOneCreds.email)
         // Send valid otp value
-        const response = await sendData(server, url, {otp: '123456'}, 200, userOneAuth)
+        const response = await patchDataWithAuth(server, url, {otp: '123456'}, 200, userOneAuth)
         expect(response.body.message).toBe('Email updated successfully.')
         // Users email should be updated to email value saved in otp record
         const updatedUser = await User.findByIdOrThrowError(userOneId.toString())
         expect(updatedUser.email).toBe('user1-new@email.com')
+        // Otp should be deleted
+        const nullOtp = await Otp.findById(otpId)
+        expect(nullOtp).toBeNull()
     })
 })
 
