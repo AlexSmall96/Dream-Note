@@ -54,11 +54,25 @@ export class UserController {
     public findUserByEmail(email: string){
         return User.findOne({email})
     }
+
+    public findUserById(id: string){
+        return User.findById(id)
+    }
+
+
     
     // Sends and generates a OTP for either email update or password reset, depending on the provided purpose. 
     // UserId is only required for email update as password reset is for unauthenticated users.
-    public async handleSendOTP(email: string, purpose: purposeType, userId?: string){
+    public async handleSendOTP(email: string, purpose: purposeType, incomingUserId?: string){
         const otp = generateOtp()
+        let userId: string
+        if (!incomingUserId){
+            const user = await User.findByEmailOrThrowError(email)
+            userId = user._id.toString()
+        }
+        else {
+            userId = incomingUserId
+        }
         const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 mins
             await Otp.create({
                 userId,
@@ -71,7 +85,7 @@ export class UserController {
     }
     
     // Find saved OTP record based on userId and provied otp value
-    public async handleFindOtp(otp: string, userId: string, purpose: purposeType): Promise<OtpDocument | null>{
+    public async handleFindOtpById(otp: string, purpose: purposeType, userId: string): Promise<OtpDocument | null>{
         const otpRecord = await Otp.findOne({
             userId, 
             otp, 
@@ -80,6 +94,36 @@ export class UserController {
             expiresAt: { $gt: new Date() }
         })
         return otpRecord
+    }
+
+    public async handleFindOtpByEmailAndUpdate(otp: string, email: string, purpose: purposeType): Promise<OtpDocument | null>{
+        const otpRecord = await Otp.findOneAndUpdate({
+            otp,
+            email, 
+            purpose, 
+            used: false, 
+            expiresAt: { $gt: new Date() }
+        }, {
+            $set: {used: true}
+        }, {
+            new: true
+        })
+        return otpRecord        
+    }
+
+    public async handleFindUsedOtp(otpId: string, userId: string, purpose: purposeType): Promise<OtpDocument | null>{
+        const otp = await Otp.findOne({
+            _id: otpId,
+            userId: userId,
+            purpose,
+            used: true,
+            expiresAt: { $gt: new Date() }
+        })
+        return otp
+    }
+
+    public async handleDeleteOtp(otpId: string){
+        await Otp.findOneAndDelete({_id: otpId})
     }
     
     public async handleUpdatePassword(password: string, userId: string){
