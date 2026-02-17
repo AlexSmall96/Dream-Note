@@ -9,6 +9,7 @@ import { userOneCreds, guestUserCreds } from '../users/data.js';
 import {createUser, getAuthHeader} from '../users/utils/userCreation.js'
 
 import { Types } from 'mongoose';
+import { assertSingleError } from '../users/utils/assertErrors.js';
 
 let userOneAuth: [string, string]
 let userOneId : Types.ObjectId
@@ -35,17 +36,17 @@ const defaultThemes = ['theme1', 'theme2', 'theme3']
 const url = baseUrl + '/log'
 
 // Log dream
-describe('LOG NEW DREAM FAILURE', () => {
-    test('Logging new dream should fail if title and description are missing.', async () => {
+describe('Logging new dream should fail if:', () => {
+    test('Title and description are missing.', async () => {
         // Send incomplete data
         const response = await request(server).post(url).send({dream: {}}).set(...userOneAuth).expect(400)
         // Correct error message is returned
-        expect(response.body.error).toBe('At least one of title or description is required.')
+        assertSingleError(response.body.errors, 'At least one of title or description is required.')
     })
 })
 
-describe('LOG NEW DREAM SUCCESS', () => {
-    test('Logging new dream should succeed if description is provided, with title and themes generated from dev version of openAI API.', async () => {
+describe('Logging new dream should succeed if:', () => {
+    test('Description is provided, with title and themes generated from dev version of openAI API.', async () => {
         // Assert that no dreams with the correct title are found in DB
         let savedDream = await Dream.findOne({title:'I had a dream I was flying. It...'})
         expect(savedDream).toBeNull()
@@ -72,7 +73,7 @@ describe('LOG NEW DREAM SUCCESS', () => {
         await assertThemesInDB(defaultThemes, response.body.dream._id.toString())
     })
 
-    test('Logging new dream should succeed if description, title and themes are provided, with no data from dev version of openAI API.', async () => {
+    test('Description, title and themes are provided, with no data from dev version of openAI API.', async () => {
         // Define data
         const title = 'Flying dream'
         const description = 'I had a dream I was flying. It was very exciting.'
@@ -94,7 +95,7 @@ describe('LOG NEW DREAM SUCCESS', () => {
         await assertThemesInDB(themes, response.body.dream._id.toString())       
     })
 
-    test('Logging new dream should succeed if title is provided, with themes generated from dev version of openAI API and no description.', async () => {
+    test('Title is provided, with themes generated from dev version of openAI API and no description.', async () => {
         // Assert that no dreams with the correct title are found in DB
         let savedDream = await Dream.findOne({title: 'Flying dream'})
         expect(savedDream).toBeNull()
@@ -113,7 +114,7 @@ describe('LOG NEW DREAM SUCCESS', () => {
         expect(savedDream).not.toBeNull()     
     })
 
-    test('Logging new dream should be successful as guest if dream data is valid.', async () => {
+    test('Dream data is valid and user is authenticated as a guest.', async () => {
         // Send data as guest - should get a 201 status
         await request(server).post(url).send({
             dream: {title: 'Flying dream'},
