@@ -128,7 +128,7 @@ export class DreamRouter {
             const dreamData = req.body.dream
             const themes = req.body.themes
             if (!dreamData){
-                return res.status(400).json(formatError('Request body must contain the field "dream".', 'dream'))
+                return res.status(400).json(formatError("Request body must contain the field 'dream'.", 'dream'))
             }
             if (!dreamData.title || dreamData.title.trim() === "") {
                 return res.status(400).json(formatError('Dream data must contain title.', 'title'))
