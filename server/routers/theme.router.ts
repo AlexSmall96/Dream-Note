@@ -3,6 +3,7 @@ import { injectable, inject } from "inversify";
 import { ThemeController } from "../controllers/theme.controller.js"
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import { auth } from "../middleware/auth.js";
+import { formatError } from "../utils/formatError.js";
 
 // Router class for Dream model
 @injectable()
@@ -39,7 +40,7 @@ export class ThemeRouter {
             try {
                 const theme = await this.themeController.handleRemoveTheme(themeId, userId)
                 if (!theme){
-                    return res.status(401).json({error: 'You are not authorized to delete this theme.'})
+                    return res.status(403).json(formatError('You are not authorized to delete this theme.'))
                 }
                 res.json(theme)
             } catch (err){
