@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { baseUrl } from './data.js';
 import { createUser, getAuthHeader } from './utils/userCreation.js';
 import { userOneCreds } from './data.js';
+import { assertErrors, assertSingleError } from './utils/assertErrors.js';
 
 let userOneAuth: [string, string]
 
@@ -36,6 +37,7 @@ vi.spyOn(otpUtils, "generateOtp").mockReturnValue('123456');
 // Import server after mock
 import { server } from '../setup/testServer.js'
 
+
 const url = baseUrl + '/request-email-update'
 
 const newEmail = 'example@email.com'
@@ -45,14 +47,12 @@ const newEmail = 'example@email.com'
 describe('STATUS & FEEDBACK MESSAGES', () => {
     test('Error message should be returned if email is not provided.', async () => {
         const response = await request(server).post(url).send({}).set(...userOneAuth).expect(400)
-        expect(response.body.error).toBe('Email required')
+        assertSingleError(response.body.errors, 'Email required', 'email')
     })
 
     test('Error message should be returned if email is taken.', async () => {
         const response = await request(server).post(url).send({email: userOneCreds.email}).set(...userOneAuth).expect(400)
-        expect(response.body.errors[0].msg).toBe('Email address already in use.')
-        expect(response.body.errors[0].value).toBe(userOneCreds.email)
-        expect(response.body.errors[0].param).toBe('email')
+        assertErrors(response.body.errors, [{param: 'email', msg: 'Email address already in use.', value: userOneCreds.email}])
     })
 
     test('Success message is returned if email is not taken.', async () => {
