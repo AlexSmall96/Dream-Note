@@ -1,6 +1,6 @@
 import { server } from '../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
-import { assertErrors } from './utils/assertErrors.js';
+import { assertErrors, assertSingleError } from './utils/assertErrors.js';
 import { createUser, getAuthHeader } from './utils/userCreation.js';
 import { baseUrl, userOneCreds, guestUserCreds } from './data.js';
 import { wipeDB } from '../setup/wipeDB.js';
@@ -30,39 +30,39 @@ describe('Password update should fail when:', async () => {
 
     test('Current password value is incorrect.', async () => {
         const response = await patchDataWithAuth(server, url, {currPassword: 'orange123', password: 'grape123'}, 400, userOneAuth)
-        assertErrors(response.body.errors, [{param: 'currPassword', msg: 'Current password incorrect.'}])
+        assertSingleError(response.body.errors, 'Current password is incorrect.', 'currPassword')
     })
 
     test('Current password value is missing.', async () => {
         // Send data without current password
         const response = await patchDataWithAuth(server, url, {password: 'grape123'}, 400, userOneAuth)
         // Should be 1 error message in response
-        assertErrors(response.body.errors, [{param: 'currPassword', msg: 'Please provide current password to update.'}])   
+        assertSingleError(response.body.errors, 'Please provide current password to update.', 'currPassword')
     })
 
     test('New password value is missing.', async () => {
         // Send data without current password
         const response = await patchDataWithAuth(server, url, {currPassword: 'grape123'}, 400, userOneAuth)   
         // Should be 1 error message in response
-        assertErrors(response.body.errors, [{param: 'password', msg: 'Please provide new password to update.'}])          
+        assertSingleError(response.body.errors, 'Please provide new password to update.', 'password')
     })
 
     test('Current password is correct but new password is invalid.', async () => {
         // Send data with new password too short
         const responseTooShort = await patchDataWithAuth(server, url, {currPassword: 'apple123', password: 'hello'}, 400, userOneAuth)   
         // Correct error message returned
-        assertErrors(responseTooShort.body.errors, [{param: 'password', msg: 'Password must be at least 8 characters.'}])   
+        assertSingleError(responseTooShort.body.errors, 'Password must be at least 8 characters.', 'password')
 
         // Send data with new password containing password
         const responsePwd = await patchDataWithAuth(server, url, {currPassword: 'apple123', password: 'password134'}, 400, userOneAuth)  
         // Correct error message returned
-        assertErrors(responsePwd.body.errors, [{param: 'password', msg: 'Password cannot contain "password".'}])                
+        assertSingleError(responsePwd.body.errors, 'Password cannot contain "password".', 'password')                
     })
     
     test('User is authenticated as guest.', async () => {
         // Send response as guest
         const response = await patchDataWithAuth(server, url, {currPassword: 'apple123', password: 'strawberrry123'}, 403, guestAuth)  
-        expect(response.body.error).toBe('Guest users are not authorized to update profile details.')
+        assertSingleError(response.body.errors, 'Guest users are not authorized to update profile details.')
     })
 })
 
