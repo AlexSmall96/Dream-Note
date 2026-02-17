@@ -9,6 +9,7 @@ import { ThemeService } from "../services/theme.service.js";
 import { prompts } from "../services/dream.service.js"
 import { Dream } from "../models/dream.model.js";
 import { getStartAndEndDates } from "../services/utils/dateRange.js";
+import { formatError } from "../utils/formatError.js";
 
 // Router class for Dream model
 @injectable()
@@ -35,7 +36,7 @@ export class DreamRouter {
                 const dreamData = req.body.dream
                 // Title or description must be provided.
                 if (!dreamData.title && !dreamData.description){
-                    return res.status(400).json({ error: "At least one of title or description is required." });
+                    return res.status(400).json(formatError('At least one of title or description is required.'))
                 }
                 // If title has not been provided, generate title from AI API based on description
                 if (!dreamData.title){
@@ -53,7 +54,7 @@ export class DreamRouter {
                     return res.status(201).json({dream, themes})
                 }
                 if (!dreamData.description && incomingThemes.length > 0){
-                    throw new Error('Description must be provided to add themes.')
+                    return res.status(400).json(formatError('Cannot add themes to dream with no description.', 'description'))
                 }
                 // Return dream document
                 res.status(201).json({dream})
@@ -67,7 +68,7 @@ export class DreamRouter {
         this.router.post('/analysis', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             try {
                 if (!req.body.description){
-                    return res.status(400).json({ error: "Description must be provided." });
+                    return res.status(400).json(formatError('Description must be provided.', 'description'))
                 }
                 // Get tone and style from request
                 const tone = req.body.tone ?? ''
@@ -112,7 +113,7 @@ export class DreamRouter {
             try {
                 const dream = await this.dreamController.handleViewDream(dreamId, owner)
                 if (!dream){
-                    return res.status(401).json({error: 'You are not authorized to view this dream.'})
+                    return res.status(403).json(formatError('You are not authorized to view this dream.'))
                 }
                 const themes = await this.themeController.handleGetDreamThemes(dreamId)
                 res.json({dream, themes})
@@ -127,10 +128,10 @@ export class DreamRouter {
             const dreamData = req.body.dream
             const themes = req.body.themes
             if (!dreamData){
-                return res.status(400).json({ error: "Request body must contain the field 'dream'." })
+                return res.status(400).json(formatError('Request body must contain the field "dream".', 'dream'))
             }
             if (!dreamData.title || dreamData.title.trim() === "") {
-                return res.status(400).json({ error: "Dream data must contain title." });
+                return res.status(400).json(formatError('Dream data must contain title.', 'title'))
             }
             try {
                 const existingDream = await Dream.findByIdOrThrowError(dreamId)
@@ -138,7 +139,7 @@ export class DreamRouter {
                 // Save dream
                 const dream = await this.dreamController.handleUpdateDream({...dreamData, description: normalizedDescription}, dreamId, req.user._id)
                 if (!dream){
-                    return res.status(401).json({error: 'You are not authorized to edit this dream.'})
+                    return res.status(403).json(formatError('You are not authorized to edit this dream.'))
                 }
                 // Check if themes should be deleted
                 await this.dreamService.removeThemesIfDescriptionRemoved(
@@ -161,7 +162,7 @@ export class DreamRouter {
             try {
                 const dream = await this.dreamController.handleDeleteDream(dreamId, owner)
                 if (!dream){
-                    return res.status(401).json({error: 'You are not authorized to delete this dream.'})
+                    return res.status(403).json(formatError('You are not authorized to delete this dream.'))
                 }
                 res.json(dream)
             } catch (err){
