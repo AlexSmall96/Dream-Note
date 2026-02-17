@@ -9,6 +9,7 @@ import { oldDreamData, newDreamData, dreamWithManyThemesData } from '../dreams/d
 import { wipeDB } from '../setup/wipeDB.js'
 import { Types } from 'mongoose';
 import { Dream } from '../../models/dream.model.js';
+import { assertSingleError } from '../users/utils/assertErrors.js';
  
 type dreamType = {
     title: string,
@@ -65,12 +66,12 @@ beforeEach(async () => {
 // Define base url for theme router
 const baseUrl = '/api/themes'
 
-describe('GET ALL USERS THEMES', () => {
+describe('Get all themes should:', () => {
 
     // Define url
     const url = baseUrl
 
-    test('Get themes should return all current users themes, each with associated dream id, title and date.', async () => {
+    test('Return all current users themes, each with associated dream id, title and date.', async () => {
         // Get all themes associated with userThree's dreams
         const response = await request(server).get(url).set(...userThreeAuth).expect(200)
         const themes = response.body.themes
@@ -88,7 +89,7 @@ describe('GET ALL USERS THEMES', () => {
         })
     })
 
-    test('Pagination and sorting should return correct themes.', async () => {
+    test('Return corrrect themes with pagination and sorting.', async () => {
         // Get themes assocaited with userFour's dreams
         // Set limit to 5, skip 0, and sort by theme (A-Z)
         const responsePageOne = await request(server).get(`${url}/?limit=5&sort=theme`).set(...userFourAuth).expect(200)
@@ -115,17 +116,17 @@ describe('GET ALL USERS THEMES', () => {
     })
 })
 
-describe('REMOVE THEME', () => {
+describe('Removing a theme should:', () => {
     // Define url
     const url = baseUrl + '/delete'
 
-    test('User cannot delete theme if they are not the owner of the associated dream.', async () => {
+    test('Be forbidden if user is not the owner of the associated dream.', async () => {
         // Attempt to delete a theme associated with oldDream authorized as userFour
-        const response = await request(server).delete(`${url}/${oldDreamTheme1Id}`).set(...userFourAuth).expect(401)
-        expect(response.body.error).toBe('You are not authorized to delete this theme.')
+        const response = await request(server).delete(`${url}/${oldDreamTheme1Id}`).set(...userFourAuth).expect(403)
+        assertSingleError(response.body.errors, 'You are not authorized to delete this theme.')
     })
 
-    test('Theme can be removed if user is owner of associcated dream.', async () => {
+    test('Be successful if user is owner of associcated dream.', async () => {
         // Delete a theme associated with oldDream authorized as userThree
         await request(server).delete(`${url}/${oldDreamTheme1Id}`).set(...userThreeAuth).expect(200)
         // Assert theme was removed from database
