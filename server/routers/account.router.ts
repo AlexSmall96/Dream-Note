@@ -6,6 +6,7 @@ import { UserController } from "../controllers/user.controller.js";
 import { auth } from "../middleware/auth.js";
 import { signupOrUpdateValidator } from "../middleware/signupOrUpdate.validator.js";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
+import { formatError } from "../utils/formatError.js";
 import jwt from "jsonwebtoken"
 
 // Router class for User model
@@ -28,7 +29,7 @@ export class AccountRouter {
         this.router.post('/request-email-update', auth, signupOrUpdateValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             const { email } = req.body
             if (!email){
-                return res.status(400).json({error: 'Email required'})
+                return res.status(400).json(formatError('Email required', 'email'))
             }
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -46,7 +47,7 @@ export class AccountRouter {
         this.router.post('/request-password-reset', async (req: Request, res: Response, next: NextFunction) => {
             const { email } = req.body
             if (!email){
-                return res.status(400).json({error: 'Email required'})
+                return res.status(400).json(formatError('Email required', 'email'))
             }
             try {
                 const existing = await this.userController.findUserByEmail(email)
@@ -63,16 +64,16 @@ export class AccountRouter {
         // Verify OTP and update email - requires OTP that was sent to new email address, and user must be authenticated to verify ownership of account
         this.router.patch('/update-email', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             if (req.isGuest){
-                return res.status(403).send({error: 'Guest users are not authorized to update profile details.'})
+                return res.status(403).json(formatError('Guest users are not authorized to update profile details.'))
             }
             const otp = req.body.otp
             if (!otp){
-                return res.status(400).json({error: 'Please provide the OTP that was sent to your email address.'})
+                return res.status(400).json(formatError('Please provide the OTP that was sent to your email address.', 'otp'))
             }   
             try {
                 const otpRecord = await this.userController.handleFindOtpById(otp, 'email-update', req.user._id.toString())
                 if (!otpRecord){
-                    return res.status(400).json({error: 'Invalid or expired OTP.'})
+                    return res.status(400).json(formatError('Invalid or expired OTP.', 'otp'))
                 }
                 await this.userController.handleUpdateEmail(otpRecord.email, req.user._id)
                 await this.userController.handleDeleteOtp(otpRecord._id.toString())
@@ -86,16 +87,16 @@ export class AccountRouter {
         this.router.post('/verify-reset-otp', async (req: Request, res:Response, next: NextFunction) => {
             const otp = req.body.otp
             if (!otp){
-                return res.status(400).json({error: 'Please provide the OTP that was sent to your email address.'})
+                return res.status(400).json(formatError('Please provide the OTP that was sent to your email address.', 'otp'))
             }   
             const email = req.body.email
             if (!email){
-                return res.status(400).json({error: 'Email must be provided to verify otp.'})
+                return res.status(400).json(formatError('Email must be provided to verify otp.', 'email'))
             }
             try {
                 const otpRecord = await this.userController.handleFindOtpByEmailAndUpdate(otp, email, 'password-reset')
                 if (!otpRecord){
-                    return res.status(400).json({error: 'Invalid or expired OTP.'})
+                    return res.status(400).json(formatError('Invalid or expired OTP.', 'otp'))
                 }
                 const resetSecret = process.env.RESET_TOKEN_SECRET!
                 if (!resetSecret){
@@ -116,11 +117,11 @@ export class AccountRouter {
         this.router.patch('/reset-password', signupOrUpdateValidator, async (req: Request, res:Response, _next: NextFunction) => {
             const resetToken = req.body.resetToken
             if (!resetToken){
-                return res.status(400).json({error: 'Reset token must be provided.'})
+                return res.status(400).json(formatError('Reset token must be provided.', 'resetToken'))
             }
             const newPassword = req.body.password
             if (!newPassword){
-                return res.status(400).json({error: 'New password must be provided.'})
+                return res.status(400).json(formatError('New password must be provided.', 'password'))
             }
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
@@ -138,18 +139,18 @@ export class AccountRouter {
             const {userId, otpId} = payload
             const user = await this.userController.findUserById(userId)
             if (!user) {
-                return res.status(400).json({error: "Invalid reset session."})
+                return res.status(400).json(formatError('Invalid reset session.', 'resetToken'))
             }
             const otp = await this.userController.handleFindUsedOtp(otpId, userId, 'password-reset')
             
             if (!otp){
-                return res.status(400).json({error: "Invalid reset session."})
+                return res.status(400).json(formatError('Invalid reset session.', 'resetToken'))
             }
             await this.userController.handleDeleteOtp(otpId)
             await this.userController.handleUpdatePassword(newPassword, userId)
             res.json({ message: "Password updated successfully." })
             } catch (err){
-                return res.status(400).json({ error: "Invalid or expired reset session." })
+                return res.status(400).json(formatError('Invalid or expired reset session.', 'resetToken'))
             }
         })
 
@@ -157,22 +158,22 @@ export class AccountRouter {
         // Update password - requires current password for verification, and new password that meets complexity requirements
         this.router.patch('/update-password', auth, signupOrUpdateValidator, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             if (req.isGuest){
-                return res.status(403).send({error: 'Guest users are not authorized to update profile details.'})
+                return res.status(403).json(formatError('Guest users are not authorized to update profile details.'))
             }
             // currPassword must be supplied to compare against password saved in db
             const currPassword = req.body.currPassword
             const newPassword = req.body.password
             if (!currPassword){
-                return res.status(400).send({errors: [{param: 'currPassword', msg: 'Please provide current password to update.'}]})
+                return res.status(400).json(formatError('Please provide current password to update.', 'currPassword'))
             }
             if (!newPassword){
-                return res.status(400).send({errors: [{param: 'password', msg: 'Please provide new password to update.'}]})
+                return res.status(400).json(formatError('Please provide new password to update.', 'password'))
             }
             // currPassword and newPassword must be both provided to reach here
             const isMatch: boolean = await bcrypt.compare(req.body.currPassword, req.user.password)
             // currPassword must be correct to ensure user has permission to update it
             if (!isMatch) {
-                return res.status(400).send({errors: [{param: 'currPassword', msg: 'Current password incorrect.'}]})
+                return res.status(400).json(formatError('Current password is incorrect.', 'currPassword'))
             }
             // Validate new passsword
             const errors = validationResult(req);
@@ -190,7 +191,7 @@ export class AccountRouter {
         // Delete account
         this.router.delete('/delete', auth, async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
             if (req.isGuest){
-                return res.status(403).send({error: 'Guest users are not authorized to delete account.'})
+                return res.status(403).json(formatError('Guest users are not authorized to delete account.'))
             }
             try {
                 const result = await this.userController.handleDeleteAccount(req.user._id);
