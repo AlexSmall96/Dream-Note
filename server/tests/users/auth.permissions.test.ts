@@ -2,7 +2,7 @@ import request from 'supertest';
 import { server } from '../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { User } from '../../models/user.model.js';
-import { assertErrors } from './utils/assertErrors.js'
+import { assertErrors, assertSingleError } from './utils/assertErrors.js'
 import { createUser, userType, getAuthHeader } from './utils/userCreation.js';
 import { baseUrl, userOneCreds } from './data.js';
 import { wipeDB } from '../setup/wipeDB.js';
@@ -81,7 +81,7 @@ describe('LOGIN FAILURE', () => {
             password: 'apple123'            
         }).expect(400)
         // 1 error message should be present
-        assertErrors(response.body.errors, [{param: 'email', msg: 'No account found associated with provided email address.'}])
+        assertSingleError(response.body.errors, 'No account found associated with provided email address.', 'email')
     })
 
     test('Login should fail with incorrect password.', async () => {
@@ -91,7 +91,7 @@ describe('LOGIN FAILURE', () => {
             password: 'apple12'            
         }).expect(400)
         // Should be 1 error message in response
-        assertErrors(response.body.errors, [{param: 'password', msg: 'Incorrect password.'}])
+        assertSingleError(response.body.errors, 'Incorrect password.', 'password')
     })
 })
 
@@ -102,7 +102,7 @@ describe('LOGOUT FAILURE', () => {
         assertErrors(responseNoToken.body.errors, [{param: 'token', msg: 'Please provide json web token to authenticate.'}])
         // Invalid token
         const responseInvalidToken = await request(server).post(`${baseUrl}/logout`).set('Authorization', `Bearer 123`).expect(401)
-        assertErrors(responseInvalidToken.body.errors, [{param: 'token', msg: 'Invalid token.'}])
+        assertSingleError(responseInvalidToken.body.errors, 'Invalid token.', 'token')
     })
 })
 
