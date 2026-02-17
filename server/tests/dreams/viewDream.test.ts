@@ -9,6 +9,7 @@ import { createUser, getAuthHeader } from '../users/utils/userCreation.js'
 import { Dream } from '../../models/dream.model.js';
 import { oldDreamData } from './data.js';
 import { Theme } from '../../models/theme.model.js';
+import { assertSingleError } from '../users/utils/assertErrors.js';
 
 let userOneAuth: [string, string]
 let userThreeAuth: [string, string]
@@ -37,33 +38,31 @@ beforeEach(async () => {
 
 // Tests
 
-describe('VIEW DREAM DETAILS', () => {
-    const url = baseUrl + '/view'
+const url = baseUrl + '/view'
 
-    test('View dream should succeed with valid id if user is owner of dream.', async () => {
-        // View one of userThree's dreams
-        const response = await request(server).get(`${url}/${oldDreamId}`).set(...userThreeAuth).expect(200)
-        const { dream, themes } = response.body
-        const { title, description, date, owner } = dream
-        // Assert that dream response matches test data
-        expect(title).toBe(oldDreamData.title)
-        expect(description).toBe(oldDreamData.description)
-        expect(date).toBe(oldDreamData.date)
-        expect(owner).toBe(userThreeId.toString())
-        // Assert themes are correct - should be 2 in total
-        expect(themes).toHaveLength(2)
-        // Should be sorted alphabetically
-        expect(themes[0].theme).toBe('Anxiety')
-        expect(themes[1].theme).toBe('Lateness')
-        // Both themes should have oldDreamId as dream
-        expect(themes[0].dream).toBe(oldDreamId.toString())
-        expect(themes[1].dream).toBe(oldDreamId.toString())
-    })
+test('View dream should succeed with valid id if user is owner of dream.', async () => {
+    // View one of userThree's dreams
+    const response = await request(server).get(`${url}/${oldDreamId}`).set(...userThreeAuth).expect(200)
+    const { dream, themes } = response.body
+    const { title, description, date, owner } = dream
+    // Assert that dream response matches test data
+    expect(title).toBe(oldDreamData.title)
+    expect(description).toBe(oldDreamData.description)
+    expect(date).toBe(oldDreamData.date)
+    expect(owner).toBe(userThreeId.toString())
+    // Assert themes are correct - should be 2 in total
+    expect(themes).toHaveLength(2)
+    // Should be sorted alphabetically
+    expect(themes[0].theme).toBe('Anxiety')
+    expect(themes[1].theme).toBe('Lateness')
+    // Both themes should have oldDreamId as dream
+    expect(themes[0].dream).toBe(oldDreamId.toString())
+    expect(themes[1].dream).toBe(oldDreamId.toString())
+})
 
-    test('View dream should fail if user is not owner of dream.', async () => {
-        // View one of userThree's dreams, authorized as userOne
-        const response = await request(server).get(`${url}/${oldDreamId}`).set(...userOneAuth).expect(401)
-        // Error message should be returned
-        expect(response.body.error).toBe('You are not authorized to view this dream.')
-    })
+test('View dream should fail if user is not owner of dream.', async () => {
+    // View one of userThree's dreams, authorized as userOne
+    const response = await request(server).get(`${url}/${oldDreamId}`).set(...userOneAuth).expect(403)
+    // Error message should be returned
+    assertSingleError(response.body.errors, 'You are not authorized to view this dream.')
 })
