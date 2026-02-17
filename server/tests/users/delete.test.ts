@@ -3,7 +3,7 @@ import { server } from '../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { Theme } from '../../models/theme.model.js';
 import { Dream } from '../../models/dream.model.js';
-import { assertErrors } from './utils/assertErrors.js'
+import { assertErrors, assertSingleError } from './utils/assertErrors.js'
 import { getAuthHeader, createUser } from './utils/userCreation.js';
 import { baseUrl, userThreeCreds, guestUserCreds } from './data.js';
 import { oldDreamData } from '../dreams/data.js';
@@ -44,13 +44,13 @@ describe('FAILURE', () => {
     test('Account deletion should fail when not authenticated.', async () => {
         // Send unauthenticated response
         const response = await request(server).delete(url).expect(401)
-        assertErrors(response.body.errors, [{param: 'token', msg: 'Please provide json web token to authenticate.'}])        
+        assertSingleError(response.body.errors, 'Please provide json web token to authenticate.', 'token')
     }) 
     
     test('Account deletion should fail when signed in as guest.', async () => {
         // Send response authenticated as guest
         const response = await request(server).delete(url).set(...guestAuth).expect(403)
-        expect(response.body.error).toBe('Guest users are not authorized to delete account.')
+        assertSingleError(response.body.errors, 'Guest users are not authorized to delete account.')
     })
 })
 
