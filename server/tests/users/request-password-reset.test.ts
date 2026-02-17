@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { baseUrl } from './data.js';
 import { createUser } from './utils/userCreation.js';
 import { userOneCreds } from './data.js';
+import { assertSingleError } from './utils/assertErrors.js';
 
 // Wipe db and save data
 beforeEach(async () => {
@@ -33,6 +34,7 @@ vi.spyOn(otpUtils, "generateOtp").mockReturnValue('123456');
 // Import server after mock
 import { server } from '../setup/testServer.js'
 
+
 const url = baseUrl + '/request-password-reset'
 
 // Tests
@@ -40,7 +42,7 @@ const url = baseUrl + '/request-password-reset'
 describe('STATUS & FEEDBACK MESSAGES', () => {
     test('Error message should be returned if email is not provided.', async () => {
         const response = await request(server).post(url).send({}).expect(400)
-        expect(response.body.error).toBe('Email required')
+        assertSingleError(response.body.errors, 'Email required', 'email')
     })
 
     test('Correct message is returned if email is provided.', async () => {
