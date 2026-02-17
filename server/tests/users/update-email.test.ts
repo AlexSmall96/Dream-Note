@@ -7,6 +7,7 @@ import { Types } from 'mongoose';
 import { patchDataWithAuth, sendData } from './utils/sendData.js';
 import { Otp } from '../../models/OTP.model.js';
 import { User } from '../../models/user.model.js';
+import { assertSingleError } from './utils/assertErrors.js';
 
 let userOneAuth: [string, string]
 let userThreeAuth: [string, string]
@@ -70,31 +71,31 @@ describe('Updating email address should fail if:', async () => {
     test('User is authenticated as guest.', async () => {
         // Send response as guest
         const response = await patchDataWithAuth(server, url, {otp: '123456'}, 403, guestAuth)
-        expect(response.body.error).toBe('Guest users are not authorized to update profile details.')
+        assertSingleError(response.body.errors, 'Guest users are not authorized to update profile details.')
     })
     test('OTP is missing from request body.', async () => {
         // Send response without OTP
         const response = await patchDataWithAuth(server, url, {}, 400, userOneAuth)
-        expect(response.body.error).toBe('Please provide the OTP that was sent to your email address.')
+        assertSingleError(response.body.errors, 'Please provide the OTP that was sent to your email address.', 'otp')
     })
     test('Provided OTP is invalid.', async () => {
         // Send incorrect otp value
         const response = await patchDataWithAuth(server, url, {otp: '113355'}, 400, userOneAuth)
-        expect(response.body.error).toBe('Invalid or expired OTP.')
+        assertSingleError(response.body.errors, 'Invalid or expired OTP.', 'otp')
     })
     test('Provided OTP does not belong to currently authenticated user.', async () => {
         // Send existing otp value belonging to userOne but authenticated as userThree
         const response = await patchDataWithAuth(server, url, {otp: '123456'}, 400, userThreeAuth)
-        expect(response.body.error).toBe('Invalid or expired OTP.')
+        assertSingleError(response.body.errors, 'Invalid or expired OTP.', 'otp')
     })
     test('OTP is found in database but expired.', async () => {
         // Send request with expired otp value
         const response = await patchDataWithAuth(server, url, {otp: '445566'}, 400, userOneAuth)
-        expect(response.body.error).toBe('Invalid or expired OTP.')
+        assertSingleError(response.body.errors, 'Invalid or expired OTP.', 'otp')
     })
     test('OTP is found in database but has been used.', async () => {
         const response = await patchDataWithAuth(server, url, {otp: '778899'}, 400, userOneAuth)
-        expect(response.body.error).toBe('Invalid or expired OTP.')
+        assertSingleError(response.body.errors, 'Invalid or expired OTP.', 'otp')
     })
 })
 
