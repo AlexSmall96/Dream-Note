@@ -8,6 +8,7 @@ import { postDataWithNoAuth } from './utils/sendData.js';
 import { Otp } from '../../models/OTP.model.js';
 import jwt from "jsonwebtoken"
 import { Types } from 'mongoose';
+import { assertSingleError } from './utils/assertErrors.js';
 
 let userOneId: Types.ObjectId
 let validOtpId: Types.ObjectId
@@ -45,22 +46,22 @@ const url = baseUrl + '/verify-reset-otp'
 describe('Verifying reset otp should fail if:', () => {
     test('Otp value is missing from request body.', async () => {
         const response = await postDataWithNoAuth(server, url, {email: userOneCreds.email}, 400)
-        expect(response.body.error).toBe('Please provide the OTP that was sent to your email address.')
+        assertSingleError(response.body.errors, 'Please provide the OTP that was sent to your email address.', 'otp')
     })
 
     test('Email is missing from request body.', async () => {
         const response = await postDataWithNoAuth(server, url, {otp: '554433'}, 400)
-        expect(response.body.error).toBe('Email must be provided to verify otp.')
+        assertSingleError(response.body.errors, 'Email must be provided to verify otp.', 'email')
     })
 
     test('Otp associated with email could not be found.', async () => {
         const response = await postDataWithNoAuth(server, url, {otp: '123456', email: 'someone@email.com'}, 400)
-        expect(response.body.error).toBe('Invalid or expired OTP.')
+        assertSingleError(response.body.errors, 'Invalid or expired OTP.', 'otp')
     })
 
     test('Otp associated with email is found but purpose is update-email.', async () => {
         const response = await postDataWithNoAuth(server, url, {otp: '112233', email: userOneCreds.email}, 400)
-        expect(response.body.error).toBe('Invalid or expired OTP.')
+        assertSingleError(response.body.errors, 'Invalid or expired OTP.', 'otp')
     })
 })
 
