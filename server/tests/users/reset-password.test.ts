@@ -9,6 +9,7 @@ import { patchDataWithNoAuth } from './utils/sendData.js';
 import { Otp } from '../../models/OTP.model.js';
 import jwt from "jsonwebtoken"
 import { Types } from 'mongoose';
+import { assertErrors, assertSingleError } from './utils/assertErrors.js';
 
 let validOtpId: Types.ObjectId
 const invalidId = new Types.ObjectId()
@@ -68,25 +69,27 @@ const url = baseUrl + '/reset-password'
 describe('Resetting password should fail if:', () => {
     test('Reset token is not provided in request body.', async () => {
         const response = await patchDataWithNoAuth(server, url, {password: 'apple123'}, 400)
-        expect(response.body.error).toBe('Reset token must be provided.')
+        assertSingleError(response.body.errors, 'Reset token must be provided.', 'resetToken')
     })
     test('Password value is not provided in request body.', async () => {
         const response = await patchDataWithNoAuth(server, url, {resetToken: '123'}, 400)
-        expect(response.body.error).toBe('New password must be provided.')
+        assertSingleError(response.body.errors, 'New password must be provided.', 'password')
     })
     test('Password does not meet complexity requirements.', async () => {
         const response = await patchDataWithNoAuth(server, url, {password: 'password', resetToken: '123'}, 400)
-        expect(response.body.errors[0].msg).toBe('Password cannot contain "password".')
+        assertErrors(response.body.errors, [{
+            param: 'password', msg: 'Password cannot contain "password".', value: 'password'
+        }])
         // Since the password validation comes from signupOrUpdate.validator.ts, testing the remaining complexity requirements is not necessay.
         // See auth.permissions.test.ts for tests covering all password complexity requirements
     })
     test('Reset token is invalid - not associated with any user.', async () => {
         const response = await patchDataWithNoAuth(server, url, {resetToken: resetTokenNoUser, password: 'apple123'}, 400)
-        expect(response.body.error).toBe("Invalid reset session.")
+        assertSingleError(response.body.errors, 'Invalid reset session.', 'resetToken')
     })
     test('Reset token is invalid - not associated with any otp record.', async () => {
         const response = await patchDataWithNoAuth(server, url, {resetToken: resetTokenNoOtp, password: 'apple123'}, 400)
-        expect(response.body.error).toBe("Invalid reset session.")
+        assertSingleError(response.body.errors, 'Invalid reset session.', 'resetToken')
     })
 })
 
