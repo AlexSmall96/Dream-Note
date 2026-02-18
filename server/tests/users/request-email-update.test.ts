@@ -3,7 +3,7 @@ import * as otpUtils from "../../services/utils/otp.js";
 import request from 'supertest';
 import { wipeDB } from '../setup/wipeDB.js'
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { baseUrl } from './data.js';
+import { baseUrl, userThreeCreds } from './data.js';
 import { createUser, getAuthHeader } from './utils/userCreation.js';
 import { userOneCreds } from './data.js';
 import { assertErrors, assertSingleError } from './utils/assertErrors.js';
@@ -16,6 +16,9 @@ beforeEach(async () => {
     // Create a user to test success for valid email address
     const userOne = await createUser(userOneCreds)
     userOneAuth = getAuthHeader(userOne.tokens[0])
+
+    // Create a user to test failure for taken email address
+    await createUser(userThreeCreds)
     vi.clearAllMocks() // Reset number of send mail calls
 })
 
@@ -51,8 +54,13 @@ describe('STATUS & FEEDBACK MESSAGES', () => {
     })
 
     test('Error message should be returned if email is taken.', async () => {
+        const response = await request(server).post(url).send({email: userThreeCreds.email}).set(...userOneAuth).expect(400)
+        assertErrors(response.body.errors, [{param: 'email', msg: 'Email address already in use.'}])
+    })
+
+    test('Error message should be returned if email is already associated with user.', async () => {
         const response = await request(server).post(url).send({email: userOneCreds.email}).set(...userOneAuth).expect(400)
-        assertErrors(response.body.errors, [{param: 'email', msg: 'Email address already in use.', value: userOneCreds.email}])
+        assertErrors(response.body.errors, [{param: 'email', msg: 'This email address is already associated with your account.'}])
     })
 
     test('Success message is returned if email is not taken.', async () => {
