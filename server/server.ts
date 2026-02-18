@@ -3,6 +3,7 @@ import next from "next";
 import { addRoutes } from './config/routes.config.js';
 import { setupServer } from './utils/setupServer.js';
 import { connectToDB } from './utils/connectToDB.js';
+import { errorHandler } from './middleware/errorHandler.js';
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -16,6 +17,8 @@ setupServer(server)
 app.prepare().then(() => {
     // Add all routes to server
     addRoutes(server)
+
+    server.use(errorHandler)
     // Render frontend
     server.all("*", (req, res) => handle(req, res));
     const port = process.env.PORT || 3000;
@@ -23,7 +26,7 @@ app.prepare().then(() => {
     server.listen(port, () => {
         console.log(`Server started on port ${port}`);
     });
-
+    
     // Connect to database
     connectToDB(false)
 })
