@@ -71,7 +71,7 @@ describe('Updating email address should fail if:', async () => {
     test('User is authenticated as guest.', async () => {
         // Send response as guest
         const response = await patchDataWithAuth(server, url, {otp: '123456'}, 403, guestAuth)
-        assertSingleError(response.body.errors, 'Guest users are not authorized to update profile details.')
+        assertSingleError(response.body.errors, 'Guest users are not authorized to update account details.')
     })
     test('OTP is missing from request body.', async () => {
         // Send response without OTP
