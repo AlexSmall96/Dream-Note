@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import nodemailer from 'nodemailer';
-import { purposeType } from "../controllers/user.controller";
+import { purposeType } from "../controllers/auth.controller";
 
 // Email service class for password reset and email verification
 @injectable()
