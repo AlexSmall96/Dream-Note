@@ -7,9 +7,16 @@ export interface RequestWithUser extends Request {
     user?: any;
 }
 
-// Extend express Request interface with user and token
-export interface AuthenticatedRequest extends RequestWithUser {
+export interface IncomingAuthRequest extends RequestWithUser {
     token?: string;
+    isGuest?: boolean;    
+}
+
+
+// Extend express Request interface with user and token
+export interface AuthenticatedRequest extends Request {
+    user: any;
+    token: string;
     isGuest?: boolean;
 }
 
