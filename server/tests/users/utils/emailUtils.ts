@@ -1,7 +1,7 @@
 import { expect } from 'vitest';
 import { EmailService } from "../../../services/email.service.js";
 import { MailSlurp } from 'mailslurp-client';
-import { purposeType } from '../../../controllers/user.controller.js';
+import { purposeType } from '../../../controllers/auth.controller.js';
 
 // Create instance of EmailService
 const emailService = new EmailService()
