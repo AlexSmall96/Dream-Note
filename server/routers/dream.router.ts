@@ -8,7 +8,7 @@ import { ThemeService } from "../services/themes/theme.service.js";
 import { body } from "express-validator";
 import { requireTitleOrDescription } from "../middleware/dreams/requireTitleOrDescription.js";
 import { requireDescriptionForThemes } from "../middleware/dreams/requireDescriptionForThemes.js";
-import { forbidNotOwner } from "../middleware/dreams/forbidNotOwner.js";
+import { forbidNotDreamOwner } from "../middleware/dreams/forbidNotDreamOwner.js";
 import { validateRequest } from "../middleware/validateRequest.js";
 
 // Router class for Dream model
@@ -60,7 +60,7 @@ export class DreamRouter {
         this.router.get(
             '/view/:id',
             auth,
-            forbidNotOwner('You are not authorized to view this dream.'),
+            forbidNotDreamOwner('You are not authorized to view this dream.'),
             this.dreamController.viewDream
         )
 
@@ -68,7 +68,7 @@ export class DreamRouter {
         this.router.patch(
             '/update/:id',
             auth,
-            forbidNotOwner('You are not authorized to edit this dream.'),
+            forbidNotDreamOwner('You are not authorized to edit this dream.'),
             body('dream')
             .notEmpty().withMessage("Request body must contain the field 'dream'.").bail(),
             validateRequest,
@@ -83,7 +83,7 @@ export class DreamRouter {
             '/delete/:id', 
             auth,
             // Guests can delete dreams as data resets on login, but users cannot delete dreams they are not owner of
-            forbidNotOwner('You are not authorized to delete this dream.'),
+            forbidNotDreamOwner('You are not authorized to delete this dream.'),
             this.dreamController.deleteDream
         )
     }
