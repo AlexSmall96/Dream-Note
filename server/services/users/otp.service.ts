@@ -1,9 +1,9 @@
 import { injectable, inject } from "inversify";
-import { User } from "../models/user.model.js";
-import {generateOtp} from "./utils/otp.js"
-import { Otp } from "../models/OTP.model.js";
-import {AppError} from "../utils/appError.js"
-import { OtpDocument } from "../interfaces/otp.interfaces.js";
+import { User } from "../../models/user.model.js";
+import {generateOtp} from "../utils/otp.js"
+import { Otp } from "../../models/OTP.model.js";
+import {AppError} from '../../utils/appError.js'
+import { OtpDocument } from "../../interfaces/otp.interfaces.js";
 
 export type purposeType = "email-update" | "password-reset"
 

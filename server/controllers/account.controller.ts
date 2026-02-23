@@ -1,7 +1,7 @@
 import { injectable, inject } from "inversify";
 import { Request, Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
-import { AccountService } from "../services/account.service.js";
+import { AccountService } from "../services/users/account.service.js";
 
 export type purposeType = "email-update" | "password-reset"
 
@@ -77,7 +77,7 @@ export class AccountController {
     public updatePassword = async (req: Request, res:Response, next: NextFunction) => {
         const authReq = req as AuthenticatedRequest
         const newPassword = authReq.body.password
-        const userId = authReq.user._id
+        const userId = authReq.user._id.toString()
         try {
             await this.accountService.updatePassword(newPassword, userId);
             res.json({message: 'Password updated successfully.'}) 
@@ -88,8 +88,9 @@ export class AccountController {
 
     public deleteAccount = async (req: Request, res:Response, next: NextFunction) => {
         const authReq = req as AuthenticatedRequest
+        const userId = authReq.user._id.toString()
         try {
-            const result = await this.accountService.deleteAccount(authReq.user._id);
+            const result = await this.accountService.deleteAccount(userId);
             res.json(result) 
         } catch (err){
             next(err);

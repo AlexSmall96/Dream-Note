@@ -1,5 +1,5 @@
 import { injectable } from "inversify";
-import {AppError} from "../utils/appError.js"
+import {AppError} from "../../utils/appError.js"
 import jwt from "jsonwebtoken"
 
 export type purposeType = "email-update" | "password-reset"

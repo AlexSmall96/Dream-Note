@@ -2,18 +2,20 @@ import { Container } from "inversify";
 import { AuthController } from "../controllers/auth.controller.js";
 import { AuthRouter } from "../routers/auth.router.js";
 import { AccountRouter } from "../routers/account.router.js";
-import { EmailService } from "../services/email.service.js";
+import { EmailService } from "../services/users/email.service.js";
 import { DreamController } from "../controllers/dream.controlller.js";
 import { ThemeController } from "../controllers/theme.controller.js"
 import { DreamRouter } from "../routers/dream.router.js";
-import { DreamService } from "../services/dream.service.js";
+import { DreamService } from "../services/dreams/dream.service.js";
 import { ThemeRouter } from "../routers/theme.router.js";
-import { ThemeService } from "../services/theme.service.js";
-import { AuthService } from "../services/auth.service.js";
-import { AccountService } from "../services/account.service.js";
+import { ThemeService } from "../services/themes/theme.service.js";
+import { AuthService } from "../services/users/auth.service.js";
+import { AccountService } from "../services/users/account.service.js";
 import { AccountController } from "../controllers/account.controller.js";
-import { OtpService } from "../services/otp.service.js";
-import { ResetTokenService } from "../services/reset-token.service.js";
+import { OtpService } from "../services/users/otp.service.js";
+import { ResetTokenService } from "../services/users/reset-token.service.js";
+import { AIService } from "../services/dreams/ai.service.js";
+import { FilterService } from "../services/dreams/filter.service.js";
 
 export const container: Container = new Container();
 
@@ -36,6 +38,10 @@ container.bind(AuthService).toSelf().inTransientScope()
 container.bind(DreamController).toSelf().inTransientScope()
 container.bind(DreamRouter).toSelf().inTransientScope()
 container.bind(DreamService).toSelf().inTransientScope()
+
+// Dream AI and filtering (services only)
+container.bind(AIService).toSelf().inTransientScope()
+container.bind(FilterService).toSelf().inTransientScope()
 
 // Themes
 container.bind(ThemeController).toSelf().inTransientScope()

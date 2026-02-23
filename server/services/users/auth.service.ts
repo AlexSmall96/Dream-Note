@@ -1,9 +1,9 @@
 import { injectable } from "inversify";
-import { Dream } from "../models/dream.model.js";
-import { Theme } from "../models/theme.model.js";
-import { User } from "../models/user.model.js";
-import { UserInterface, UserDocument } from "../interfaces/user.interfaces.js";
-import { guestData } from '../seed-data/guestSeedData.js'
+import { Dream } from "../../models/dream.model.js";
+import { Theme } from "../../models/theme.model.js";
+import { User } from "../../models/user.model.js";
+import { UserInterface, UserDocument } from "../../interfaces/user.interfaces.js";
+import { guestData } from '../../seed-data/guestSeedData.js'
 
 @injectable()
 export class AuthService {

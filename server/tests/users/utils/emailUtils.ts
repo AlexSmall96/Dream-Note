@@ -1,5 +1,5 @@
 import { expect } from 'vitest';
-import { EmailService } from "../../../services/email.service.js";
+import { EmailService } from "../../../services/users/email.service.js";
 import { MailSlurp } from 'mailslurp-client';
 import { purposeType } from '../../../controllers/auth.controller.js';
 
