@@ -3,7 +3,7 @@ import { AuthenticatedRequest, IncomingAuthRequest} from "../../interfaces/auth.
 import { AppError } from '../../utils/appError.js';
 import { Dream } from '../../models/dream.model.js';
 
-export function forbidNotOwner(message: string) {
+export function forbidNotDreamOwner(message: string) {
     return async function(req:IncomingAuthRequest, _res: Response, next: NextFunction) {
         const dreamId = req.params.id
         const authReq = req as AuthenticatedRequest
