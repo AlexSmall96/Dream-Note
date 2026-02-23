@@ -34,8 +34,8 @@ beforeEach(async () => {
     oldDreamId = oldDream._id
 
     // Create themes associated with old dream
-    await new Theme({theme: 'Lateness', dream: oldDreamId}).save()
-    await new Theme({theme: 'Anxiety', dream: oldDreamId}).save()
+    await new Theme({theme: 'Lateness', dream: oldDreamId, owner: userThree._id}).save()
+    await new Theme({theme: 'Anxiety', dream: oldDreamId, owner: userThree._id}).save()
 
     // Create a dream with no description
     const dreamWithNoDesc = await new Dream({...dreamWithNoDescData, owner: userThree._id}).save()

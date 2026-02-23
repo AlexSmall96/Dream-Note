@@ -28,12 +28,12 @@ beforeEach(async () => {
     userThreeId = userThree._id
 
     // Create a dream owned by one of the saved users
-    const oldDream = await new Dream({...oldDreamData, owner: userThree._id}).save()
+    const oldDream = await new Dream({...oldDreamData, owner: userThreeId}).save()
     oldDreamId = oldDream._id
 
     // Create themes associated with old dream
-    await new Theme({theme: 'Lateness', dream: oldDreamId}).save()
-    await new Theme({theme: 'Anxiety', dream: oldDreamId}).save()
+    await new Theme({theme: 'Lateness', dream: oldDreamId, owner: userThreeId}).save()
+    await new Theme({theme: 'Anxiety', dream: oldDreamId, owner: userThreeId}).save()
 })
 
 // Tests

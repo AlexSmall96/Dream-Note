@@ -27,8 +27,8 @@ beforeEach(async () => {
     // Create dreams and themes with saved user to test casade deletion
     const oldDream = await new Dream({...oldDreamData, owner: userThree._id}).save()
     dreamId = oldDream._id
-    await new Theme({theme: 'Adventure', dream: oldDream._id}).save()
-    await new Theme({theme: 'Freedom', dream: oldDream._id}).save()
+    await new Theme({theme: 'Adventure', dream: oldDream._id, owner: userThree._id}).save()
+    await new Theme({theme: 'Freedom', dream: oldDream._id, owner: userThree._id}).save()
 
     // Create guest user to test that deletion is forbidden in guest account
     const guest = await createUser({...guestUserCreds, isGuest: true})

@@ -33,7 +33,8 @@ beforeEach(async () => {
 
     const theme = await new Theme({
         theme: 'New guest theme',
-        dream: newGuestDreamId
+        dream: newGuestDreamId,
+        owner: guestUser._id
     }).save()
     newGuestThemeId = theme._id
 })

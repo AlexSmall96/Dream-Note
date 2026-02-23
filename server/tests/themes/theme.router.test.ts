@@ -27,7 +27,7 @@ let oldDreamTheme1Id : Types.ObjectId
 
 // Wipe db and save data
 beforeEach(async () => {
-    wipeDB()
+    await wipeDB()
 
     // Create two users to test get all dreams and pagination & sorting
     const userThree = await createUser(userThreeCreds)
@@ -38,13 +38,15 @@ beforeEach(async () => {
     // Create two dreams owned by userThree
     oldDream = await new Dream({...oldDreamData, owner: userThree._id}).save()
     newDream = await new Dream({...newDreamData, owner: userThree._id}).save()
-
+    const oldDreamId = oldDream._id
+    const newDreamId = newDream._id
+    
     // Create two themes to associate with each dream
-    const oldDreamTheme1 = await new Theme({theme: 'Lateness', dream: oldDream._id}).save()
+    const oldDreamTheme1 = await new Theme({theme: 'Lateness', dream: oldDreamId, owner: userThree._id}).save()
+    await new Theme({theme: 'Anxiety', dream: oldDreamId, owner: userThree._id}).save()
+    await new Theme({theme: 'Fear', dream: newDreamId, owner: userThree._id}).save()
+    await new Theme({theme: 'Animals', dream: newDreamId, owner: userThree._id}).save()
     oldDreamTheme1Id = oldDreamTheme1._id
-    await new Theme({theme: 'Anxiety', dream: oldDream._id}).save()
-    await new Theme({theme: 'Fear', dream: newDream._id}).save()
-    await new Theme({theme: 'Animals', dream: newDream._id}).save()
 
     // Create a dream owned by userFour and associated themes to test sorting and pagination
     const dreamWithManyThemes = await new Dream({...dreamWithManyThemesData, owner: userFour._id}).save()
@@ -53,10 +55,11 @@ beforeEach(async () => {
         manyThemeTitles.push(i < 5? `b-theme-${i}` : i < 8 ? `a-theme-${i}` : `c-theme-${i}`)
     }
     await Promise.all(
-        manyThemeTitles.map(async (theme, i) => {
+        manyThemeTitles.map(async (theme) => {
             await new Theme({
                 theme,
                 dream: dreamWithManyThemes._id,
+                owner: userFour._id
             }).save()
         })
     )
@@ -73,7 +76,7 @@ describe('Get all themes should:', () => {
 
     test('Return all current users themes, each with associated dream id, title and date.', async () => {
         // Get all themes associated with userThree's dreams
-        const response = await request(server).get(url).set(...userThreeAuth).expect(200)
+        const response = await request(server).get(`${url}`).set(...userThreeAuth).expect(200)
         const themes = response.body.themes
         // Should be 4 in total
         expect(themes).toHaveLength(4)
