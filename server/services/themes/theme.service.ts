@@ -1,14 +1,29 @@
 import { injectable } from "inversify";
-import { Theme } from "../models/theme.model.js";
+import { Theme } from "../../models/theme.model.js";
 
-// Theme sync service for dream update
 @injectable()
 export class ThemeService {
+
+    // Get all themes associated with a specific dream
+    public async handleGetDreamThemes(dream: string){
+        const themes = Theme.find({dream}).sort('theme')
+        return themes
+    }
 
     public async addTheme(dream: string, text: string){
         const theme = new Theme({theme: text, dream})
         await theme.save()
         return theme
+    }
+
+    async addThemesToDream(dreamId: string, themes: string[]): Promise<string[]> {
+        // Add each theme to database
+        await Promise.all(
+            themes.map(async (text: string) => {
+                await this.addTheme(dreamId, text.trim())
+            })
+        )
+        return themes
     }
 
     public async removeAllForDream(dreamId: string){
@@ -31,5 +46,17 @@ export class ThemeService {
 
         const syncedThemes = await Theme.find({ dream: dreamId })
         return syncedThemes
+    }
+
+    public async removeThemesIfDescriptionRemoved(
+        oldDescription: string | null,
+        newDescription: string | null,
+        dreamId: string
+    ): Promise<boolean> {
+        if (oldDescription && !newDescription) {
+            await this.removeAllForDream(dreamId)
+            return true
+        }
+        return false
     }
 }
