@@ -1,5 +1,6 @@
 import  { JwtPayload } from 'jsonwebtoken';
 import { Request } from 'express';
+import { UserDocument, UserInterface } from './user.interfaces';
 
 
 // Extend express Request interface with user
@@ -15,7 +16,7 @@ export interface IncomingAuthRequest extends RequestWithUser {
 
 // Extend express Request interface with user and token
 export interface AuthenticatedRequest extends Request {
-    user: any;
+    user: UserDocument;
     token: string;
     isGuest?: boolean;
 }
