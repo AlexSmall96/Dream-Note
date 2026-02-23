@@ -4,8 +4,8 @@ https://www.xjavascript.com/blog/express-auth-middleware-typescript/
 */
 import jwt from 'jsonwebtoken';
 import { NextFunction, Response } from 'express';
-import { User } from '../models/user.model.js';
-import { decodedTokenWithId, IncomingAuthRequest} from "../interfaces/auth.interfaces.js"
+import { User } from '../../models/user.model.js';
+import { decodedTokenWithId, IncomingAuthRequest} from "../../interfaces/auth.interfaces.js"
 
 // Middleware to verify jwtoken
 export const auth = async (req:IncomingAuthRequest, res: Response, next: NextFunction) => {

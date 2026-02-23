@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { injectable, inject } from "inversify";
 import { AuthController } from "../controllers/auth.controller.js";
-import { auth } from "../middleware/auth.js";
-import { signupOrUpdateValidator } from "../middleware/signupOrUpdate.validator.js";
-import { findByCredentials } from "../middleware/findByCredentials.js";
+import { auth } from "../middleware/users/auth.js";
+import { signupOrUpdateValidator } from "../middleware/users/signupOrUpdate.validator.js";
+import { findByCredentials } from "../middleware/users/findByCredentials.js";
 import { validateRequest } from "../middleware/validateRequest.js";
 
 // Router class for User model

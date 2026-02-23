@@ -1,12 +1,12 @@
 import { Router } from "express";
 import { injectable, inject } from "inversify";
 import { AccountController } from "../controllers/account.controller.js";
-import { auth } from "../middleware/auth.js";
-import { signupOrUpdateValidator } from "../middleware/signupOrUpdate.validator.js";
+import { auth } from "../middleware/users/auth.js";
+import { signupOrUpdateValidator } from "../middleware/users/signupOrUpdate.validator.js";
 import { validateRequest } from "../middleware/validateRequest.js";
 import { body } from "express-validator";
-import { forbidGuest } from "../middleware/forbidGuest.js";
-import { comparePasswords } from "../middleware/comparePasswords.js";
+import { forbidGuest } from "../middleware/users/forbidGuest.js";
+import { comparePasswords } from "../middleware/users/comparePasswords.js";
 
 // Router class for User model
 @injectable()

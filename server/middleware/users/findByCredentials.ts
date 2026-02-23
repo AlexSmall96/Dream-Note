@@ -1,8 +1,8 @@
-import { User } from '../models/user.model.js'
-import { RequestWithUser } from "../interfaces/auth.interfaces.js"
+import { User } from '../../models/user.model.js'
+import { RequestWithUser } from "../../interfaces/auth.interfaces.js"
 import { NextFunction, Response } from "express"
 import bcrypt from "bcrypt";
-import { AppError } from '../utils/appError.js';
+import { AppError } from '../../utils/appError.js';
 
 // Middleware to find a user by email address and password
 // Used in login router

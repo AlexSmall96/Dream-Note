@@ -1,5 +1,5 @@
 import { checkSchema } from "express-validator";
-import { User } from "../models/user.model.js";
+import { User } from "../../models/user.model.js";
 
 // Validator for Sign up route
 export const signupOrUpdateValidator = checkSchema({
