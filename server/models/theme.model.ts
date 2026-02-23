@@ -12,6 +12,11 @@ const themeSchema = new Schema<ThemeDocument, ThemeModel>({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Dream'        
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'              
     }
 }, {timestamps: true})
 

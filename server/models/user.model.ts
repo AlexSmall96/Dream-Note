@@ -33,6 +33,12 @@ userSchema.virtual('dreams', {
     foreignField: 'owner'
 })
 
+userSchema.virtual('themes', {
+    ref: 'Theme',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 // Method to hash passwords when user is created or password is changed
 userSchema.pre<UserDocument>("save", async function (next) {
     if (this.isModified("password")) {
