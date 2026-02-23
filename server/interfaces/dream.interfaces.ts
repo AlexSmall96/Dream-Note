@@ -25,5 +25,13 @@ export interface DreamModel extends Model<DreamDocument>{
     findByIdOrThrowError(_id: string): Promise<DreamDocument>
 }
 
+export interface GetDreamsQuery {
+    title?: string
+    year?: string
+    month?: string
+    limit?: string
+    skip?: string
+    sort?: string
+}
 
 

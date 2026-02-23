@@ -1,36 +1,113 @@
 import { injectable, inject } from "inversify";
-import { DreamInterface } from "../interfaces/dream.interfaces.js"
-import { Dream } from "../models/dream.model.js";
-import { DreamService } from "../services/dream.service.js";
+import { GetDreamsQuery } from "../interfaces/dream.interfaces.js"
+import { DreamService } from "../services/dreams/dream.service.js";
+import { Request, Response, NextFunction } from "express";
+import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
+import { getStartAndEndDates } from "../services/utils/dateRange.js";
+import { ThemeService } from "../services/themes/theme.service.js";
 
 // Controller clas for Dream model
 @injectable()
 export class DreamController {
     constructor(
         @inject(DreamService) private dreamService: DreamService,
+        @inject(ThemeService) private themeService: ThemeService,
     ){}
-    // Log new dream
-    public async handleLogDream(data: DreamInterface, owner: string){
-        const dream = new Dream({...data, owner});
-        await dream.save()
-        return dream
+
+    public logNewDreamWithThemes = async (req: Request, res:Response, next: NextFunction) => {
+        const dreamData = req.body.dream
+        const incomingThemes = req.body.themes ?? null
+        const authReq = req as AuthenticatedRequest
+        const userId = authReq.user._id.toString()
+        try {
+            const {dream, themes} = await this.dreamService.logNewDreamWithThemes(dreamData, incomingThemes, userId)
+            res.status(201).json(themes ? {dream, themes} : {dream})
+        } catch (err){
+            next(err)
+        }
     }
 
-    // View details for a single dream
-    public async handleViewDream(dreamId: string, owner: string){
-        const dream = await Dream.findOne({_id: dreamId, owner})
-        return dream
+    public getAiAnalysis = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            // Get tone and style from request
+            const params = req.body.params ?? null
+            const description = req.body.description
+            // Create full prompt using tone and style
+            const analysis = await this.dreamService.getAiAnalysis(description, params)
+            res.json({analysis: analysis ?? ''})
+        } catch (err){
+            next(err)
+        }
     }
 
-    // Update dream
-    public async handleUpdateDream(update: DreamInterface, dreamId: string, userId: string){
-        const dream = await Dream.findOneAndUpdate({_id: dreamId, owner: userId}, update, {new: true})
-        return dream
+    private parseDreamQuery = (query: GetDreamsQuery) => {
+        const title = query.title? new RegExp(query.title.toString().trim(), "i") : new RegExp('')
+        // Get year and month query parameters
+        const year = query.year? Number(query.year) : undefined 
+        const month = query.month? Number(query.month) : undefined
+        const NOW = new Date()
+        // If month and year are supplied calculate date range, otherwise take all time
+        const [startDate, endDate] = year && month ? getStartAndEndDates(year, month) : [new Date("1900-01-01"), NOW]
+        // Get limit and skip parameters
+        const limit = query.limit? Number(query.limit) : 100
+        const skip = query.skip? Number(query.skip) : 0
+        const sort = query.sort === 'true'
+        return {
+            title, limit, skip, sort, startDate, endDate
+        }
     }
 
-    // Delete dream
-    public async handleDeleteDream(dreamId: string, owner: string){
-        const dream = await Dream.findOneAndDelete({_id: dreamId, owner})
-        return dream
-    }    
+
+    public getAllDreams = async (req: Request<{}, {}, GetDreamsQuery>, res: Response, next: NextFunction) => {
+        const authReq = req as AuthenticatedRequest
+        const userId = authReq.user._id.toString()
+        // Get title query parameter
+        const query = authReq.query
+        const {
+            title, limit, skip, sort, startDate, endDate
+        } = this.parseDreamQuery(query)
+        try {
+            const { dreams, monthlyTotals } = await this.dreamService.getDreamsWithStats(userId, { title, startDate, endDate, limit, skip, sort })
+            res.json({dreams, monthlyTotals})
+        } catch (err){
+            next(err)
+        }
+    }
+
+    public viewDream = async (req: Request, res: Response, next: NextFunction) => {
+        const authReq = req as AuthenticatedRequest
+        const dreamId = authReq.params.id
+        const owner = authReq.user._id.toString()
+        try {
+            const {dream, themes} = await this.dreamService.getDreamAndThemes(dreamId, owner)
+            res.json({dream, themes})
+        } catch (err){
+            next(err)
+        }
+    }
+
+    public updateDream = async (req: Request, res: Response, next: NextFunction) => {
+        const dreamId = req.params.id
+        const dreamData = req.body.dream
+        const incomingThemes = req.body.themes
+        try {
+            const {dream, themes} = await this.dreamService.updateDreamAndSyncThemes(dreamId, dreamData, incomingThemes)
+            return res.json({dream, themes})
+        } catch (err){
+            next(err)
+        }
+    }
+
+    public deleteDream = async (req: Request, res: Response, next: NextFunction) => {
+        const authReq = req as AuthenticatedRequest
+        const dreamId = req.params.id
+        const owner = authReq.user._id.toString()
+        try {
+            const dream = await this.dreamService.deleteDream(dreamId, owner)
+            res.json(dream)
+        } catch (err){
+            next(err)
+        }          
+    }
+
 }
