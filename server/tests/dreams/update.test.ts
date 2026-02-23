@@ -67,7 +67,7 @@ describe('Updating dream should fail if:', () => {
         const response = await request(server).patch(`${url}/${oldDreamId}`).send({
             dream: {title: null, description: null, date: '2024-11-30T00:00:00.000Z'}
         }).set(...userThreeAuth).expect(400)
-        assertSingleError(response.body.errors, "Dream data must contain title.", 'title')
+        assertSingleError(response.body.errors, "Dream data must contain title.", 'dream.title')
     })
 })
 
