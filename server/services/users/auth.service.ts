@@ -34,7 +34,7 @@ export class AuthService {
             const themes = data.themes
             const savedDream = await new Dream({...dreamData, owner: guestId}).save()
             await Promise.all(themes.map(async (theme) => {
-                await new Theme({theme, dream: savedDream._id}).save()
+                await new Theme({theme, dream: savedDream._id, owner: guestId}).save()
             }))
         }))
     }
@@ -44,7 +44,7 @@ export class AuthService {
         // Delete guest's dreams and themes
         // Clear tokens
         await Dream.deleteMany({ owner: guestId });
-        await Theme.updateMany({ owner: guestId }, { $pull: { dreams: guestId } });
+        await Theme.deleteMany({ owner: guestId });
         await User.updateOne(
             { _id: guestId },
             { $set: { tokens: [] } }

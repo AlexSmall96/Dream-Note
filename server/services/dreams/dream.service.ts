@@ -31,7 +31,7 @@ export class DreamService {
         const savedDream = await this.saveDream(dream, userId)
 
         if (themes && themes.length > 0){
-            const savedThemes = await this.themeService.addThemesToDream(savedDream._id.toString(), themes)
+            const savedThemes = await this.themeService.addThemesToDream(savedDream._id.toString(), themes, userId)
             return {dream: savedDream, themes: savedThemes}
         }
         return {dream}
@@ -69,11 +69,11 @@ export class DreamService {
 
     public async getDreamAndThemes(dreamId:string, owner: string){
         const dream = await Dream.findOne({_id: dreamId, owner})
-        const themes = await this.themeService.handleGetDreamThemes(dreamId)
+        const themes = await this.themeService.getDreamThemes(dreamId)
         return {dream, themes}
     }
 
-    public async updateDreamAndSyncThemes(dreamId: string, dreamData: DreamInterface, themes: string[]){
+    public async updateDreamAndSyncThemes(userId:string, dreamId: string, dreamData: DreamInterface, themes: string[]){
         const normalizedDescription = dreamData.description?.trim() || null
         const existingDream = await Dream.findByIdOrThrowError(dreamId)
         const dream = await Dream.findOneAndUpdate({_id: dreamId}, {...dreamData, description: normalizedDescription}, {new: true})
@@ -84,7 +84,7 @@ export class DreamService {
             dreamId
         )
 
-        const syncedThemes = normalizedDescription ? await this.themeService.syncThemes(dreamId, themes) :[]
+        const syncedThemes = normalizedDescription ? await this.themeService.syncThemes(dreamId, themes, userId) :[]
         return {dream, themes: syncedThemes}
     }
 

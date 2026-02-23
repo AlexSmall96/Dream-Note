@@ -4,14 +4,12 @@ import { DreamService } from "../services/dreams/dream.service.js";
 import { Request, Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import { getStartAndEndDates } from "../services/utils/dateRange.js";
-import { ThemeService } from "../services/themes/theme.service.js";
 
 // Controller clas for Dream model
 @injectable()
 export class DreamController {
     constructor(
         @inject(DreamService) private dreamService: DreamService,
-        @inject(ThemeService) private themeService: ThemeService,
     ){}
 
     public logNewDreamWithThemes = async (req: Request, res:Response, next: NextFunction) => {
@@ -90,8 +88,10 @@ export class DreamController {
         const dreamId = req.params.id
         const dreamData = req.body.dream
         const incomingThemes = req.body.themes
+        const authReq = req as AuthenticatedRequest
+        const userId = authReq.user._id.toString()
         try {
-            const {dream, themes} = await this.dreamService.updateDreamAndSyncThemes(dreamId, dreamData, incomingThemes)
+            const {dream, themes} = await this.dreamService.updateDreamAndSyncThemes(userId, dreamId, dreamData, incomingThemes)
             return res.json({dream, themes})
         } catch (err){
             next(err)
