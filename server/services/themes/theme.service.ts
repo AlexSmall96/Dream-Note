@@ -1,26 +1,40 @@
 import { injectable } from "inversify";
 import { Theme } from "../../models/theme.model.js";
+import { Types } from "mongoose";
 
 @injectable()
 export class ThemeService {
+    
+    public async getAllThemes(userId: string, limit: number, skip: number, sort: 'theme' | 'createdAt'){
+        const themes = await Theme.find({ owner: userId}).populate({
+            path: "dream",
+            select: "_id title date"
+        }).sort(sort === 'theme' ? {'theme': 1}: {'createdAt': -1}).skip(skip).limit(limit)
+        return themes
+    }
+
+    public async deleteTheme(themeId: string){
+        const theme = await Theme.findByIdAndDelete(themeId)
+        return theme
+    }
 
     // Get all themes associated with a specific dream
-    public async handleGetDreamThemes(dream: string){
+    public async getDreamThemes(dream: string){
         const themes = Theme.find({dream}).sort('theme')
         return themes
     }
 
-    public async addTheme(dream: string, text: string){
-        const theme = new Theme({theme: text, dream})
+    public async addTheme(dream: string, text: string, userId: string){
+        const theme = new Theme({theme: text, dream, owner: userId})
         await theme.save()
         return theme
     }
 
-    async addThemesToDream(dreamId: string, themes: string[]): Promise<string[]> {
+    async addThemesToDream(dreamId: string, themes: string[], userId: string): Promise<string[]> {
         // Add each theme to database
         await Promise.all(
             themes.map(async (text: string) => {
-                await this.addTheme(dreamId, text.trim())
+                await this.addTheme(dreamId, text.trim(), userId)
             })
         )
         return themes
@@ -30,7 +44,7 @@ export class ThemeService {
         await Theme.deleteMany({dream: dreamId})
     }
 
-    public async syncThemes(dreamId: string, themeNames: string[]){
+    public async syncThemes(dreamId: string, themeNames: string[], userId:string){
         const existingThemes = await Theme.find({ dream: dreamId })
 
         const incoming = new Set(themeNames)
@@ -40,7 +54,7 @@ export class ThemeService {
         const toRemove = existingThemes.filter(t => !incoming.has(t.theme))
 
         await Promise.all([
-            ...toAdd.map(t => this.addTheme(dreamId, t)),
+            ...toAdd.map(t => this.addTheme(dreamId, t, userId)),
             ...toRemove.map(t => Theme.deleteOne({ _id: t._id }))
         ])
 
