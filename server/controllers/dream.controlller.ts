@@ -73,12 +73,31 @@ export class DreamController {
     }
 
     public viewDream = async (req: Request, res: Response, next: NextFunction) => {
-        const authReq = req as AuthenticatedRequest
-        const dreamId = authReq.params.id
-        const owner = authReq.user._id.toString()
+        const dreamId = req.params.id
         try {
-            const {dream, themes} = await this.dreamService.getDreamAndThemes(dreamId, owner)
+            const {dream, themes} = await this.dreamService.getDreamAndThemes(dreamId)
             res.json({dream, themes})
+        } catch (err){
+            next(err)
+        }
+    }
+
+    public getAnalyses = async (req: Request, res: Response, next: NextFunction) => {
+        const dreamId = req.params.id
+        try {
+            const analyses = await this.dreamService.getAnalyses(dreamId)
+            res.json(analyses)
+        } catch (err){
+            next(err)
+        }
+    }
+
+    public saveAnalysis = async (req: Request, res: Response, next: NextFunction) => {
+        const dreamId = req.params.id
+        const { text, tone, style, length } = req.body
+        try {
+            const analysis = await this.dreamService.saveAnalysis(dreamId, text, tone, style, length)
+            res.status(201).json(analysis)
         } catch (err){
             next(err)
         }

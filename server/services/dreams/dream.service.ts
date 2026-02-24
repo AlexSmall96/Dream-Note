@@ -1,9 +1,10 @@
 import { injectable, inject } from "inversify";
 import { ThemeService } from "../themes/theme.service.js";
 import { Dream } from "../../models/dream.model.js";
-import { DreamInterface } from "../../interfaces/dream.interfaces.js";
+import { DreamInterface, Tone, Style, Length } from "../../interfaces/dream.interfaces.js";
 import { AIService } from "./ai.service.js";
 import { FilterService } from "./filter.service.js";
+import { AppError } from "../../utils/appError.js";
 
 export enum prompts {
     title = 'Return exactly one short title for the provided dream.',
@@ -67,10 +68,31 @@ export class DreamService {
         return { dreams, monthlyTotals }
     }
 
-    public async getDreamAndThemes(dreamId:string, owner: string){
-        const dream = await Dream.findOne({_id: dreamId, owner})
+    public async getDreamAndThemes(dreamId:string){
+        const dream = await Dream.findById(dreamId)
         const themes = await this.themeService.getDreamThemes(dreamId)
         return {dream, themes}
+    }
+
+    public async getAnalyses(dreamId: string){
+        const analyses = await Dream.findById(dreamId).select('analyses')
+        return analyses
+    }
+
+    public async saveAnalysis(dreamId: string, text: string, tone: Tone, style: Style, length: Length){
+        const dream = await Dream.findById(dreamId)
+        if (!dream){
+            throw new AppError('Dream not found. Invalid id.', 404)
+        }
+        if (!dream.description){
+            // Use 422 status code as request is valid, but cannot be processed due to semantic rules
+            throw new AppError('Dream must have a description to save analysis.', 422)
+        }
+        dream.analyses.push({
+            text, tone, style, length, descriptionSnapshot: dream.description
+        })
+        await dream.save()
+        return dream.analyses[dream.analyses.length - 1]
     }
 
     public async updateDreamAndSyncThemes(userId:string, dreamId: string, dreamData: DreamInterface, themes: string[]){

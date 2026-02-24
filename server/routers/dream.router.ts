@@ -64,6 +64,28 @@ export class DreamRouter {
             this.dreamController.viewDream
         )
 
+        // Get analyses for a single dream
+        this.router.get(
+            '/analyses/:id',
+            auth,
+            forbidNotDreamOwner('You are not authorized to view analyses for this dream.'),
+            this.dreamController.getAnalyses
+        )
+
+        this.router.post(
+            '/analysis/:id',
+            auth,
+            forbidNotDreamOwner('You are not authorized to add analyses to this dream.'),
+            body('tone')
+            .notEmpty().withMessage("Request body must contain the field 'tone'").bail(),
+            body('style')
+            .notEmpty().withMessage("Request body must contain the field 'style'").bail(),
+            body('length')
+            .notEmpty().withMessage("Request body must contain the field 'length'"),
+            validateRequest,
+            this.dreamController.saveAnalysis
+        )
+
         // Update dream
         this.router.patch(
             '/update/:id',
@@ -71,7 +93,6 @@ export class DreamRouter {
             forbidNotDreamOwner('You are not authorized to edit this dream.'),
             body('dream')
             .notEmpty().withMessage("Request body must contain the field 'dream'.").bail(),
-            validateRequest,
             body('dream.title')
             .notEmpty().withMessage('Dream data must contain title.'),
             validateRequest,
