@@ -24,7 +24,8 @@ beforeEach(async () => {
     // Create a user to test valid otp
     const userOne = await createUser(userOneCreds)
     
-    // Save 2 otps one for password-reset and one for email-update to test valid purpose
+    // Save 2 otps
+    // set purpose to password-reset as valid otp
     const otpRecord = await new Otp({
         userId: userOne._id,
         email: userOneCreds.email,
@@ -35,6 +36,7 @@ beforeEach(async () => {
     }).save()
     validOtpId = otpRecord._id
 
+    // Set purpose to email-update for invalid otp
     await new Otp({
         userId: userOne._id,
         email: userOneCreds.email,
@@ -42,7 +44,8 @@ beforeEach(async () => {
         purpose: 'email-update',
         expiresAt: new Date(Date.now() + 10 * 60 * 1000)
     }).save()
-
+    
+    validOtpId = otpRecord._id
     resetTokenNoUser = jwt.sign(
         { userId: invalidId, otpId: validOtpId },
         resetSecret,
@@ -90,6 +93,18 @@ describe('Resetting password should fail if:', () => {
     test('Reset token is invalid - not associated with any otp record.', async () => {
         const response = await patchDataWithNoAuth(server, url, {resetToken: resetTokenNoOtp, password: 'apple123'}, 400)
         assertSingleError(response.body.errors, 'Invalid reset session.', 'resetToken')
+    })
+    test('Reset token is associated with an expired otp record.', async () => {
+        await Otp.findByIdAndUpdate(validOtpId, {
+            expiresAt: new Date(Date.now() - 1000)
+        })
+        const response = await patchDataWithNoAuth(server, url, {resetToken: validResetToken, password: 'apple123'}, 400)
+        assertSingleError(response.body.errors, 'Invalid reset session.', 'resetToken')
+    })
+    test('Reset token is associate with an unused otp record.', async () => {
+        await Otp.findByIdAndUpdate(validOtpId, {used: false})
+        const response = await patchDataWithNoAuth(server, url, { resetToken: validResetToken, password: 'apple123' }, 400);
+        assertSingleError(response.body.errors, 'Invalid reset session.', 'resetToken');        
     })
 })
 
