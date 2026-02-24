@@ -95,6 +95,18 @@ export class DreamService {
         return dream.analyses[dream.analyses.length - 1]
     }
 
+    public async deleteAnalysis(dreamId: string, analysisId: string) {
+        const result = await Dream.updateOne(
+            { _id: dreamId },
+            { $pull: { analyses: { _id: analysisId } } }
+        );
+
+        if (result.modifiedCount === 0) {
+            throw new AppError('Analysis not found or Dream not found', 404);
+        }
+        return result
+    }
+
     public async updateDreamAndSyncThemes(userId:string, dreamId: string, dreamData: DreamInterface, themes: string[]){
         const normalizedDescription = dreamData.description?.trim() || null
         const existingDream = await Dream.findByIdOrThrowError(dreamId)

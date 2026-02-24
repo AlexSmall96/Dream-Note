@@ -66,14 +66,23 @@ export class DreamRouter {
 
         // Get analyses for a single dream
         this.router.get(
-            '/analyses/:id',
+            '/:id/analyses',
             auth,
             forbidNotDreamOwner('You are not authorized to view analyses for this dream.'),
             this.dreamController.getAnalyses
         )
 
+        // Delete analysis
+        this.router.delete(
+            '/delete/:dreamId/analyses/:analysisId',
+            auth,
+            forbidNotDreamOwner('You are not authorized to delete this analysis.'),
+            this.dreamController.deleteAnalysis
+        )
+
+
         this.router.post(
-            '/analysis/:id',
+            '/:id/analysis',
             auth,
             forbidNotDreamOwner('You are not authorized to add analyses to this dream.'),
             body('tone')
@@ -93,6 +102,7 @@ export class DreamRouter {
             forbidNotDreamOwner('You are not authorized to edit this dream.'),
             body('dream')
             .notEmpty().withMessage("Request body must contain the field 'dream'.").bail(),
+            validateRequest,
             body('dream.title')
             .notEmpty().withMessage('Dream data must contain title.'),
             validateRequest,

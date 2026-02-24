@@ -103,6 +103,16 @@ export class DreamController {
         }
     }
 
+    public deleteAnalysis = async (req: Request, res: Response, next: NextFunction) => {
+        const { analysisId, dreamId } = req.params
+        try {
+            const result = await this.dreamService.deleteAnalysis(dreamId, analysisId)
+            res.json(result)
+        } catch (err){
+            next(err)
+        }        
+    }
+
     public updateDream = async (req: Request, res: Response, next: NextFunction) => {
         const dreamId = req.params.id
         const dreamData = req.body.dream

@@ -27,12 +27,16 @@ export interface AnalysisInterface {
     modelUsed?: string
 }
 
+export interface AnalysisDocument extends AnalysisInterface, Document {
+    _id: Types.ObjectId;
+}
+
 // Define basic dream interface
 export interface DreamInterface {
     title: string;
     description: string;
     date: Date;
-    analyses: AnalysisInterface[];
+    analyses: Types.DocumentArray<AnalysisDocument>;
     notes: string;
     owner: UserDocument['_id']
 }

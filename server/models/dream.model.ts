@@ -1,8 +1,8 @@
 import mongoose, { Schema, model } from "mongoose";
-import {  DreamDocument, DreamModel, options } from "../interfaces/dream.interfaces.js";
+import {  AnalysisDocument, DreamDocument, DreamModel, options } from "../interfaces/dream.interfaces.js";
 import { Theme } from "./theme.model.js";
 
-const analysisSchema = new Schema(
+const analysisSchema = new Schema<AnalysisDocument>(
   {
     text: {
         type: String,
