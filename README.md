@@ -6,12 +6,6 @@ Dream Note is an AI-assisted dream journal app. Users can:
 ## Live Site
 [https://dream-note-uh6p.onrender.com/](https://dream-note-uh6p.onrender.com/)
 
-Credentials for demo account with sample data:
-
-Email: demo-user@email.com
-
-Password: demo1234
-
 **Note:** Mock versions of AI-assisted features are currently being used to minimize costs while the project is in development.
 
 ## Repository
