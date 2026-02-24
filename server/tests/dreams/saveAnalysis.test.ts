@@ -37,13 +37,13 @@ beforeEach(async () => {
 })
 
 // Define url
-const url = baseUrl + '/analysis' 
+const url = baseUrl
 const text = 'Being chased by a dog in a dream could symbolize fear of the future or a feeling of being trapped.'
 
 // Tests
 describe('Saving analysis should fail if:', async () => {
     test('Request body is missing tone.', async () => {
-        const response = await request(server).post(`${url}/${newDreamId}`).send({
+        const response = await request(server).post(`${url}/${newDreamId}/analysis`).send({
             text,    
             style: options.style[0],
             length: options.length[0]
@@ -51,7 +51,7 @@ describe('Saving analysis should fail if:', async () => {
         assertSingleError(response.body.errors, "Request body must contain the field 'tone'", 'tone')
     })
     test('Request body is missing style.', async () => {
-        const response = await request(server).post(`${url}/${newDreamId}`).send({
+        const response = await request(server).post(`${url}/${newDreamId}/analysis`).send({
             text,    
             tone: options.tone[0],
             length: options.length[0]
@@ -59,7 +59,7 @@ describe('Saving analysis should fail if:', async () => {
         assertSingleError(response.body.errors, "Request body must contain the field 'style'", 'style')
     })
     test('Request body is missing length.', async () => {
-        const response = await request(server).post(`${url}/${newDreamId}`).send({
+        const response = await request(server).post(`${url}/${newDreamId}/analysis`).send({
             text,    
             tone: options.tone[0],
             style: options.style[0],
@@ -67,7 +67,7 @@ describe('Saving analysis should fail if:', async () => {
         assertSingleError(response.body.errors, "Request body must contain the field 'length'", 'length')
     })
     test('User is not owner of dream.', async () => {
-        const response = await request(server).post(`${url}/${newDreamId}`).send({
+        const response = await request(server).post(`${url}/${newDreamId}/analysis`).send({
             text,    
             tone: options.tone[0],
             style: options.style[0],
@@ -77,7 +77,7 @@ describe('Saving analysis should fail if:', async () => {
         assertSingleError(response.body.errors, "You are not authorized to add analyses to this dream.")        
     })
     test('Dream has no description.', async () => {
-        const response = await request(server).post(`${url}/${noDescId}`).send({
+        const response = await request(server).post(`${url}/${noDescId}/analysis`).send({
             text,    
             tone: options.tone[0],
             style: options.style[0],
@@ -96,7 +96,7 @@ test('Saving analysis should succeed if valid data is provided.', async () => {
         style: options.style[0],
         length: options.length[0]
     }
-    const response = await request(server).post(`${url}/${newDreamId}`).send(body).set(...userOneAuth).expect(201)
+    const response = await request(server).post(`${url}/${newDreamId}/analysis`).send(body).set(...userOneAuth).expect(201)
     // Assert response matches request body
     expect(response.body).toMatchObject({...body, modelUsed: 'gpt-5-nano'})
     // Assert that dream now has analysis saved with correct default values

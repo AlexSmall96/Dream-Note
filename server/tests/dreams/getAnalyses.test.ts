@@ -55,15 +55,15 @@ beforeEach(async () => {
 })
 
 // Define url
-const url = baseUrl + '/analyses' 
+const url = baseUrl
 
 test('Get analyses should fail if user is not owner of dream.', async () => {
-    const response = await request(server).get(`${url}/${newDreamId}`).set(...userThreeAuth)
+    const response = await request(server).get(`${url}/${newDreamId}/analyses`).set(...userThreeAuth)
     assertSingleError(response.body.errors, 'You are not authorized to view analyses for this dream.')
 })
 
 test('Get analyses should succeed if user is owner of dream, and correct data is returned.', async () => {
-    const response = await request(server).get(`${url}/${newDreamId}`).set(...userOneAuth)
+    const response = await request(server).get(`${url}/${newDreamId}/analyses`).set(...userOneAuth)
     const analyses = response.body.analyses
     expect(analyses).toHaveLength(2)
     expect(analyses[0]).toMatchObject({
