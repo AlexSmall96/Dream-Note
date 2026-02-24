@@ -83,7 +83,6 @@ describe('Updating dream should succeed if:', () => {
             description: 'I slept in and missed my train. I had to get the next one.',
             date: '2024-11-30T00:00:00.000Z',
             notes: 'The dream woke me up.',
-            analysis: 'Interesting'
         }
         const response = await request(server).patch(`${url}/${oldDreamId}`).send({
             dream: update, 
@@ -104,13 +103,11 @@ describe('Updating dream should succeed if:', () => {
             description,
             date,
             notes,
-            analysis,
         } = savedDream
         expect({title,
             description,
             date,
             notes,
-            analysis,
         }).toMatchObject({...update, date: new Date(update.date)})
         // Theme should have been added
         theme = await Theme.findOne({dream: oldDreamId, theme: 'Travel'})
