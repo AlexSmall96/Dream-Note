@@ -66,7 +66,7 @@ export class AccountService {
     }
 
     public async updateEmailAndDeleteOtp(otp: string, userId: string){
-        const otpRecord = await this.otpService.findOtpById(otp, 'email-update', userId)
+        const otpRecord = await this.otpService.findOtp(otp, 'email-update', {userId})
         if (!otpRecord){
             throw new AppError('Invalid or expired OTP.', 400, 'otp')
         }

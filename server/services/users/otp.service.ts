@@ -4,6 +4,7 @@ import {generateOtp} from "../utils/otp.js"
 import { Otp } from "../../models/OTP.model.js";
 import {AppError} from '../../utils/appError.js'
 import { OtpDocument } from "../../interfaces/otp.interfaces.js";
+import bcrypt from "bcrypt";
 
 export type purposeType = "email-update" | "password-reset"
 
@@ -48,31 +49,40 @@ export class OtpService {
         return otp
     }
 
-    // Find saved OTP record based on userId and provied otp value
-    public async findOtpById(otp: string, purpose: purposeType, userId: string): Promise<OtpDocument | null>{
-        const otpRecord = await Otp.findOne({
-            userId, 
-            otp, 
+    public async findOtp(otp:string, purpose: purposeType, options: {email?: string, userId?: string} ) {
+        // Included for debugging purposes, userId or email should always be provided
+        if (!options.email && !options.userId) {
+            throw new AppError("Either email or userId must be provided", 500);
+        }
+        const criteria = {
+            ...options, 
             purpose, 
-            used: false, 
+            used: false,
             expiresAt: { $gt: new Date() }
-        })
+        }
+        const otpRecord = await Otp.findOne(criteria) 
+        
+        if (!otpRecord){
+            return null
+        }
+
+        const isMatch = await bcrypt.compare(otp, otpRecord.otp)
+
+        if (!isMatch) {
+            return null
+        }
+
         return otpRecord
     }
 
-    public async findOtpByEmailAndUpdate(otp: string, email: string, purpose: purposeType): Promise<OtpDocument | null>{
-        const otpRecord = await Otp.findOneAndUpdate({
-            otp,
-            email, 
-            purpose, 
-            used: false, 
-            expiresAt: { $gt: new Date() }
-        }, {
-            $set: {used: true}
-        }, {
-            new: true
-        })
-        return otpRecord        
+    public async findOtpByEmailAndUpdate(otp: string, email: string, purpose: purposeType): Promise<OtpDocument | null>{   
+        const otpRecord = await this.findOtp(otp, purpose, {email})
+        if (!otpRecord){
+            return null
+        }
+        otpRecord.used = true
+        await otpRecord.save()
+        return otpRecord
     }
 
     public async findUsedOtp(otpId: string, userId: string, purpose: purposeType): Promise<OtpDocument | null>{
@@ -87,7 +97,7 @@ export class OtpService {
     }
     
     public async deleteOtp(otpId: string){
-        await Otp.findOneAndDelete({_id: otpId})
+        await Otp.findByIdAndDelete(otpId)
     }
 
 }
