@@ -6,6 +6,7 @@ import { server } from '../setup/testServer.js'
 
 // Define base url for dream router
 const baseUrl = '/api/dreams'
+const currentYear = new Date().getFullYear()
 
 // Helper function to assert an array of themes have been added to the db
 // Checks they are associated with the correct dream
@@ -24,18 +25,23 @@ const assertDreamTitlesAndDates = async (dreams: DreamDocument[], length: number
     expect(dreams).toHaveLength(length)
     dreams.map((dream: DreamDocument, index: number) => {
         expect(dream.title).toBe(`dream${start-index}`)
-        expect(dream.date).toBe(`2025-06-0${start-index}T00:00:00.000Z`)
-    })    
+        expect(dream.date).toBe(`${currentYear}-06-0${start-index}T00:00:00.000Z`)
+    })
 }
 
 // Helper function to filter dreams by month and date and assert correct lengths and titles
-const filterAndAssertDreams = async (year: number, month: number, length: number, auth: [string, string], titles?: string[] ) => {
+const filterAndAssertDreams = async (year: number, month: number, length: number, auth: [string, string], stats?: {[month: string]: number}, titles?: string[] ) => {
     const dreamsResponse = await request(server).get(`${baseUrl}?year=${year}&month=${month}`).set(...auth)
     expect(dreamsResponse.status).toBe(200)
     const dreams = dreamsResponse.body.dreams as DreamDocument[]
     expect(dreams).toHaveLength(length)
     if (titles){
         dreams.map((dream, index) => expect(dream.title).toEqual(titles[index]))
+    }
+    if (stats){
+        expect(dreamsResponse.body.monthlyTotals).toMatchObject(stats)
+    } else {
+        expect(dreamsResponse.body.monthlyTotals).toMatchObject({})
     }
 }
 
