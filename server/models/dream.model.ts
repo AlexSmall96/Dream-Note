@@ -1,6 +1,43 @@
 import mongoose, { Schema, model } from "mongoose";
-import {  DreamDocument, DreamModel } from "../interfaces/dream.interfaces.js";
+import {  DreamDocument, DreamModel, options } from "../interfaces/dream.interfaces.js";
 import { Theme } from "./theme.model.js";
+
+const analysisSchema = new Schema(
+  {
+    text: {
+        type: String,
+        required: true
+    },
+    tone: {
+        type: String,
+        enum:  options.tone,
+        required: true
+    },
+    style: {
+        type: String,
+        enum: options.style,
+        required: true
+    },
+    length: {
+        type: String,
+        enum: options.length, 
+        required: true        
+    },
+    descriptionSnapshot: {
+        type: String,
+        required: true
+    },
+    isFavorite: {
+        type: Boolean,
+        default: false
+    },
+    modelUsed: {
+        type: String,
+        default: 'gpt-5-nano'
+    }
+  },
+  { timestamps: true, _id: true },
+);
 
 const dreamSchema = new Schema<DreamDocument, DreamModel>({
     title: {
@@ -17,7 +54,7 @@ const dreamSchema = new Schema<DreamDocument, DreamModel>({
         type: Date,
         default: new Date()
     },
-    analysis: {type: String},
+    analyses: [analysisSchema],
     notes: {
         type: String,
         maxlength: [500, 'Notes cannot be more than 5000 characters.']

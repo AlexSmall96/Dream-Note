@@ -6,12 +6,33 @@ https://www.slingacademy.com/article/mongoose-define-schema-typescript/
 import { Model, Document, Types} from "mongoose";
 import { UserDocument } from "./user.interfaces.js";
 
+export const options = {
+    tone: ['neutral', 'curious', 'caring', 'excited', 'spiritual'],
+    style: ['poetic', 'clinical', 'spiritual'],
+    length: ['brief', 'long']
+} as const
+
+export type Tone = typeof options.tone[number];
+export type Style = typeof options.style[number];
+export type Length = typeof options.length[number];
+
+export interface AnalysisInterface {
+    text: string,
+    tone: Tone,
+    style: Style,
+    length: Length,
+    descriptionSnapshot: string,
+    createdAt?: Date,
+    isFavorite?: boolean,
+    modelUsed?: string
+}
+
 // Define basic dream interface
 export interface DreamInterface {
     title: string;
     description: string;
     date: Date;
-    analysis: string;
+    analyses: AnalysisInterface[];
     notes: string;
     owner: UserDocument['_id']
 }
@@ -33,5 +54,8 @@ export interface GetDreamsQuery {
     skip?: string
     sort?: string
 }
+
+
+ 
 
 
