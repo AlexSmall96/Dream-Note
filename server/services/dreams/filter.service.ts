@@ -24,29 +24,27 @@ export class FilterService {
     }
 
     public async getMonthlyDreamStats(
-            owner: string,
-            year: number
-        ) {
-            const { startDate, endDate } = getYearRange(year)
-
-            const results = await Dream.aggregate([
-                {
-                    $match: {owner, date: { $gte: startDate, $lt: endDate }}
-                },
-                {
-                    $group: {
-                        _id: {
-                            month: { $month: '$date' },
-                        },
-                        count: { $sum: 1 }
-                    }
-                },
-                { $sort: { '_id.year': 1, '_id.month': 1 } }
-            ])
-
-            return results.reduce<Record<number, number>>((acc, item) => {
-                acc[item._id.month] = item.count
-                return acc
-            }, {})
+        owner: string,
+        year: number) 
+    {
+        const [startDate, endDate] = getYearRange(year)
+        const results = await Dream.aggregate([
+            {
+                $match: {owner: new Types.ObjectId(owner), date: { $gte: startDate, $lt: endDate }}
+            },
+            {
+                $group: {
+                    _id: {
+                        month: { $month: '$date' },
+                    },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { '_id.year': 1, '_id.month': 1 } }
+        ])
+        return results.reduce<Record<number, number>>((acc, item) => {
+            acc[item._id.month] = item.count
+            return acc
+        }, {})
     }
 }

@@ -3,7 +3,7 @@ import { GetDreamsQuery } from "../interfaces/dream.interfaces.js"
 import { DreamService } from "../services/dreams/dream.service.js";
 import { Request, Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
-import { getStartAndEndDates } from "../services/utils/dateRange.js";
+import { getStartAndEndDates, getYearRange } from "../services/utils/dateRange.js";
 
 // Controller clas for Dream model
 @injectable()
@@ -45,7 +45,7 @@ export class DreamController {
         const month = query.month? Number(query.month) : undefined
         const NOW = new Date()
         // If month and year are supplied calculate date range, otherwise take all time
-        const [startDate, endDate] = year && month ? getStartAndEndDates(year, month) : [new Date("1900-01-01"), NOW]
+        const [startDate, endDate] = year && month ? getStartAndEndDates(year, month) : getYearRange(NOW.getFullYear())
         // Get limit and skip parameters
         const limit = query.limit? Number(query.limit) : 100
         const skip = query.skip? Number(query.skip) : 0
