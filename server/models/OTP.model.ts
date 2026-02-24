@@ -1,5 +1,6 @@
 import mongoose, { Schema, model } from "mongoose";
 import { OtpDocument } from "../interfaces/otp.interfaces";
+import bcrypt from "bcrypt";
 
 const otpSchema = new Schema(
 	{
@@ -35,5 +36,13 @@ const otpSchema = new Schema(
 
 // Automatically delete expired OTPs
 otpSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 })
+
+// Method to hash otp value when created
+otpSchema.pre<OtpDocument>("save", async function (next) {
+	if (this.isModified("otp")) {
+		this.otp = await bcrypt.hash(this.otp, 8);
+	}
+	next();
+});
 
 export const Otp = mongoose.models.Otp || model<OtpDocument>("Otp", otpSchema)
