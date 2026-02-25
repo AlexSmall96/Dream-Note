@@ -20,14 +20,26 @@ type userType = {
 }
 
 // Dynamically create a user by generating token and id
-const createUser = async ({email, password, isGuest = false, withTokens = true}:{email: string, password: string, isGuest?: boolean, withTokens?: boolean}): Promise<userType> => {
+const createUser = async ({
+    email, 
+    password, 
+    isGuest = false, 
+    withTokens = true, 
+    isVerified = true
+}:{
+    email: string, 
+    password: string, 
+    isGuest?: boolean, 
+    withTokens?: boolean,
+    isVerified?: boolean
+}): Promise<userType> => {
     
     // Create a fresh token and id each time for test reliability
     const _id = new mongoose.Types.ObjectId()
     const token = generateToken(_id.toString(), isGuest)
     
     const user = {
-        _id, email, password, tokens: withTokens ? [token] : []
+        _id, email, password, tokens: withTokens ? [token] : [], isVerified
     }
 
     await new User(user).save()
