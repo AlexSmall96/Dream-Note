@@ -6,6 +6,7 @@ import { userOneCreds } from '../data.js';
 import { Types } from 'mongoose';
 import { User } from '../../../models/user.model.js';
 import { patchDataWithAuth, postDataWithAuth, postDataWithNoAuth } from '../utils/sendData.js';
+import { getSentOtp, mailOptionsType } from '../utils/getSentOtp.js'
 
 let userOneId: Types.ObjectId
 let userOneAuth: [string, string]
@@ -20,14 +21,8 @@ beforeEach(async () => {
     vi.clearAllMocks() // Reset number of send mail calls
 })
 
-type mailOptions = {
-    from: string,
-    to: string,
-    subject: string,
-    text: string
-}
 
-let sentMail: mailOptions[] = []
+let sentMail: mailOptionsType[] = []
 
 // Mock nodemailer with vi 
 vi.mock("nodemailer", () => {
@@ -44,15 +39,6 @@ vi.mock("nodemailer", () => {
 })
 
 
-const getSentOtp = () => {
-    const n = sentMail.length
-    const mailText = sentMail[n-1].text
-    const index = mailText.search(/[0-9]+/)
-    const otpLength = 6
-    const otp = mailText.substring(index, index + otpLength)
-    return otp
-}
-
 // Import server after mock
 import { server } from '../../setup/testServer.js'
 
@@ -62,7 +48,7 @@ test('Authenticated user can request email update and update email using real OT
     const newEmail = 'new@email.com'
     await postDataWithAuth(server, url, {email: newEmail}, 200, userOneAuth)
     // Extract mail options
-    const otp = getSentOtp()
+    const otp = getSentOtp(sentMail)
 
     // Verify otp recieved in email
     url = baseUrl + '/update-email'

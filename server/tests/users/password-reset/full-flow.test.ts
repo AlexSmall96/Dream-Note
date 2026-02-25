@@ -6,6 +6,7 @@ import { userOneCreds } from '../data.js';
 import { Types } from 'mongoose';
 import { User } from '../../../models/user.model.js';
 import bcrypt from "bcrypt";
+import { mailOptionsType, getSentOtp } from '../utils/getSentOtp.js'
 
 let userOneId: Types.ObjectId
 
@@ -18,14 +19,7 @@ beforeEach(async () => {
     vi.clearAllMocks() // Reset number of send mail calls
 })
 
-type mailOptions = {
-    from: string,
-    to: string,
-    subject: string,
-    text: string
-}
-
-let sentMail: mailOptions[] = []
+let sentMail: mailOptionsType[] = []
 
 // Mock nodemailer with vi 
 vi.mock("nodemailer", () => {
@@ -41,17 +35,6 @@ vi.mock("nodemailer", () => {
     };
 })
 
-
-const getSentOtp = () => {
-    const n = sentMail.length
-    const mailText = sentMail[n-1].text
-    const index = mailText.search(/[0-9]+/)
-    const otpLength = 6
-    const otp = mailText.substring(index, index + otpLength)
-    return otp
-}
-
-
 // Import server after mock
 import { server } from '../../setup/testServer.js'
 import { patchDataWithNoAuth, postDataWithNoAuth } from '../utils/sendData.js';
@@ -61,7 +44,7 @@ test('Unauthenticated user can request password reset and reset password using r
     let url = baseUrl + '/request-password-reset'
     await postDataWithNoAuth(server, url, {email: userOneCreds.email}, 200)
     // Extract mail options
-    const otp = getSentOtp()
+    const otp = getSentOtp(sentMail)
 
     // Verify otp value
     url = baseUrl + '/verify-reset-otp'
