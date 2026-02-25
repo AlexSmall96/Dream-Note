@@ -17,6 +17,10 @@ export const sendData = async (
     return response
 }
 
+export const postDataWithAuth = async (server: Application, url: string, body: any, status:number, auth: [string, string]):Promise<{body: any}> => {
+    return await sendData(server, url, body, status, {post:true, auth})
+}
+
 export const postDataWithNoAuth = async (server: Application, url: string, body: any, status:number):Promise<{body: any}> => {
     return await sendData(server, url, body, status, {post:true})
 }
