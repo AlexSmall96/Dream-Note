@@ -16,6 +16,7 @@ export interface UserMethods {
 // Create new interface from UserInterface + mongoose Document
 export interface UserDocument extends UserInterface, UserMethods, Document {
     _id: Types.ObjectId;
+    isVerified: boolean;
 }
 
 // Create a Mongoose model to define static methods

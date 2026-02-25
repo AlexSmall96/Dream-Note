@@ -64,8 +64,9 @@ describe('SIGNUP SUCCESS', () => {
         // Response contains correct details - contains email and not password
         expect(response.body).not.toHaveProperty('password')
         // Assert the database was changed
-        user = await User.findOne({email: 'user2@email.com'})
-        expect(user).not.toBeNull()
+        const savedUser = await User.findByEmailOrThrowError('user2@email.com')
+        expect(savedUser).not.toBeNull()
+        expect(savedUser.isVerified).toBe(false)
     })
 })
 

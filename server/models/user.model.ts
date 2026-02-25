@@ -18,11 +18,15 @@ const userSchema = new Schema<UserDocument, UserModel>({
         required: [true, 'Password is required'],
         trim: true        
     },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
     tokens: {
         type: [String],
         tokens: [{
-  token: String
-}]
+            token: String
+        }]
     }
 }, {timestamps: true})
 
