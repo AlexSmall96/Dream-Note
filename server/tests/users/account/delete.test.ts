@@ -1,14 +1,14 @@
 import request from 'supertest';
-import { server } from '../setup/testServer.js';
+import { server } from '../../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
-import { Theme } from '../../models/theme.model.js';
-import { Dream } from '../../models/dream.model.js';
-import { assertErrors, assertSingleError } from './utils/assertErrors.js'
-import { getAuthHeader, createUser } from './utils/userCreation.js';
-import { baseUrl, userThreeCreds, guestUserCreds } from './data.js';
-import { oldDreamData } from '../dreams/data.js';
+import { Theme } from '../../../models/theme.model.js';
+import { Dream } from '../../../models/dream.model.js';
+import { assertErrors, assertSingleError } from '../utils/assertErrors.js'
+import { getAuthHeader, createUser } from '../utils/userCreation.js';
+import { baseUrl, userThreeCreds, guestUserCreds } from '../data.js';
+import { oldDreamData } from '../../dreams/data.js';
 import { Types } from 'mongoose';
-import { wipeDB } from '../setup/wipeDB.js';
+import { wipeDB } from '../../setup/wipeDB.js';
 
 let userThreeAuth: [string, string]
 let guestAuth: [string, string]

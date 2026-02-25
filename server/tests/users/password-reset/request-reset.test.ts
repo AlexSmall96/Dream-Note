@@ -1,12 +1,12 @@
 import nodemailer from 'nodemailer';
-import * as otpUtils from "../../services/utils/otp.js";
+import * as otpUtils from "../../../services/utils/otp.js";
 import request from 'supertest';
-import { wipeDB } from '../setup/wipeDB.js'
+import { wipeDB } from '../../setup/wipeDB.js'
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { baseUrl } from './data.js';
-import { createUser } from './utils/userCreation.js';
-import { userOneCreds } from './data.js';
-import { assertSingleError } from './utils/assertErrors.js';
+import { baseUrl } from '../data.js';
+import { createUser } from '../utils/userCreation.js';
+import { userOneCreds } from '../data.js';
+import { assertSingleError } from '../utils/assertErrors.js';
 
 // Wipe db and save data
 beforeEach(async () => {
@@ -32,7 +32,7 @@ vi.spyOn(otpUtils, "generateOtp").mockReturnValue('123456');
 
 
 // Import server after mock
-import { server } from '../setup/testServer.js'
+import { server } from '../../setup/testServer.js'
 
 
 const url = baseUrl + '/request-password-reset'

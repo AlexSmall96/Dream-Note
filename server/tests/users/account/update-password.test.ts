@@ -1,10 +1,10 @@
-import { server } from '../setup/testServer.js';
+import { server } from '../../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
-import { assertErrors, assertSingleError } from './utils/assertErrors.js';
-import { createUser, getAuthHeader } from './utils/userCreation.js';
-import { baseUrl, userOneCreds, guestUserCreds } from './data.js';
-import { wipeDB } from '../setup/wipeDB.js';
-import { patchDataWithAuth } from './utils/sendData.js';
+import { assertErrors, assertSingleError } from '../utils/assertErrors.js';
+import { createUser, getAuthHeader } from '../utils/userCreation.js';
+import { baseUrl, userOneCreds, guestUserCreds } from '../data.js';
+import { wipeDB } from '../../setup/wipeDB.js';
+import { patchDataWithAuth } from '../utils/sendData.js';
 
 let userOneAuth: [string, string]
 let guestAuth: [string, string]

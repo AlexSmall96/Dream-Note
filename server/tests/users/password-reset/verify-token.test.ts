@@ -1,15 +1,15 @@
 
-import { wipeDB } from '../setup/wipeDB.js'
+import { wipeDB } from '../../setup/wipeDB.js'
 import { beforeEach, describe, expect, test } from 'vitest';
-import { baseUrl } from './data.js';
-import { createUser } from './utils/userCreation.js';
-import { userOneCreds } from './data.js';
-import { server } from '../setup/testServer.js'
-import { patchDataWithNoAuth } from './utils/sendData.js';
-import { Otp } from '../../models/OTP.model.js';
+import { baseUrl } from '../data.js';
+import { createUser } from '../utils/userCreation.js';
+import { userOneCreds } from '../data.js';
+import { server } from '../../setup/testServer.js'
+import { patchDataWithNoAuth } from '../utils/sendData.js';
+import { Otp } from '../../../models/OTP.model.js';
 import jwt from "jsonwebtoken"
 import { Types } from 'mongoose';
-import { assertErrors, assertSingleError } from './utils/assertErrors.js';
+import { assertErrors, assertSingleError } from '../utils/assertErrors.js';
 
 let validOtpId: Types.ObjectId
 const invalidId = new Types.ObjectId()

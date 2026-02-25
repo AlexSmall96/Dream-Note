@@ -1,12 +1,12 @@
 import nodemailer from 'nodemailer';
-import * as otpUtils from "../../services/utils/otp.js";
+import * as otpUtils from "../../../services/utils/otp.js";
 import request from 'supertest';
-import { wipeDB } from '../setup/wipeDB.js'
+import { wipeDB } from '../../setup/wipeDB.js'
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { baseUrl, userThreeCreds } from './data.js';
-import { createUser, getAuthHeader } from './utils/userCreation.js';
-import { userOneCreds } from './data.js';
-import { assertErrors, assertSingleError } from './utils/assertErrors.js';
+import { baseUrl, userThreeCreds } from '../data.js';
+import { createUser, getAuthHeader } from '../utils/userCreation.js';
+import { userOneCreds } from '../data.js';
+import { assertErrors, assertSingleError } from '../utils/assertErrors.js';
 
 let userOneAuth: [string, string]
 
@@ -38,7 +38,7 @@ vi.spyOn(otpUtils, "generateOtp").mockReturnValue('123456');
 
 
 // Import server after mock
-import { server } from '../setup/testServer.js'
+import { server } from '../../setup/testServer.js'
 
 
 const url = baseUrl + '/request-email-update'

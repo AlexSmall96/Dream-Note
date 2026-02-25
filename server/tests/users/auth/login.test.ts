@@ -1,16 +1,16 @@
 import request from 'supertest';
-import { server } from '../setup/testServer.js';
+import { server } from '../../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
-import { User } from '../../models/user.model.js';
-import { userOneCreds, baseUrl } from './data.js';
-import { userType, createUser } from './utils/userCreation.js';
-import { wipeDB } from '../setup/wipeDB.js';
-import { Dream } from '../../models/dream.model.js';
-import { DreamDocument, DreamInterface } from '../../interfaces/dream.interfaces.js';
-import { guestData } from '../../seed-data/guestSeedData.js';
-import { titleToDream } from './utils/titleToDream.js';
+import { User } from '../../../models/user.model.js';
+import { userOneCreds, baseUrl } from '../data.js';
+import { userType, createUser } from '../utils/userCreation.js';
+import { wipeDB } from '../../setup/wipeDB.js';
+import { Dream } from '../../../models/dream.model.js';
+import { DreamDocument, DreamInterface } from '../../../interfaces/dream.interfaces.js';
+import { guestData } from '../../../seed-data/guestSeedData.js';
+import { titleToDream } from '../utils/titleToDream.js';
 import { Types } from 'mongoose';
-import { Theme } from '../../models/theme.model.js';
+import { Theme } from '../../../models/theme.model.js';
 
 let userOne: userType
 let guestUser : userType

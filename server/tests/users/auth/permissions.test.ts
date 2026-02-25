@@ -1,11 +1,11 @@
 import request from 'supertest';
-import { server } from '../setup/testServer.js';
+import { server } from '../../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
-import { User } from '../../models/user.model.js';
-import { assertErrors, assertSingleError } from './utils/assertErrors.js'
-import { createUser, userType, getAuthHeader } from './utils/userCreation.js';
-import { baseUrl, userOneCreds } from './data.js';
-import { wipeDB } from '../setup/wipeDB.js';
+import { User } from '../../../models/user.model.js';
+import { assertErrors, assertSingleError } from '../utils/assertErrors.js'
+import { createUser, userType, getAuthHeader } from '../utils/userCreation.js';
+import { baseUrl, userOneCreds } from '../data.js';
+import { wipeDB } from '../../setup/wipeDB.js';
 
 let userOne: userType
 let userOneAuth: [string, string]

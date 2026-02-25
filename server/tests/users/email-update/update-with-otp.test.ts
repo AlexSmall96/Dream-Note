@@ -1,13 +1,13 @@
-import { server } from '../setup/testServer.js';
+import { server } from '../../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
-import { createUser, getAuthHeader } from './utils/userCreation.js';
-import { baseUrl, userOneCreds, guestUserCreds, userThreeCreds } from './data.js';
-import { wipeDB } from '../setup/wipeDB.js';
+import { createUser, getAuthHeader } from '../utils/userCreation.js';
+import { baseUrl, userOneCreds, guestUserCreds, userThreeCreds } from '../data.js';
+import { wipeDB } from '../../setup/wipeDB.js';
 import { Types } from 'mongoose';
-import { patchDataWithAuth, sendData } from './utils/sendData.js';
-import { Otp } from '../../models/OTP.model.js';
-import { User } from '../../models/user.model.js';
-import { assertSingleError } from './utils/assertErrors.js';
+import { patchDataWithAuth, sendData } from '../utils/sendData.js';
+import { Otp } from '../../../models/OTP.model.js';
+import { User } from '../../../models/user.model.js';
+import { assertSingleError } from '../utils/assertErrors.js';
 
 let userOneAuth: [string, string]
 let userThreeAuth: [string, string]
