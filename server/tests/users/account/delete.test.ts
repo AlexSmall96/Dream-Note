@@ -3,9 +3,9 @@ import { server } from '../../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { Theme } from '../../../models/theme.model.js';
 import { Dream } from '../../../models/dream.model.js';
-import { assertErrors, assertSingleError } from '../utils/assertErrors.js'
+import { assertSingleError } from '../utils/assertErrors.js'
 import { getAuthHeader, createUser } from '../utils/userCreation.js';
-import { baseUrl, userThreeCreds, guestUserCreds } from '../data.js';
+import { baseUrl, userThreeCreds, guestUserCreds, userOneCreds } from '../data.js';
 import { oldDreamData } from '../../dreams/data.js';
 import { Types } from 'mongoose';
 import { wipeDB } from '../../setup/wipeDB.js';
@@ -14,6 +14,7 @@ let userThreeAuth: [string, string]
 let guestAuth: [string, string]
 let userThreeId : Types.ObjectId
 let dreamId : Types.ObjectId
+let userOneAuth: [string, string]
 
 // Wipe db and save data
 beforeEach(async () => {
@@ -33,30 +34,40 @@ beforeEach(async () => {
     // Create guest user to test that deletion is forbidden in guest account
     const guest = await createUser({...guestUserCreds, isGuest: true})
     guestAuth = getAuthHeader(guest.tokens[0])
+
+    // Create an unverified user to test deletion is forbidden
+    const userOne = await createUser({...userOneCreds, isVerified: false})
+    userOneAuth = getAuthHeader(userOne.tokens[0])
 }) 
 
 const url = baseUrl + '/delete' 
 
 // Tests
 
-describe('FAILURE', () => {
+describe('Account deletion should fail if:', () => {
 
-    test('Account deletion should fail when not authenticated.', async () => {
+    test('User is not authenticated.', async () => {
         // Send unauthenticated response
         const response = await request(server).delete(url).expect(401)
         assertSingleError(response.body.errors, 'Please provide json web token to authenticate.', 'token')
     }) 
     
-    test('Account deletion should fail when signed in as guest.', async () => {
+    test('User is signed in as guest.', async () => {
         // Send response authenticated as guest
         const response = await request(server).delete(url).set(...guestAuth).expect(403)
         assertSingleError(response.body.errors, 'Guest users are not authorized to delete account.')
     })
+
+    test("User's email address is not verified.", async () => {
+        // Send response as unverified user
+        const response = await request(server).delete(url).set(...userOneAuth).expect(403)
+        assertSingleError(response.body.errors, 'Please verify your email address to delete your account.')
+    })
 })
 
-describe('SUCCESS', () => {
+describe('Account deletion should be successful if:', () => {
 
-    test('Account deletion should be successful when authenticated, and associated dreams and themes should be deleted.', async () => {
+    test('User is authenticated. Associated dreams and themes should be deleted.', async () => {
         // First prove that only 1 dream exists for userThree
         const dreams = await Dream.find({owner: userThreeId})
         expect(dreams).toHaveLength(1)

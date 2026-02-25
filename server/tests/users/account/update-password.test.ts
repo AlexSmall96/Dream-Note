@@ -2,21 +2,26 @@ import { server } from '../../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { assertErrors, assertSingleError } from '../utils/assertErrors.js';
 import { createUser, getAuthHeader } from '../utils/userCreation.js';
-import { baseUrl, userOneCreds, guestUserCreds } from '../data.js';
+import { baseUrl, userOneCreds, guestUserCreds, userThreeCreds } from '../data.js';
 import { wipeDB } from '../../setup/wipeDB.js';
 import { patchDataWithAuth } from '../utils/sendData.js';
 
 let userOneAuth: [string, string]
+let userThreeAuth: [string, string]
 let guestAuth: [string, string]
 
 // Wipe db and save data
 beforeEach(async () => {
     await wipeDB()
 
-    // Create a standard user to test update success and failure
+    // Create a verified user to test update success and failure
     const userOne = await createUser(userOneCreds)
     userOneAuth = getAuthHeader(userOne.tokens[0])
     
+    // Create an unverified user to test update is forbidden
+    const userThree = await createUser({...userThreeCreds, isVerified: false})
+    userThreeAuth = getAuthHeader(userThree.tokens[0])   
+
     // Create guest user to test that update is forbidden
     const guest = await createUser({...guestUserCreds, isGuest: true})
     guestAuth = getAuthHeader(guest.tokens[0])
@@ -27,6 +32,17 @@ const url = baseUrl + '/update-password'
 // Tests
 
 describe('Password update should fail when:', async () => {
+
+    test('User is authenticated as guest.', async () => {
+        // Send response as guest
+        const response = await patchDataWithAuth(server, url, {currPassword: 'apple123', password: 'strawberrry123'}, 403, guestAuth)  
+        assertSingleError(response.body.errors, 'Guest users are not authorized to update profile details.')
+    })
+
+    test("User's email address is not verified.", async () => {
+        const response = await patchDataWithAuth(server, url, {currPassword: 'apple123', password: 'strawberrry123'}, 403, userThreeAuth) 
+        assertSingleError(response.body.errors, 'Please verify your email address to update your password.')
+    })
 
     test('Current password value is incorrect.', async () => {
         const response = await patchDataWithAuth(server, url, {currPassword: 'orange123', password: 'grape123'}, 400, userOneAuth)
@@ -58,12 +74,7 @@ describe('Password update should fail when:', async () => {
         // Correct error message returned
         assertSingleError(responsePwd.body.errors, 'Password cannot contain "password".', 'password')                
     })
-    
-    test('User is authenticated as guest.', async () => {
-        // Send response as guest
-        const response = await patchDataWithAuth(server, url, {currPassword: 'apple123', password: 'strawberrry123'}, 403, guestAuth)  
-        assertSingleError(response.body.errors, 'Guest users are not authorized to update profile details.')
-    })
+
 })
 
 describe('Password update should succeed when:', async () => {
