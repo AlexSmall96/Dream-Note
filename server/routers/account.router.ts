@@ -7,6 +7,7 @@ import { validateRequest } from "../middleware/validateRequest.js";
 import { body } from "express-validator";
 import { forbidGuest } from "../middleware/users/forbidGuest.js";
 import { comparePasswords } from "../middleware/users/comparePasswords.js";
+import { forbidUnverified } from "../middleware/users/forbidUnverified.js";
 
 // Router class for User model
 @injectable()
@@ -86,6 +87,7 @@ export class AccountRouter {
             '/update-password',
             auth,
             forbidGuest('Guest users are not authorized to update profile details.'),
+            forbidUnverified('Please verify your email address to update your password.'),
             body('currPassword')
             .notEmpty().withMessage('Please provide current password to update.').bail(),
             body('password')
@@ -102,6 +104,7 @@ export class AccountRouter {
             '/delete',
             auth, 
             forbidGuest('Guest users are not authorized to delete account.'),
+            forbidUnverified('Please verify your email address to delete your account.'),
             this.accountController.deleteAccount
         )
     }
