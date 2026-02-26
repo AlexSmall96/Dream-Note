@@ -112,6 +112,18 @@ export class DreamController {
         }
     }
 
+    public toggleFavorite = async (req: Request, res: Response, next: NextFunction) => {
+        const dreamId = req.params.dreamId
+        const analysisId = req.params.analysisId
+        try {
+            const analysis = await this.dreamService.toggleFavorite(dreamId, analysisId)
+            res.json(analysis)
+        } catch (err){
+            next(err)
+
+        }
+    }
+
     public deleteAnalysis = async (req: Request, res: Response, next: NextFunction) => {
         const { analysisId, dreamId } = req.params
         try {

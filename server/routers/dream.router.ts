@@ -78,6 +78,13 @@ export class DreamRouter {
             this.dreamController.getAnalyses
         )
 
+        this.router.patch(
+            '/update/:dreamId/analyses/:analysisId',
+            auth,
+            forbidNotDreamOwner('You are not authorized to update this analysis.'),
+            this.dreamController.toggleFavorite
+        )    
+
         // Delete analysis
         this.router.delete(
             '/delete/:dreamId/analyses/:analysisId',
@@ -91,6 +98,8 @@ export class DreamRouter {
             '/:id/analysis',
             auth,
             forbidNotDreamOwner('You are not authorized to add analyses to this dream.'),
+            body('text')
+            .notEmpty().withMessage("Request body must contain the field 'text'").bail(),
             body('tone')
             .notEmpty().withMessage("Request body must contain the field 'tone'").bail(),
             body('style')

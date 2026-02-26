@@ -95,6 +95,19 @@ export class DreamService {
         return dream.analyses[dream.analyses.length - 1]
     }
 
+    public async toggleFavorite(dreamId: string, analysisId: string){
+        const dream = await Dream.findByIdOrThrowError(dreamId)
+        const analysis = dream.analyses.id(analysisId);
+
+        if (!analysis) {
+            throw new Error("Analysis not found")
+        }
+        analysis.isFavorite = !analysis.isFavorite
+        await dream.save()
+        
+        return analysis
+    }
+
     public async deleteAnalysis(dreamId: string, analysisId: string) {
         const result = await Dream.updateOne(
             { _id: dreamId },
