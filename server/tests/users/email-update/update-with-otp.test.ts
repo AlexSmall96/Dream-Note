@@ -100,7 +100,10 @@ describe('Updating email address should fail if:', async () => {
 })
 
 describe('Updating email address should succeed if:', () => {
-    test('Otp value is associated with a valid otp in database associated with the correct user.', async () => {
+    test('Otp value is associated with a valid otp in database and associated with the correct user.', async () => {
+        // Assert otp is currently saved in db
+        const otpRecord = await Otp.findById(otpId)
+        expect(otpRecord).not.toBeNull()
         // Assert userOne has original email address before request is sent
         const user = await User.findByIdOrThrowError(userOneId.toString())
         expect(user.email).toBe(userOneCreds.email)
