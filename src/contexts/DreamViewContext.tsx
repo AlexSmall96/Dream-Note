@@ -1,7 +1,14 @@
 "use client";
-import { createContext, Dispatch, SetStateAction, useState, useContext } from "react"
+import { createContext, Dispatch, SetStateAction, useState, useContext, useEffect } from "react"
 import { DreamFullView } from "@/types/dreams"
 import { ThemeResponse } from "@/types/themes"
+import { fetchAiOptions } from "@/lib/api/aiAnalysis";
+
+type optionsType = {
+        tone: string[],
+        style: string[],
+        length: string[]
+}
 
 type DreamViewContextType = {
     dream: DreamFullView,
@@ -14,10 +21,11 @@ type DreamViewContextType = {
     setTone: Dispatch<SetStateAction<string>>,
     style: string,
     setStyle: Dispatch<SetStateAction<string>>,
+    length: string,
+    setLength: Dispatch<SetStateAction<string>>,
     showSettings: boolean
     setShowSettings: Dispatch<SetStateAction<boolean>>,
-    tones: string[],
-    styles: string[]
+    options: optionsType
 }
 
 
@@ -31,17 +39,25 @@ export function DreamViewProvider({ children }:{ children: React.ReactNode}){
     const [themes, setThemes] = useState<ThemeResponse[]>([])
     const [analysis, setAnalysis] = useState('')
 
-    const tones = [
-        'Curious & intrigued', 'Caring & supportive', 'Excited and enthusiastic'
-    ]
+    const [options, setOptions] = useState<optionsType>({tone: [], style: [], length: []})
 
-    const styles = [
-        'Formal', 'Informal', 'Fantasy'
-    ]
-
-    const [tone, setTone] = useState<string>(tones[0])
-    const [style, setStyle] = useState<string>(styles[0])
+    const [tone, setTone] = useState<string>('')
+    const [style, setStyle] = useState<string>('')
+    const [length, setLength] = useState<string>('')
     const [showSettings, setShowSettings] = useState(false)
+
+    useEffect(() => {
+        const getAiOptions = async () => {
+            const response = await fetchAiOptions()
+            const options = response.options
+            setOptions(response.options)
+            setTone(options.tone[0])
+            setStyle(options.style[0])
+            setLength(options.length[0])
+        }
+        getAiOptions()
+    }, [])
+
 
     return (
         <DreamViewContext.Provider value={{
@@ -55,10 +71,11 @@ export function DreamViewProvider({ children }:{ children: React.ReactNode}){
             setTone,
             style,
             setStyle,
+            length,
+            setLength,
             showSettings, 
             setShowSettings,
-            tones, 
-            styles,
+            options
         }}>
             {children}
         </DreamViewContext.Provider>
