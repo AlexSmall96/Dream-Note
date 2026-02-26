@@ -6,18 +6,18 @@ import {AppError} from '../../utils/appError.js'
 import { OtpDocument } from "../../interfaces/otp.interfaces.js";
 import bcrypt from "bcrypt";
 
-export type purposeType = "email-update" | "password-reset"
+export type purposeType = "email-update" | "password-reset" | 'email-verification'
 
 @injectable()
 export class OtpService {
 
     // Sends and generates a OTP for either email update or password reset, depending on the provided purpose. 
     // UserId is only required for email update as password reset is for unauthenticated users.
-    public async generateOTP(email: string, purpose: purposeType, incomingUserId?: string){
-        if (purpose === 'email-update' && !incomingUserId){
+    public async generateOTP(email: string, purpose: purposeType, incomingUserId?: string, expiresIn: number = 10 * 60 * 1000){
+        if (purpose !== 'password-reset' && !incomingUserId){
             // Throw system error - this situation will never be reached from data inputted via client
             // Only included for debugging purposes in the case that account.controller calls this service incorrectly
-            throw new AppError('Arugment incomingUserId must be provided if purpose is email-update.', 500)
+            throw new AppError('Arugment incomingUserId must be provided if purpose is email-update or email verification.', 500)
         }
         const existingUser = await User.findOne({ email })
 
@@ -38,7 +38,7 @@ export class OtpService {
         // If purpose is password reset, existingUser must exist at this point due to early return
         // If purpose is email-update, incomingUserId must exist at this point due to throw error
         const userId = purpose === "password-reset" ? existingUser!._id.toString() : incomingUserId
-        const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 mins
+        const expiresAt = new Date(Date.now() + expiresIn) 
             await Otp.create({
                 userId,
                 email,

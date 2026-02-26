@@ -2,7 +2,6 @@ import { injectable, inject } from "inversify";
 import { Request, Response, NextFunction } from "express";
 import { AuthenticatedRequest, RequestWithUser } from "../interfaces/auth.interfaces.js";
 import { AuthService } from "../services/users/auth.service.js";
-export type purposeType = "email-update" | "password-reset"
 
 const sessionCookieOptions = {
     httpOnly: true,

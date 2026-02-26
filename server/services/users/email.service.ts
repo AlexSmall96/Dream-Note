@@ -1,6 +1,6 @@
 import { injectable } from "inversify";
 import nodemailer from 'nodemailer';
-import { purposeType } from "../../controllers/auth.controller.js";
+import { purposeType } from "./otp.service";
 
 // Email service class for password reset and email verification
 @injectable()
@@ -13,12 +13,12 @@ export class EmailService {
         }
     }); 
 
-    public sendMailWithData(purpose: purposeType, email: string, OTP: string, expiresIn: number) {
+    public sendMailWithData(purpose: purposeType, email: string, OTP: string, expiresIn: number, expiresInUnit: 'minutes' | 'hours' = 'minutes') {
         return this.transporter.sendMail({
             from: process.env.SMTP_MAIL,
             to: email,
             subject: `Your Dream Note OTP for ${purpose}.`,
-            text: `Your one time passcode (OTP) is ${OTP}. This will expire in ${expiresIn} minutes.`            
+            text: `Your one time passcode (OTP) is ${OTP}. This will expire in ${expiresIn} ${expiresInUnit}.`            
         })
     }
 }
