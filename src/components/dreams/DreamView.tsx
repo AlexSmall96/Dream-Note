@@ -19,7 +19,7 @@ export default function DreamView ({
     id: string
 }){
 
-    const {dream, themes, analysis, showSettings, setShowSettings, tone, setTone, style, setStyle, tones, styles } = useDreamView()
+    const {dream, themes, analysis, showSettings, setShowSettings, tone, setTone, style, setStyle, length, setLength, options } = useDreamView()
     const { chronView } = useThemesAside()
     const router = useRouter()
 
@@ -50,8 +50,9 @@ export default function DreamView ({
             </button>
             {showSettings?
                     <>
-                        <Dropdown<string> parameter={tone} setParameter={setTone} options={tones} parameterName="tone"/>
-                        <Dropdown<string> parameter={style} setParameter={setStyle} options={styles} parameterName="style" />                        
+                        <Dropdown<string> parameter={tone} setParameter={setTone} options={options.tone} parameterName="tone"/>
+                        <Dropdown<string> parameter={style} setParameter={setStyle} options={options.style} parameterName="style" />                        
+                        <Dropdown<string> parameter={length} setParameter={setLength} options={options.length} parameterName="length" />                        
                     </>
                 :''}
             <button className='bg-blue-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/edit`)}>Edit</button>
