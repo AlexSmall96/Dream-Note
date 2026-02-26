@@ -1,7 +1,8 @@
 "use client";
 import DreamView from '@/components/dreams/DreamView'
 import { useEffect, useState } from "react";
-import { fetchFullDream, fetchAnalysis } from "@/lib/api/dreams";
+import { fetchAnalysis } from "@/lib/api/aiAnalysis";
+import { fetchFullDream } from "@/lib/api/dreams";
 import { useDreamView } from '@/contexts/DreamViewContext';
 import { useRouter } from 'next/navigation';
 import { useDreams } from '@/contexts/DreamsContext';
