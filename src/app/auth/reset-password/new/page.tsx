@@ -1,5 +1,6 @@
 'use client'
 import ResetPasswordForm from "@/components/auth/ResetPasswordForm"
+import { Suspense } from 'react'
 
 export default function NewPasswordPage (){
     return (
@@ -7,7 +8,9 @@ export default function NewPasswordPage (){
             <h1 className="m-2">
                 One time passcode correct. Enter your new password below.
             </h1>
-            <ResetPasswordForm />
+            <Suspense fallback={<div>Loading form...</div>}>
+                <ResetPasswordForm />
+            </Suspense>
         </div>
     )
 }
