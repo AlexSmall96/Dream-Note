@@ -4,7 +4,7 @@ import { UserDocument } from "./user.interfaces";
 export interface OtpInterface {
     email: string,
     otp: string,
-    purpose: "update-email" | "reset-password",
+    purpose: "update-email" | "reset-password" | "email-verification",
     expiresAt: Date,
     used: boolean
     userId: UserDocument['_id']

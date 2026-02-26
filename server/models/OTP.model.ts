@@ -19,7 +19,7 @@ const otpSchema = new Schema(
 		},
 		purpose: {
 			type: String,
-			enum: ["email-update", "password-reset"],
+			enum: ["email-update", "password-reset", "email-verification"],
 			required: true,
 		},
 		expiresAt: {
