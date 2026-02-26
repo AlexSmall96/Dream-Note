@@ -28,3 +28,7 @@ export async function toggleFavoriteAnalysis(dreamId: string, analysisId: string
     return apiFetch<SavedAnalysis>(`/dreams/update/${dreamId}/analyses/${analysisId}`, {method: 'PATCH'})
 }
 
+export async function deleteAnalysis(dreamId: string, analysisId: string){
+    return apiFetch<SavedAnalysis>(`/dreams/delete/${dreamId}/analyses/${analysisId}`, {method: 'DELETE'})
+}
+
