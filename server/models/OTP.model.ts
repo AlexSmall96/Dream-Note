@@ -1,5 +1,5 @@
 import mongoose, { Schema, model } from "mongoose";
-import { OtpDocument } from "../interfaces/otp.interfaces";
+import { OtpDocument } from "../interfaces/otp.interfaces.js";
 import bcrypt from "bcrypt";
 
 const otpSchema = new Schema(

@@ -1,5 +1,5 @@
 import { Model, Document, Types } from "mongoose";
-import { UserDocument } from "./user.interfaces";
+import { UserDocument } from "./user.interfaces.js";
 
 export interface OtpInterface {
     email: string,

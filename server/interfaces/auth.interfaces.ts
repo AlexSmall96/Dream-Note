@@ -1,6 +1,6 @@
 import  { JwtPayload } from 'jsonwebtoken';
 import { Request } from 'express';
-import { UserDocument, UserInterface } from './user.interfaces';
+import { UserDocument } from './user.interfaces.js';
 
 
 // Extend express Request interface with user

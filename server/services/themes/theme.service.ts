@@ -1,6 +1,5 @@
 import { injectable } from "inversify";
 import { Theme } from "../../models/theme.model.js";
-import { Types } from "mongoose";
 
 @injectable()
 export class ThemeService {

@@ -1,4 +1,4 @@
-import { injectable, inject } from "inversify";
+import { injectable } from "inversify";
 import { User } from "../../models/user.model.js";
 import {generateOtp} from "../utils/otp.js"
 import { Otp } from "../../models/OTP.model.js";
