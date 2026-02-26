@@ -56,6 +56,12 @@ export class DreamRouter {
             this.dreamController.getAllDreams
         )
 
+        this.router.get(
+            '/ai-options',
+            auth,
+            this.dreamController.getAiOptions
+        )
+
         // View a single dream
         this.router.get(
             '/view/:id',

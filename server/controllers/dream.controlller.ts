@@ -4,6 +4,7 @@ import { DreamService } from "../services/dreams/dream.service.js";
 import { Request, Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "../interfaces/auth.interfaces.js";
 import { getStartAndEndDates, getYearRange } from "../services/utils/dateRange.js";
+import { options } from '../interfaces/dream.interfaces.js'
 
 // Controller clas for Dream model
 @injectable()
@@ -33,6 +34,14 @@ export class DreamController {
             // Create full prompt using tone and style
             const analysis = await this.dreamService.getAiAnalysis(description, params)
             res.json({analysis: analysis ?? ''})
+        } catch (err){
+            next(err)
+        }
+    }
+
+    public getAiOptions = (_req: Request, res: Response, next: NextFunction) => {
+        try {
+            res.json({options})
         } catch (err){
             next(err)
         }
