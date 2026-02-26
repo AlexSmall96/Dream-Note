@@ -56,25 +56,3 @@ export type DreamResponseType = {
 export type ErrorMsg = {
     error: string
 }
-
-// AI Analysis body and response
-export type DreamAnalysisBody = {
-    description: string
-    params: {
-        tone?: string,
-        style?: string,
-        length?: string
-    }
-}
-
-export type DreamAnalysisResponse = {
-    analysis: string
-}   
-
-export type DreamAnalysisOptions = {
-    options: {
-        tone: string[],
-        style: string[],
-        length: string[]
-    }
-}
