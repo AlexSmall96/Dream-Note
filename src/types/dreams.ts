@@ -67,3 +67,11 @@ export type DreamAnalysisBody = {
 export type DreamAnalysisResponse = {
     analysis: string
 }   
+
+export type DreamAnalysisOptions = {
+    options: {
+        tone: string[],
+        style: string[],
+        length: string[]
+    }
+}

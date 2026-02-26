@@ -2,11 +2,9 @@ import { apiFetch } from "@/lib/api/client";
 import { DreamFullView } from "@/types/dreams";
 import { 
     DreamBodyType, 
-    DreamAnalysisResponse, 
     DreamResponseType, 
     ErrorMsg, 
     DreamList, 
-    DreamAnalysisBody 
 } from "@/types/dreams";
 import { MONTH_OPTIONS, MonthLabel } from '@/lib/filters/dateRanges'
 
@@ -37,10 +35,6 @@ export async function fetchFullDream(id: string){
 export async function updateDream(id: string, body: DreamBodyType) {
     return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>(`/dreams/update/${id}`, {method: 'PATCH', body}
     )
-}
-
-export async function fetchAnalysis(body: DreamAnalysisBody){
-    return apiFetch<DreamAnalysisResponse, DreamAnalysisBody>(`/dreams/analysis`, {method: 'POST', body})
 }
 
 export async function deleteDream(id: string) {
