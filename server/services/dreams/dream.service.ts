@@ -38,11 +38,11 @@ export class DreamService {
         return {dream}
     }
 
-    public async getAiAnalysis(description: string, params: {tone: string, style: string}) {
+    public async getAiAnalysis(description: string, params: {tone: string, style: string, length: string}) {
         const DEV = process.env.DEV
         if (DEV && params){
             const analysis = `Mock analysis response. Description: ${description}`
-            const fullAnalysis = analysis + ` Tone: ${params.tone ?? 'No tone provided'}. Style: ${params.style ?? 'No style provided'}.`
+            const fullAnalysis = analysis + ` Tone: ${params.tone ?? 'No tone provided'}. Style: ${params.style ?? 'No style provided'}. Length: ${params.length ?? 'No length provided'}.`
             return fullAnalysis
         }
         if (DEV){
