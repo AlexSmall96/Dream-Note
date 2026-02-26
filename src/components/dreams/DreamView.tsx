@@ -4,7 +4,8 @@ import { useThemesAside } from "@/contexts/ThemesAsideContext";
 import { useRouter } from "next/navigation";
 
 export default function DreamView ({
-    getAnalysis, 
+    getAnalysis,
+    saveAnalysis, 
     onNext, 
     onPrev, 
     index,
@@ -12,6 +13,7 @@ export default function DreamView ({
     id
 }:{
     getAnalysis: () => Promise<void>, 
+    saveAnalysis: () => Promise<void>, 
     onNext: () => void,
     onPrev: () => void,
     index: number,
@@ -35,12 +37,20 @@ export default function DreamView ({
                 </span>
                 )}
             <p className="italic">{analysis ?? ''}</p>
+            {analysis !== '' && 
+                <button 
+                    className='bg-green-500 hover:bg-green-700 text-white font-bold p-2 m-2 disabled:cursor-not-allowed disabled:bg-gray-400'
+                    onClick={saveAnalysis}
+                >
+                    Save
+                </button>
+            }
             <button 
                 onClick={getAnalysis}
                 disabled={!dream.description}
                 className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 disabled:cursor-not-allowed disabled:bg-gray-400'
             >
-                Get AI Analysis
+                Get New AI Analysis
             </button>
             <button 
                 onClick={() => setShowSettings(prev => !prev)} 
@@ -55,6 +65,9 @@ export default function DreamView ({
                         <Dropdown<string> parameter={length} setParameter={setLength} options={options.length} parameterName="length" />                        
                     </>
                 :''}
+            <button className='bg-blue-400 p-2 m-1' onClick={() => router.replace(`/dreams/${id}/analysis`)}>
+                View Previous AI Analysis
+            </button>
             <button className='bg-blue-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/edit`)}>Edit</button>
             <button className='bg-green-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/delete`)}>Delete</button>
             <button className='bg-gray-300 p-1 m-1' onClick={() => router.replace(`/dreams/`)}>Back to Dashboard</button>

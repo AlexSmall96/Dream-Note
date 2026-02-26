@@ -1,7 +1,7 @@
 "use client";
 import DreamView from '@/components/dreams/DreamView'
 import { useEffect, useState } from "react";
-import { fetchAnalysis } from "@/lib/api/aiAnalysis";
+import { fetchAnalysis, saveNewAnalysis } from "@/lib/api/aiAnalysis";
 import { fetchFullDream } from "@/lib/api/dreams";
 import { useDreamView } from '@/contexts/DreamViewContext';
 import { useRouter } from 'next/navigation';
@@ -9,7 +9,7 @@ import { useDreams } from '@/contexts/DreamsContext';
 
 export default function DreamPage({ params }: { params: { id: string } }) {
 
-    const { dream, setDream, setThemes, setAnalysis, tone, style, length } = useDreamView()
+    const { dream, setDream, setThemes, analysis, setAnalysis, tone, style, length } = useDreamView()
     const { dreams } = useDreams()
     const [index,  setIndex] = useState<number>(0)
 
@@ -24,7 +24,7 @@ export default function DreamPage({ params }: { params: { id: string } }) {
             }
         }
         getFullDream()
-    }, [])
+    }, [params.id])
 
     const getAnalysis = async () => {
         if (!dream.description) return
@@ -36,6 +36,15 @@ export default function DreamPage({ params }: { params: { id: string } }) {
                 }
             })
             setAnalysis(response.analysis)
+        } catch (err){
+            console.log(err)
+        }
+    }
+
+    const saveAnalysis = async () => {
+        if (!analysis) return
+        try {
+            await saveNewAnalysis(params.id, {text: analysis, tone, style, length})
         } catch (err){
             console.log(err)
         }
@@ -64,7 +73,7 @@ export default function DreamPage({ params }: { params: { id: string } }) {
 
     return (
         <div className="flex flex-col items-center m-4">
-            <DreamView getAnalysis={getAnalysis} id={params.id} onNext={goToNextDream} onPrev={goToPrevDream} index={index} maxIndex={dreams.length - 1} />
+            <DreamView getAnalysis={getAnalysis} saveAnalysis={saveAnalysis} id={params.id} onNext={goToNextDream} onPrev={goToPrevDream} index={index} maxIndex={dreams.length - 1} />
         </div>
     )
 }
