@@ -60,8 +60,11 @@ export type ErrorMsg = {
 // AI Analysis body and response
 export type DreamAnalysisBody = {
     description: string
-    tone?: string,
-    style?: string
+    params: {
+        tone?: string,
+        style?: string,
+        length?: string
+    }
 }
 
 export type DreamAnalysisResponse = {

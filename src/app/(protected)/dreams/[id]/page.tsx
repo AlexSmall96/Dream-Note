@@ -9,7 +9,7 @@ import { useDreams } from '@/contexts/DreamsContext';
 
 export default function DreamPage({ params }: { params: { id: string } }) {
 
-    const { dream, setDream, setThemes, setAnalysis, tone, style } = useDreamView()
+    const { dream, setDream, setThemes, setAnalysis, tone, style, length } = useDreamView()
     const { dreams } = useDreams()
     const [index,  setIndex] = useState<number>(0)
 
@@ -29,7 +29,12 @@ export default function DreamPage({ params }: { params: { id: string } }) {
     const getAnalysis = async () => {
         if (!dream.description) return
         try {
-            const response = await fetchAnalysis({description: dream.description, tone, style})
+            const response = await fetchAnalysis({
+                description: dream.description, 
+                params: {
+                    tone, style, length
+                }
+            })
             setAnalysis(response.analysis)
         } catch (err){
             console.log(err)
