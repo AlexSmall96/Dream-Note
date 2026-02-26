@@ -5,8 +5,6 @@ import { AppError } from "../../utils/appError.js";
 import { ResetTokenService } from './reset-token.service.js';
 import { EmailService } from './email.service.js';
 
-export type purposeType = "email-update" | "password-reset"
-
 /**
  * Functions called by account.controller: (-> = calls)
  * 1. updateEmailAndDeleteOtp -> updateEmail, otpService
@@ -41,10 +39,29 @@ export class AccountService {
         return user
     }
 
+    public async verifyUser(userId: string){
+        const user = await User.findByIdOrThrowError(userId)
+        user.isVerified = true
+        await user.save()
+        return user        
+    }
+
     public async requestEmailUpdate(email: string, userId: string){
         const otp = await this.otpService.generateOTP(email, 'email-update', userId)
         if (otp){
             await this.emailService.sendMailWithData('email-update', email, otp, 10)
+        }
+    }
+
+    public async requestEmailVerification(email: string, userId: string){
+        const user = await User.findByIdOrThrowError(userId)
+        if (user.isVerified){
+            throw new AppError('Email address is already verified.', 400, 'email')
+        }
+        const ONE_DAY = 24 * 60 * 60 * 1000
+        const otp = await this.otpService.generateOTP(email, 'email-verification', userId, ONE_DAY)
+        if (otp){
+            await this.emailService.sendMailWithData('email-verification', email, otp, 24, 'hours')
         }
     }
 
@@ -74,6 +91,21 @@ export class AccountService {
         // Otp no longer required if email is updated
         await this.otpService.deleteOtp(otpRecord._id.toString())
     }
+
+    public async verifyEmailAndDeleteOtp(otp: string, userId: string){
+        const user = await User.findByIdOrThrowError(userId)
+        if (user.isVerified){
+            throw new AppError('Email address is already verified.', 400, 'email')
+        }
+        const otpRecord = await this.otpService.findOtp(otp, 'email-verification', {userId})
+        if (!otpRecord){
+            throw new AppError('Invalid or expired OTP.', 400, 'otp')
+        }
+        await this.verifyUser(userId)
+        // Otp no longer required if email is updated
+        await this.otpService.deleteOtp(otpRecord._id.toString())
+    }
+
 
     public async resetPassword(resetToken: string, newPassword: string){
         const payload = this.resetTokenService.verifyPasswordResetToken(resetToken)

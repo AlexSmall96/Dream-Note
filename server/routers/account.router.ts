@@ -47,6 +47,23 @@ export class AccountRouter {
             this.accountController.requestPasswordReset
         )
 
+        this.router.post(
+            '/request-email-verification',
+            auth,
+            forbidGuest('Guest users are not authorized to request email verification.'),
+            this.accountController.requestEmailVerification
+        )
+
+        this.router.patch(
+            '/verify-email',
+            auth,
+            forbidGuest('Guest users are not authorized to verify email.'),
+            body('otp')
+            .notEmpty().withMessage('Please provide the OTP that was sent to your email address.'),
+            validateRequest,
+            this.accountController.verifyEmail
+        )
+
         // Verify otp and update email
         this.router.patch(
             '/update-email',

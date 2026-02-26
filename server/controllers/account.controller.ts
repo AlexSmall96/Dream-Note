@@ -19,7 +19,7 @@ export class AccountController {
         const userId = authReq.user._id.toString()
         try {
             await this.accountService.requestEmailUpdate(email, userId)
-            res.json({ message: "OTP sent successfully." })
+            res.json({ message: "A OTP (one time passcode) has been sent to your new email address." })
         } catch (err){
             next(err)
         }
@@ -35,6 +35,30 @@ export class AccountController {
         } catch (err){
             next(err)
         }
+    }
+
+    public requestEmailVerification = async (req: Request, res: Response, next: NextFunction) => {
+        const authReq = req as AuthenticatedRequest
+        const email = authReq.user.email
+        const userId = authReq.user._id.toString()
+        try {
+            await this.accountService.requestEmailVerification(email, userId)
+            res.json({ message: "A OTP (one time passcode) has been sent to your email address." })
+        } catch (err){
+            next(err)
+        }
+    }
+
+    public verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+        const authReq = req as AuthenticatedRequest
+        const otp = authReq.body.otp
+        const userId = authReq.user._id.toString()
+        try {
+            await this.accountService.verifyEmailAndDeleteOtp(otp, userId)
+            res.json({message: 'Email verified successfully.'})
+        } catch (err){
+            next(err)
+        }          
     }
 
     // Verify OTP and update email - requires OTP that was sent to new email address, and user must be authenticated to verify ownership of account
