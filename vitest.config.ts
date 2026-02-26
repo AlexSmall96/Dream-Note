@@ -9,6 +9,19 @@ export default defineConfig({
         singleFork: true,
       },
     },
+    include: ['server/**/*.test.ts'],
+    coverage: {
+      provider: 'v8',
+      reporter: ['text-summary'],
+      reportsDirectory: './coverage',
+      include: ['server/**/*.{ts,js}'],
+      exclude: [
+        'server/server.ts',
+        'src/**',
+        'node_modules/**',
+        '**/*.test.*'
+      ]
+    },
     setupFiles: ["./test/setupEnv.ts"],
   },
 });
