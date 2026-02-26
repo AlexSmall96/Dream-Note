@@ -21,6 +21,7 @@
     "@fortawesome/react-fontawesome": "^3.2.0",
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
+    "@material-tailwind/react": "^2.1.10",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "date-fns": "^4.1.0",
