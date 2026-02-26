@@ -30,7 +30,7 @@ export function useDreamSubmit(){
             } else {
                 result = await logNewDream({
                     dream: {
-                        title: payload.title,
+                        title: payload.title || null,
                         description: payload.description || null,
                         notes: payload.notes || null,
                         date: payload.date,
