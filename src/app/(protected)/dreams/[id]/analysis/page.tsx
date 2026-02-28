@@ -41,7 +41,9 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
         } catch (err) {
             console.log(err)
         }
-        setAnalyses(prev => prev.filter(a => a._id !== analysisId))
+        const remaining = analyses.filter(a => a._id !== analysisId)
+        setAnalyses(remaining)
+        setMainAnalysis(remaining[0])
     }
 
     const viewFullAnalysis = (_id: string) => {
@@ -51,8 +53,8 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
     return (
         <>
             <h1>Previous Analysis</h1>
-            <div className='grid grid-cols-2 gap-4'>
-                <div>
+            <div className='grid grid-cols-3 gap-4'>
+                <div className='col-span-1'>
                     {analyses.length > 0 && analyses.map(
                         analysis => 
                             <Analysis
@@ -65,7 +67,7 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
                     )}
                     <button onClick={() => router.replace(`/dreams/${params.id}`)} className='btn btn-gray bg-gray-300 p-1 m-2'>Back to Dream</button>
                 </div>
-                <div>
+                <div className='col-span-2'>
                     <p className='font-bold'>Analysis:</p>
                     <p className='italic'>{mainAnalysis?.text}</p>
                     <p className='font-semibold'>Description used:</p>
