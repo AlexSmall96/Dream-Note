@@ -74,8 +74,21 @@ export class DreamController {
             title, limit, skip, sort, startDate, endDate
         } = this.parseDreamQuery(query)
         try {
-            const { dreams, monthlyTotals } = await this.dreamService.getDreamsWithStats(userId, { title, startDate, endDate, limit, skip, sort })
-            res.json({dreams, monthlyTotals})
+            const dreams = await this.dreamService.getFilteredDreams(userId, title, startDate, endDate, limit, skip, sort)
+            res.json({dreams})
+        } catch (err){
+            next(err)
+        }
+    }
+
+    public getDreamStats = async (req: Request<{}, {}, GetDreamsQuery>, res: Response, next: NextFunction) => {
+        const authReq = req as AuthenticatedRequest
+        const userId = authReq.user._id.toString()
+        const NOW = new Date()
+        const year = Number(req.query.year) ?? NOW.getFullYear() 
+        try {
+            const { monthlyTotals, total, thisMonthTotal } = await this.dreamService.getAllStats(userId, year)
+            res.json({ monthlyTotals, total, thisMonthTotal })
         } catch (err){
             next(err)
         }
