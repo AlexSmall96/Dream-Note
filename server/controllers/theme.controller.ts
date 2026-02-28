@@ -29,6 +29,18 @@ export class ThemeController {
         }
     }
 
+    public getThemeSuggestions = async (req: Request, res: Response, next: NextFunction) => {
+        const authReq = req as AuthenticatedRequest
+        const userId = authReq.user._id.toString() 
+        const search = req.query.search? new RegExp(req.query.search.toString().trim(), "i") : new RegExp('')
+        try {
+            const themes = await this.themeService.getThemeSuggestions(userId, search)
+            res.json(themes)
+        } catch (err){
+            next(err)
+        }    
+    }
+
     public deleteTheme = async (req: Request, res: Response, next: NextFunction) => {
             const themeId = req.params.id
             try {

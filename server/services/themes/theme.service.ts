@@ -18,6 +18,15 @@ export class ThemeService {
         return {themes, counts}
     }
 
+    public async getThemeSuggestions(userId: string, search: RegExp) {
+        const themes = await Theme.distinct("theme", {
+            owner: userId,
+            theme: { $regex: search }
+        })
+
+        return themes.slice(0, 7)
+    }
+
     public async deleteTheme(themeId: string){
         const theme = await Theme.findByIdAndDelete(themeId)
         return theme

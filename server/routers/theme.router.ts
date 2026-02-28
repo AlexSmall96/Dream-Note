@@ -20,6 +20,8 @@ export class ThemeRouter {
         // Get all users themes
         this.router.get('/', auth, this.themeController.getAllThemesWithCounts)
         
+        this.router.get('/suggestions', auth, this.themeController.getThemeSuggestions)
+        
         // Remove a theme
         this.router.delete(
             '/delete/:id',  
