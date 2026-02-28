@@ -3,8 +3,9 @@ import { ThemeService } from "../themes/theme.service.js";
 import { Dream } from "../../models/dream.model.js";
 import { DreamInterface, Tone, Style, Length } from "../../interfaces/dream.interfaces.js";
 import { AIService } from "./ai.service.js";
-import { FilterService } from "./filter.service.js";
+import { StatsService} from "./stats.service.js";
 import { AppError } from "../../utils/appError.js";
+import { Types } from "mongoose";
 
 export enum prompts {
     title = 'Return exactly one short title for the provided dream.',
@@ -18,7 +19,7 @@ export class DreamService {
     constructor(
         @inject(ThemeService) private themeService: ThemeService,
         @inject(AIService) private aiService: AIService,
-        @inject(FilterService) private filterService: FilterService
+        @inject(StatsService) private statsService: StatsService
     ){}
 
     // Save dream used by logNewDream
@@ -41,8 +42,11 @@ export class DreamService {
     public async getAiAnalysis(description: string, params: {tone: string, style: string, length: string}) {
         const DEV = process.env.DEV
         if (DEV && params){
-            const analysis = `Mock analysis response. Description: ${description}`
-            const fullAnalysis = analysis + ` Tone: ${params.tone ?? 'No tone provided'}. Style: ${params.style ?? 'No style provided'}. Length: ${params.length ?? 'No length provided'}.`
+            const analysis = `Mock analysis response. Description: ${description.substring(0, 30)}...`
+            const toneSpec = ` Tone: ${params.tone ?? 'No tone provided.'}`
+            const styleSpec = ` Style: ${params.style ?? 'No style provided.'}`
+            const lengthSpec = ` Length ${params.length ?? 'No length provided.'}`
+            const fullAnalysis = analysis + toneSpec + styleSpec + lengthSpec
             return fullAnalysis
         }
         if (DEV){
@@ -52,20 +56,31 @@ export class DreamService {
         return analysis
     }
 
-    public async getDreamsWithStats(userId: string, {title, startDate, endDate, limit, skip, sort}: {
-        title: RegExp,
-        startDate: Date
-        endDate: Date
-        limit: number
-        skip: number
-        sort: boolean
-    }) {
-        const [dreams, monthlyTotals] = await Promise.all([
-            this.filterService.getFilteredDreams(userId, title, startDate, endDate, limit, skip, sort),
-            this.filterService.getMonthlyDreamStats(userId, startDate.getFullYear())
-        ])
+    public async getFilteredDreams (owner: string, title: RegExp, startDate: Date, endDate: Date, limit: number, skip: number, sort: boolean){
+        const dreams = await Dream.aggregate([
+            {
+                $match: {
+                    owner: new Types.ObjectId(owner),
+                    date: { $gte: startDate, $lt: endDate },
+                    title: { $regex: title }
+                }
+            },
+            {$sort: { date: sort? 1: -1 }},
+            {$skip: skip},
+            {$limit: limit},
+        ]).project({title: 1, date: 1}) // Only return title and date for all dreams view
+        return dreams
+    }
 
-        return { dreams, monthlyTotals }
+    public async getAllStats(owner: string, year:number){
+        const [
+            monthlyTotals, total, thisMonthTotal
+        ] = await Promise.all([
+            this.statsService.getMonthlyDreamStats(owner, year),
+            this.statsService.getTotalNoDreams(owner),
+            this.statsService.getDreamsPastMonth(owner)
+        ])
+        return {monthlyTotals, total, thisMonthTotal}
     }
 
     public async getDreamAndThemes(dreamId:string){
