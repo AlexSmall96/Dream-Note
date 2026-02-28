@@ -7,7 +7,8 @@ type ThemesContextType = {
     themes: ThemeWithDreamDataResponse[]
     setThemes: setterFunction<ThemeWithDreamDataResponse[]>
     counts: ThemeCounts,
-    setCounts: setterFunction<ThemeCounts>
+    setCounts: setterFunction<ThemeCounts>,
+    setRefetchThemes: setterFunction<boolean>
 }
 
 const ThemesContext = createContext<ThemesContextType | null>(null)
@@ -16,6 +17,7 @@ export function ThemesProvider({ children }:{ children: React.ReactNode }) {
     
     const [themes, setThemes] = useState<ThemeWithDreamDataResponse[]>([])
     const [counts, setCounts] = useState<ThemeCounts>({})
+    const [refetchThemes, setRefetchThemes] = useState<boolean>(false)
 
     useEffect(() => {
         const getThemes = async () => {
@@ -28,10 +30,10 @@ export function ThemesProvider({ children }:{ children: React.ReactNode }) {
             }
         }
         getThemes()
-    }, [])
+    }, [refetchThemes])
 
     return (
-        <ThemesContext.Provider value={{themes, setThemes, counts, setCounts}}>
+        <ThemesContext.Provider value={{themes, setThemes, counts, setCounts, setRefetchThemes}}>
             {children}
         </ThemesContext.Provider>
     )

@@ -4,6 +4,7 @@ import { DreamFormType } from "@/types/dreams";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDreamSubmit } from "@/app/hooks/useDreamSubmit";
+import { useThemes } from "@/contexts/ThemesContext";
 
 export default function LogNewDream() {
     // State and contexts
@@ -11,6 +12,7 @@ export default function LogNewDream() {
     const [dream, setDream] = useState<DreamFormType>(defaultDreamState)
     const [themes, setThemes] = useState<string[]>([])
     const { submitDream, msg, setMsg } = useDreamSubmit()
+    const { setRefetchThemes } = useThemes()
     const router = useRouter()
     
     // Log new dream
@@ -25,6 +27,7 @@ export default function LogNewDream() {
 		})
         setDream(defaultDreamState)
         setThemes([])		
+        setRefetchThemes(prev => !prev)
 	}
 
     return (

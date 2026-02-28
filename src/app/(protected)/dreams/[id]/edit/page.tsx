@@ -6,6 +6,7 @@ import DreamForm from "@/components/dreams/DreamForm";
 import { DreamFormType } from '@/types/dreams'
 import { useRouter } from "next/navigation"
 import { useDreamSubmit } from "@/app/hooks/useDreamSubmit";
+import { useThemes } from "@/contexts/ThemesContext";
 
 export default function EditDreamPage({
   	params,
@@ -16,6 +17,8 @@ export default function EditDreamPage({
 	const [dream, setDream] = useState<DreamFormType>({title: '', description: '', notes: '', date: ''})
 	const [themes, setThemes] = useState<string[]>([])
 	const { submitDream, msg, setMsg } = useDreamSubmit()
+	const { setRefetchThemes } = useThemes()
+	
 	const router = useRouter()
 
 	// Get existing dream
@@ -39,6 +42,7 @@ export default function EditDreamPage({
 			date: new Date(dream.date),
 			themes: themes
 		})		
+		setRefetchThemes(prev => !prev)
 	}
 
   	return (
