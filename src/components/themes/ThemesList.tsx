@@ -4,7 +4,7 @@ import { getUniqueThemes } from "@/lib/utils/getUniqueThemes"
 
 export default function ThemesList () {
 
-    const { themes } = useThemes()
+    const { themes, counts } = useThemes()
     const uniqueThemes = getUniqueThemes(themes)
     const {setSelectedTheme} = useThemesAside()
 
@@ -12,7 +12,7 @@ export default function ThemesList () {
         <div>
             {uniqueThemes.map(theme =>
                 <div key={theme}>
-                    <button className='bg-blue-200 m-1 p-2' onClick={() => setSelectedTheme(theme)}>{theme}</button>
+                    <button className='bg-blue-200 m-1 p-2' onClick={() => setSelectedTheme(theme)}>{theme} ({counts[theme]})</button>
                 </div> 
             )}
         </div>

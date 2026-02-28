@@ -14,6 +14,12 @@ export type ThemeWithDreamDataResponse = {
     _id: string
 }
 
-export type ThemeList = {
+export type ThemeCounts = {
+    [theme: string]: number
+}
+
+
+export type ThemeListWithCounts = {
     themes: ThemeWithDreamDataResponse[]
+    counts: ThemeCounts
 }

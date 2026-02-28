@@ -1,11 +1,13 @@
 import { fetchThemes } from "@/lib/api/themes"
 import { setterFunction } from "@/types/setterFunctions"
-import { ThemeWithDreamDataResponse } from "@/types/themes"
+import { ThemeWithDreamDataResponse, ThemeCounts } from "@/types/themes"
 import { createContext, useContext, useEffect, useState } from 'react'
 
 type ThemesContextType = {
     themes: ThemeWithDreamDataResponse[]
     setThemes: setterFunction<ThemeWithDreamDataResponse[]>
+    counts: ThemeCounts,
+    setCounts: setterFunction<ThemeCounts>
 }
 
 const ThemesContext = createContext<ThemesContextType | null>(null)
@@ -13,12 +15,14 @@ const ThemesContext = createContext<ThemesContextType | null>(null)
 export function ThemesProvider({ children }:{ children: React.ReactNode }) {
     
     const [themes, setThemes] = useState<ThemeWithDreamDataResponse[]>([])
+    const [counts, setCounts] = useState<ThemeCounts>({})
 
     useEffect(() => {
         const getThemes = async () => {
             try {
                 const response = await fetchThemes()
                 setThemes(response.themes)
+                setCounts(response.counts)
             } catch (err){
                 console.log(err)
             }
@@ -27,7 +31,7 @@ export function ThemesProvider({ children }:{ children: React.ReactNode }) {
     }, [])
 
     return (
-        <ThemesContext.Provider value={{themes, setThemes}}>
+        <ThemesContext.Provider value={{themes, setThemes, counts, setCounts}}>
             {children}
         </ThemesContext.Provider>
     )
