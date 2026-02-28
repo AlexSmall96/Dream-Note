@@ -1,6 +1,7 @@
-import { Dispatch, MouseEventHandler, SetStateAction, useState } from 'react'
+import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react'
 import { DreamFormType } from "@/types/dreams";
 import { ThemeBadge } from '@/components/ui/ThemeBadge';
+import { fetchThemeSuggestions } from '@/lib/api/themes';
 
 export default function DreamForm({ 
     dream, setDream, themes, setThemes, handleSubmit, msg, setMsg, handleGoBack, backText
@@ -17,6 +18,9 @@ export default function DreamForm({
 }){ 
 
     const [currentTheme, setCurrentTheme] = useState<string>('')
+    const [suggestions, setSuggestions] = useState<string[]>([])
+    const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
+
     const [visible, setVisible] = useState(false)
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMsg('')
@@ -28,6 +32,7 @@ export default function DreamForm({
     const handleChangeCurrentTheme = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value.trim()
         setCurrentTheme(value)
+        setShowSuggestions(!suggestions.includes(value) && value !== '' && suggestions.length > 0)
         setMsg('')
         setVisible(!themes.includes(value) && value !== '')
     }
@@ -41,6 +46,34 @@ export default function DreamForm({
 
     const removeTheme = (themeToRemove: string) => {
         setThemes(prev => prev.filter(theme => theme !== themeToRemove))
+    }
+
+    useEffect(() => {
+        
+        if (!currentTheme) {
+            setSuggestions([])
+            return
+        }
+
+        const timeout = setTimeout(async () => {
+            try {
+                const themeSuggestions =
+                await fetchThemeSuggestions(currentTheme)
+                const filtered = themeSuggestions.filter(
+                    sugg => !themes.includes(sugg)
+                )
+                setSuggestions(filtered)
+            } catch (err) {
+                setSuggestions([])
+            }
+        }, 250)
+
+        return () => clearTimeout(timeout)
+    }, [currentTheme, themes])
+
+    const handleClickSuggestion = (text: string) => {
+        setShowSuggestions(false)
+        setCurrentTheme(text)
     }
 
     // Dont allow date input to be in future
@@ -84,6 +117,15 @@ export default function DreamForm({
                 placeholder="Themes"
                 disabled={dream.description === ''}
             />
+            {showSuggestions && suggestions.map((sugg, index) => 
+                <p 
+                    className="text-xs text-gray-500" 
+                    onClick={() => handleClickSuggestion(sugg)} 
+                    key={index}
+                >
+                    {sugg}
+                </p>
+            )}
             {dream.description === '' && <p className="text-xs text-gray-500">
                 Description must be provided to add themes.
             </p>}
