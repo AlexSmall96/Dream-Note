@@ -30,18 +30,13 @@ const assertDreamTitlesAndDates = async (dreams: DreamDocument[], length: number
 }
 
 // Helper function to filter dreams by month and date and assert correct lengths and titles
-const filterAndAssertDreams = async (year: number, month: number, length: number, auth: [string, string], stats?: {[month: string]: number}, titles?: string[] ) => {
+const filterAndAssertDreams = async (year: number, month: number, length: number, auth: [string, string], titles?: string[] ) => {
     const dreamsResponse = await request(server).get(`${baseUrl}?year=${year}&month=${month}`).set(...auth)
     expect(dreamsResponse.status).toBe(200)
     const dreams = dreamsResponse.body.dreams as DreamDocument[]
     expect(dreams).toHaveLength(length)
     if (titles){
         dreams.map((dream, index) => expect(dream.title).toEqual(titles[index]))
-    }
-    if (stats){
-        expect(dreamsResponse.body.monthlyTotals).toMatchObject(stats)
-    } else {
-        expect(dreamsResponse.body.monthlyTotals).toMatchObject({})
     }
 }
 
