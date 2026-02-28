@@ -18,7 +18,7 @@ export class ThemeRouter {
 
     private initializeRoutes(){
         // Get all users themes
-        this.router.get('/', auth, this.themeController.getAllThemes)
+        this.router.get('/', auth, this.themeController.getAllThemesWithCounts)
         
         // Remove a theme
         this.router.delete(

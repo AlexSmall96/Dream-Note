@@ -14,7 +14,7 @@ export class ThemeController {
     ){
 
     }
-    public getAllThemes = async (req: Request, res: Response, next: NextFunction) => {
+    public getAllThemesWithCounts = async (req: Request, res: Response, next: NextFunction) => {
         const authReq = req as AuthenticatedRequest
         const userId = authReq.user._id.toString()
         try {
@@ -22,8 +22,8 @@ export class ThemeController {
             const limit = req.query.limit? Number(req.query.limit) : 100
             const skip = req.query.skip? Number(req.query.skip) : 0
             const sort = req.query.sort === 'theme' ? 'theme' : 'createdAt'
-            const themes = await this.themeService.getAllThemes(userId, limit, skip, sort)
-            res.json({themes})
+            const {themes, counts} = await this.themeService.getAllThemesWithCounts(userId, limit, skip, sort)
+            res.json({themes, counts})
         } catch (err){
             next(err)
         }
