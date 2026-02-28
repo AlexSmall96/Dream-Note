@@ -5,6 +5,7 @@ import { deleteDream } from "@/lib/api/dreams";
 import { useState } from "react";
 import DeleteDream from "@/components/dreams/DeleteDream";
 import { useDreams } from "@/contexts/DreamsContext";
+import { useThemes } from "@/contexts/ThemesContext";
 
 export default function DeleteDreamPage ({
   	params,
@@ -19,6 +20,8 @@ export default function DeleteDreamPage ({
     const [waiting, setWaiting] = useState<boolean>(false)
     const [backUrl, setBackUrl] = useState<string>(`/dreams/${id}/`)
     const { setDreams } = useDreams()
+    const { setRefetchThemes } = useThemes()
+
 
     const handleDelete = async () => {
         setWaiting(true)
@@ -34,6 +37,7 @@ export default function DeleteDreamPage ({
         }
         setVisible(false)
         setWaiting(false)
+		setRefetchThemes(prev => !prev)
     }
 
     return (
