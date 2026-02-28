@@ -5,6 +5,7 @@ import {
     DreamResponseType, 
     ErrorMsg, 
     DreamList, 
+    DreamStats
 } from "@/types/dreams";
 import { MONTH_OPTIONS, MonthLabel } from '@/lib/filters/dateRanges'
 
@@ -15,6 +16,10 @@ export async function logNewDream(body: DreamBodyType){
 export async function fetchDreams({year, month, sort = false}:{year: number, month: MonthLabel, sort: boolean}) {
     const monthNumber = MONTH_OPTIONS[month]
     return apiFetch<DreamList>(`/dreams?year=${year}&month=${monthNumber}&limit=${10}&sort=${sort}`)
+}
+
+export async function fetchDreamStats(year: number){
+    return apiFetch<DreamStats>(`/dreams/stats?year=${year}`)
 }
 
 export async function fetchSearchResults(search: string){
