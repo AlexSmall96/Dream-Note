@@ -1,6 +1,6 @@
-import { DreamOverview } from '@/types/dreams'
+import { DreamOverview, DreamStats } from '@/types/dreams'
 import { createContext, useState, useEffect, useContext} from 'react'
-import { fetchDreams, fetchSearchResults } from '@/lib/api/dreams'
+import { fetchDreams, fetchDreamStats, fetchSearchResults } from '@/lib/api/dreams'
 import { useThemesAside } from './ThemesAsideContext'
 import { setterFunction } from '@/types/setterFunctions'
 import { monthlyTotalType } from '@/types/dreams'
@@ -11,8 +11,8 @@ type DreamsContextType = {
     setDreams: setterFunction<DreamOverview[]>,
     searchResults: DreamOverview[],
     setRefetch: setterFunction<boolean>,
-    stats: monthlyTotalType
-    setStats: setterFunction<monthlyTotalType>
+    stats: DreamStats,
+    setStats: setterFunction<DreamStats>,
 }
 
 const DreamsContext = createContext<DreamsContextType | null>(null)
@@ -20,7 +20,7 @@ const DreamsContext = createContext<DreamsContextType | null>(null)
 export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     const [dreams, setDreams] = useState<DreamOverview[]>([])
     const [searchResults, setSearchResults] = useState<DreamOverview[]>([])
-    const [stats, setStats] = useState<monthlyTotalType>({})
+    const [stats, setStats] = useState<DreamStats>({monthlyTotals: {}, total: 0, thisMonthTotal: 0})
     const [refetch, setRefetch] = useState<boolean>(false)
     const { month, year, sort, search } = useThemesAside()
 
@@ -29,17 +29,26 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
             try {
                 const response = await fetchDreams({year, month, sort})
                 setDreams(response.dreams)
-                // setStats(response.monthlyTotals)
-                const monthlyCounts: {[month: string] : number} = {}
-                MONTH_KEYS.map(m => {
-                    monthlyCounts[m] = response.monthlyTotals[MONTH_OPTIONS[m]] ?? 0
-                })
-                setStats(monthlyCounts)
             } catch (err) {
                 console.log(err)
             }
         } 
+        
+        const getStats = async () => {
+            try {
+                const response = await fetchDreamStats(year)
+                const monthlyCounts: {[month: string] : number} = {}
+                MONTH_KEYS.map(m => {
+                    monthlyCounts[m] = response.monthlyTotals[MONTH_OPTIONS[m]] ?? 0
+                })
+                setStats({...response, monthlyTotals : monthlyCounts})
+            } catch (err){
+                console.log(err)
+
+            }
+        }
         getDreams()
+        getStats()
     }, [month, year, sort, refetch])  
 
     useEffect(() => {
