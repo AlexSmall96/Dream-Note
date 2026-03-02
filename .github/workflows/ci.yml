@@ -26,6 +26,21 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Set environment variables
+        run: |
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
+            echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
+            echo "SMTP_PASS=${{ secrets.SMTP_PASS }}" >> $GITHUB_ENV
+            echo "SMTP_MAIL=${{ secrets.SMTP_MAIL }}" >> $GITHUB_ENV
+            echo "SMTP_SERVICE=${{ secrets.SMTP_SERVICE }}" >> $GITHUB_ENV
+            echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_ENV
+            echo "MAIL_SLURP_API_KEY=${{ secrets.MAIL_SLURP_API_KEY }}" >> $GITHUB_ENV
+            echo "DEV=${{ secrets.DEV }}" >> $GITHUB_ENV
+            echo "GUEST_USER_ID=${{ secrets.GUEST_USER_ID }}" >> $GITHUB_ENV
+            echo "GUEST_USER_EMAIL=${{ secrets.GUEST_USER_EMAIL }}" >> $GITHUB_ENV
+            echo "RESET_TOKEN_SECRET=${{ secrets.RESET_TOKEN_SECRET }}" >> $GITHUB_ENV
+            
       - name: Run backend tests
         run: npm run test:backend
 
