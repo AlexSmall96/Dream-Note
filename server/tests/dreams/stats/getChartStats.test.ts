@@ -1,13 +1,12 @@
 import request from 'supertest';
 import { server } from '../../setup/testServer.js'
-import { beforeEach, expect, test } from 'vitest';
+import { beforeEach, expect, test, describe } from 'vitest';
 import { userOneCreds, userThreeCreds  } from '../../users/data.js';
 import { createUser, getAuthHeader } from '../../users/utils/userCreation.js'
 import { wipeDB } from '../../setup/wipeDB.js'
 import {baseUrl } from '../utils.js';
 import { Dream } from '../../../models/dream.model.js';
 import { Types } from 'mongoose';
-import { describe } from 'node:test';
 
 let userOneAuth: [string, string]
 let userOneId: Types.ObjectId
@@ -66,7 +65,7 @@ beforeEach(async () => {
 // Define url
 const url = baseUrl + '/chart-stats'
 
-type countsType = { month: number, label: string, year: number, count: number }
+type countsType = { month: number, label: string, year: number, dreams: number }
 
 const monthNames = [
     "Jan","Feb","Mar","Apr","May","Jun",
@@ -83,10 +82,10 @@ describe('Get dreams per month should return correct results when:', () => {
             expect(c.year).toBe(date.getFullYear())
             expect(c.label).toBe(monthNames[date.getMonth()])
             if (index === 3 || index === 5){
-                return expect(c.count).toBe(0)
+                return expect(c.dreams).toBe(0)
             }
             if (index === 4){
-                return expect(c.count).toBe(2)
+                return expect(c.dreams).toBe(2)
             }
         })
     })
