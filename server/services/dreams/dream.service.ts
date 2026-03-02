@@ -43,14 +43,14 @@ export class DreamService {
         const DEV = process.env.DEV
         if (DEV && params){
             const analysis = `Mock analysis response. Description: ${description.substring(0, 30)}...`
-            const toneSpec = ` Tone: ${params.tone ?? 'No tone provided.'}`
-            const styleSpec = ` Style: ${params.style ?? 'No style provided.'}`
-            const lengthSpec = ` Length ${params.length ?? 'No length provided.'}`
+            const toneSpec = ` Tone: ${params.tone ?? 'No tone provided'}.`
+            const styleSpec = ` Style: ${params.style ?? 'No style provided'}.`
+            const lengthSpec = ` Length: ${params.length ?? 'No length provided'}.`
             const fullAnalysis = analysis + toneSpec + styleSpec + lengthSpec
             return fullAnalysis
         }
         if (DEV){
-            return `Mock analysis response. Description: ${description}`
+            return `Mock analysis response. Description: ${description.substring(0, 30)}...`
         }
         const analysis = this.aiService.generateAnalysis(description, params)
         return analysis
@@ -78,9 +78,14 @@ export class DreamService {
         ] = await Promise.all([
             this.statsService.getMonthlyDreamStats(owner, year),
             this.statsService.getTotalNoDreams(owner),
-            this.statsService.getDreamsPastMonth(owner)
+            this.statsService.getDreamsPastMonth(owner),
         ])
-        return {monthlyTotals, total, thisMonthTotal}
+        return {monthlyTotals, total, thisMonthTotal, }
+    }
+
+    public async getChartStats(owner: string) {
+        const last6Months  = await this.statsService.normalizeMonthCount(owner)
+        return last6Months
     }
 
     public async getDreamAndThemes(dreamId:string){
