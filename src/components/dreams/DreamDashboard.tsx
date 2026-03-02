@@ -1,8 +1,16 @@
-export default function DreamDashboard ({total, totalPastMonth}:{total: number, totalPastMonth: number}) {
+import { useDreams } from "@/contexts/DreamsContext"
+import DreamsLineChart from "@/components/charts/DreamsLineChart"
+
+export default function DreamDashboard () {
+    const { stats } = useDreams()
+	const { total, thisMonthTotal } = stats
+
     return (
-        <>  <h1>Totals:</h1>
-            <h1>Last 4 weeks: {totalPastMonth}</h1> /
-            <h1>All time: {total}</h1>    
+        <>
+            <h1>Totals Dreams Recorded:</h1>
+            <p>All Time: {total}</p>
+            <p>Past 4 weeks: {thisMonthTotal}</p>
+            <DreamsLineChart />
         </>
     )
 }
