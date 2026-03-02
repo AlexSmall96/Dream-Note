@@ -14,6 +14,15 @@ jobs:
       matrix:
         node-version: [18.x]
 
+    services:
+      mongo:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -28,8 +37,6 @@ jobs:
 
       - name: Set environment variables
         run: |
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> $GITHUB_ENV
-            echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> $GITHUB_ENV
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
             echo "SMTP_PASS=${{ secrets.SMTP_PASS }}" >> $GITHUB_ENV
             echo "SMTP_MAIL=${{ secrets.SMTP_MAIL }}" >> $GITHUB_ENV
@@ -42,6 +49,9 @@ jobs:
             echo "RESET_TOKEN_SECRET=${{ secrets.RESET_TOKEN_SECRET }}" >> $GITHUB_ENV
            
       - name: Run backend tests
+        env:
+          DATABASE_URL: mongodb://root:example@localhost:27017
+          DATABASE_NAME: dream-note-test
         run: npm run test:backend
         
       - name: Set frontend env vars
