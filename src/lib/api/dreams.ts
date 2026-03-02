@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api/client";
-import { DreamFullView } from "@/types/dreams";
+import { ChartStats, DreamFullView } from "@/types/dreams";
 import { 
     DreamBodyType, 
     DreamResponseType, 
@@ -20,6 +20,10 @@ export async function fetchDreams({year, month, sort = false}:{year: number, mon
 
 export async function fetchDreamStats(year: number){
     return apiFetch<DreamStats>(`/dreams/stats?year=${year}`)
+}
+
+export async function fetchChartStats(){
+    return apiFetch<ChartStats>(`/dreams/chart-stats`)
 }
 
 export async function fetchSearchResults(search: string){
