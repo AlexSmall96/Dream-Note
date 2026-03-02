@@ -1,3 +1,4 @@
+import { MonthLabel } from "@/lib/filters/dateRanges";
 import { ThemeResponse } from "@/types/themes";
 
 // Date as string to be used in edit and create forms
@@ -27,6 +28,18 @@ export type DreamStats = {
     total: number,
     monthlyTotals: monthlyTotalType,
     thisMonthTotal: number
+}
+
+export type last6monthsDreams = {
+    month: number,
+    label: MonthLabel
+    year: number,
+    dreams: number
+}[]
+
+
+export type ChartStats = {
+    dreamCounts: last6monthsDreams
 }
 
 // Main dream view

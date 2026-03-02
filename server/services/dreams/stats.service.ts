@@ -47,7 +47,7 @@ export class StatsService {
         })
     }
 
-    public async getLast6MonthsCounts(owner: string):Promise<{_id: { year: number, month: number }, count: number}[]> {
+    public async getLast6MonthsCounts(owner: string):Promise<{_id: { year: number, month: number }, dreams: number}[]> {
         const now = new Date()
         const firstDayOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1)
         const startDate = new Date(firstDayOfThisMonth.getFullYear(), firstDayOfThisMonth.getMonth() - 6, 1)
@@ -66,7 +66,7 @@ export class StatsService {
                         year: { $year: "$date" },
                         month: { $month: "$date" }
                     },
-                    count: { $sum: 1 }
+                    dreams: { $sum: 1 }
                 }
             },
             {
@@ -97,7 +97,7 @@ export class StatsService {
             const monthNumber = date.getMonth() + 1
             const year = date.getFullYear()
             if (!results.find(value => value._id.month === monthNumber)){
-                results.push({_id: {month: monthNumber, year}, count: 0})
+                results.push({_id: {month: monthNumber, year}, dreams: 0})
             }
         }
 
@@ -110,7 +110,7 @@ export class StatsService {
 
         const formatted = results.map(result => {
             return {
-                month: result._id.month, label: monthNames[result._id.month-1], year: result._id.year, count: result.count
+                month: result._id.month, label: monthNames[result._id.month-1], year: result._id.year, dreams: result.dreams
             }
         })
         return formatted
