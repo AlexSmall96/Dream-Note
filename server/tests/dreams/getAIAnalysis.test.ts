@@ -29,16 +29,17 @@ test('Generate analysis fails if dream description is not provided.', async () =
     assertSingleError(response.body.errors, 'Description must be provided.', 'description')
 })
 
-test('Correct mock response is returned if dream description and tone and style parameters are provided.', async () => {
+test('Correct mock response is returned if dream description and tone, style and length parameters are provided.', async () => {
     // Mock response is returned based on tone and style parameters
     const response = await request(server).post(url).send({
         description: 'A dream description.',
         params: {
             tone: 'serious',
-            style: 'formal'            
+            style: 'formal',
+            length: 'brief'         
         }
     }).set(...userOneAuth).expect(200)
-    expect(response.body.analysis).toBe('Mock analysis response. Description: A dream description. Tone: serious. Style: formal.')
+    expect(response.body.analysis).toBe('Mock analysis response. Description: A dream description.... Tone: serious. Style: formal. Length: brief.')
 }) 
 
 test('Correct mock response is returned if dream description and only tone parameter is provided.', async () => {
@@ -49,7 +50,9 @@ test('Correct mock response is returned if dream description and only tone param
             tone: 'serious',         
         }
     }).set(...userOneAuth).expect(200)
-    expect(response.body.analysis).toBe('Mock analysis response. Description: A dream description. Tone: serious. Style: No style provided.')
+    expect(response.body.analysis).toBe(
+        'Mock analysis response. Description: A dream description.... Tone: serious. Style: No style provided. Length: No length provided.' 
+    )
 }) 
 
 test('Correct mock response is returned if dream description and only tone parameter is provided.', async () => {
@@ -60,7 +63,7 @@ test('Correct mock response is returned if dream description and only tone param
             style: 'formal',         
         }
     }).set(...userOneAuth).expect(200)
-    expect(response.body.analysis).toBe('Mock analysis response. Description: A dream description. Tone: No tone provided. Style: formal.')
+    expect(response.body.analysis).toBe('Mock analysis response. Description: A dream description.... Tone: No tone provided. Style: formal. Length: No length provided.')
 })  
 
 test('Correct mock response is returned if dream description and no ai parameters are provided.', async () => {
@@ -68,5 +71,5 @@ test('Correct mock response is returned if dream description and no ai parameter
     const response = await request(server).post(url).send({
         description: 'A dream description.',
     }).set(...userOneAuth).expect(200)
-    expect(response.body.analysis).toBe('Mock analysis response. Description: A dream description.')    
+    expect(response.body.analysis).toBe('Mock analysis response. Description: A dream description....')    
 })
