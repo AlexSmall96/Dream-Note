@@ -1,11 +1,11 @@
 import request from 'supertest';
-import { server } from '../setup/testServer.js'
+import { server } from '../../setup/testServer.js'
 import { beforeEach, expect, test } from 'vitest';
-import { userOneCreds, userThreeCreds  } from '../users/data.js';
-import { createUser, getAuthHeader } from '../users/utils/userCreation.js'
-import { wipeDB } from '../setup/wipeDB.js'
-import {baseUrl } from './utils.js';
-import { Dream } from '../../models/dream.model.js';
+import { userOneCreds, userThreeCreds  } from '../../users/data.js';
+import { createUser, getAuthHeader } from '../../users/utils/userCreation.js'
+import { wipeDB } from '../../setup/wipeDB.js'
+import {baseUrl } from '../utils.js';
+import { Dream } from '../../../models/dream.model.js';
 import { Types } from 'mongoose';
 
 let userOneAuth: [string, string]
@@ -84,4 +84,7 @@ test('Monthly totals should be correct for each month.', async () => {
 test('All time total should be correct.', async () => {
     const response = await request(server).get(`${url}`).set(...userOneAuth)
     expect(response.body.total).toBe(17)
+    console.log(response.body)
 })
+
+test('')
