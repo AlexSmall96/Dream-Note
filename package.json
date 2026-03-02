@@ -10,6 +10,7 @@
     "start:next": "next start",
     "start:server": "cross-env NODE_ENV=production node dist/server/server.js",
     "test": "vitest",
+    "test:backend": "vitest server --run",
     "test:watch": "vitest --watch",
     "coverage": "vitest run --coverage"
   },
