@@ -70,6 +70,13 @@ export class DreamRouter {
             this.dreamController.getDreamStats
         )
 
+        // Get stats for landing page rolling 6 month charts
+        this.router.get(
+            '/chart-stats',
+            auth,
+            this.dreamController.getChartStats
+        )
+
         // View a single dream
         this.router.get(
             '/view/:id',

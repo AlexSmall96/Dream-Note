@@ -94,6 +94,17 @@ export class DreamController {
         }
     }
 
+    public getChartStats = async (req: Request, res: Response, next: NextFunction) => {
+        const authReq = req as AuthenticatedRequest
+        const userId = authReq.user._id.toString() 
+        try {
+            const dreamCounts = await this.dreamService.getChartStats(userId)   
+            res.json({ dreamCounts })    
+        } catch (err){
+            next(err)
+        }
+    }
+
     public viewDream = async (req: Request, res: Response, next: NextFunction) => {
         const dreamId = req.params.id
         try {
