@@ -23,3 +23,12 @@ export type ThemeListWithCounts = {
     themes: ThemeWithDreamDataResponse[]
     counts: ThemeCounts
 }
+
+export type ThemeMonthCount = {
+    [key: string]: string | number
+}
+
+export type ThemeChartData = {
+    themes: string[]
+    data: ThemeMonthCount[]
+}
