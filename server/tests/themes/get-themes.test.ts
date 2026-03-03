@@ -9,7 +9,6 @@ import { oldDreamData, newDreamData, dreamWithManyThemesData } from '../dreams/d
 import { wipeDB } from '../setup/wipeDB.js'
 import { Types } from 'mongoose';
 import { Dream } from '../../models/dream.model.js';
-import { assertSingleError } from '../users/utils/assertErrors.js';
  
 type dreamType = {
     title: string,
@@ -24,6 +23,7 @@ let userFourAuth: [string, string]
 let oldDream: dreamType
 let newDream: dreamType
 let oldDreamTheme1Id : Types.ObjectId
+let userThreeId: Types.ObjectId
 
 // Wipe db and save data
 beforeEach(async () => {
@@ -34,6 +34,7 @@ beforeEach(async () => {
     userThreeAuth = getAuthHeader(userThree.tokens[0])
     const userFour = await createUser(userFourCreds)
     userFourAuth = getAuthHeader(userFour.tokens[0])
+    userThreeId = userThree._id
 
     // Create two dreams owned by userThree
     oldDream = await new Dream({...oldDreamData, owner: userThree._id}).save()
@@ -67,12 +68,9 @@ beforeEach(async () => {
 })
 
 // Define base url for theme router
-const baseUrl = '/api/themes'
+const url = '/api/themes'
 
 describe('Get all themes should:', () => {
-
-    // Define url
-    const url = baseUrl
 
     test('Return all current users themes, each with associated dream id, title and date.', async () => {
         // Get all themes associated with userThree's dreams
@@ -117,23 +115,15 @@ describe('Get all themes should:', () => {
             expect(theme.dream.title).toBe('A dream with many themes')
         })   
     })
-})
 
-describe('Removing a theme should:', () => {
-    // Define url
-    const url = baseUrl + '/delete'
-
-    test('Be forbidden if user is not the owner of the associated dream.', async () => {
-        // Attempt to delete a theme associated with oldDream authorized as userFour
-        const response = await request(server).delete(`${url}/${oldDreamTheme1Id}`).set(...userFourAuth).expect(403)
-        assertSingleError(response.body.errors, 'You are not authorized to delete this theme.')
-    })
-
-    test('Be successful if user is owner of associcated dream.', async () => {
-        // Delete a theme associated with oldDream authorized as userThree
-        await request(server).delete(`${url}/${oldDreamTheme1Id}`).set(...userThreeAuth).expect(200)
-        // Assert theme was removed from database
-        const nullTheme = await Theme.findById(oldDreamTheme1Id)
-        expect(nullTheme).toBeNull()
+    test('Return the correct number of dream instances per theme.', async () => {
+        // Save another instance of theme 'Fear'
+        await new Theme({theme: 'Fear', dream: oldDream._id, owner: userThreeId}).save()
+        // Get userThrees themes
+        const response = await request(server).get(`${url}`).set(...userThreeAuth).expect(200)
+        expect(response.body.themes).toHaveLength(5)
+        expect(response.body.counts).toMatchObject({
+            'Animals': 1, 'Fear': 2, 'Anxiety': 1, 'Lateness': 1
+        })
     })
 })

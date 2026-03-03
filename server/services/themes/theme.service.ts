@@ -1,11 +1,11 @@
 import { injectable, inject } from "inversify";
 import { Theme } from "../../models/theme.model.js";
-import { CountsService } from "./counts.service.js";
+import { ThemeStatsService } from './stats.service.js'
 
 @injectable()
 export class ThemeService {
     constructor(
-        @inject(CountsService) private countsService: CountsService
+        @inject(ThemeStatsService) private statsService: ThemeStatsService
     ){}
 
 
@@ -14,9 +14,15 @@ export class ThemeService {
             path: "dream",
             select: "_id title date"
         }).sort(sort === 'theme' ? {'theme': 1}: {'createdAt': -1}).skip(skip).limit(limit)
-        const counts = await this.countsService.getThemeCounts(userId)
+        const counts = await this.statsService.getThemeCounts(userId)
         return {themes, counts}
     }
+
+    public async getThemeChartStats(userId:string){
+        const topThemesMonthly = await this.statsService.normalizeTopThemesMonthly(userId)
+        return topThemesMonthly
+    }
+
 
     public async getThemeSuggestions(userId: string, search: RegExp) {
         const themes = await Theme.distinct("theme", {

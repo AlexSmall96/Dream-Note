@@ -18,11 +18,11 @@ export async function fetchDreams({year, month, sort = false}:{year: number, mon
     return apiFetch<DreamList>(`/dreams?year=${year}&month=${monthNumber}&limit=${10}&sort=${sort}`)
 }
 
-export async function fetchDreamStats(year: number){
+export async function fetchDreamCounts(year: number){
     return apiFetch<DreamStats>(`/dreams/stats?year=${year}`)
 }
 
-export async function fetchChartStats(){
+export async function fetchDreamChartStats(){
     return apiFetch<ChartStats>(`/dreams/chart-stats`)
 }
 

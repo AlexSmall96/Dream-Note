@@ -1,11 +1,10 @@
 import { injectable } from "inversify";
-import { getStartAndEndDates, getYearRange } from "../utils/dateRange.js";
+import { getYearRange } from "../utils/dateRange.js";
 import { Types } from "mongoose";
 import { Dream } from "../../models/dream.model.js";
-import { Theme } from "../../models/theme.model.js";
 
 @injectable()
-export class StatsService {
+export class DreamStatsService {
 
     public async getMonthlyDreamStats(
         owner: string,
