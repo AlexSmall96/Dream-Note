@@ -1,15 +1,15 @@
 import { DreamOverview, DreamStats } from '@/types/dreams'
 import { createContext, useState, useEffect, useContext} from 'react'
-import { fetchDreams, fetchDreamStats, fetchSearchResults } from '@/lib/api/dreams'
+import { fetchDreams, fetchDreamCounts, fetchSearchResults } from '@/lib/api/dreams'
 import { useThemesAside } from './ThemesAsideContext'
 import { setterFunction } from '@/types/setterFunctions'
-import { monthlyTotalType } from '@/types/dreams'
 import { MONTH_KEYS, MONTH_OPTIONS } from '@/lib/filters/dateRanges'
 
 type DreamsContextType = {
     dreams: DreamOverview[],
     setDreams: setterFunction<DreamOverview[]>,
     searchResults: DreamOverview[],
+    refetch: boolean,
     setRefetch: setterFunction<boolean>,
     stats: DreamStats,
     setStats: setterFunction<DreamStats>,
@@ -34,9 +34,9 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
             }
         } 
         
-        const getStats = async () => {
+        const getCounts = async () => {
             try {
-                const response = await fetchDreamStats(year)
+                const response = await fetchDreamCounts(year)
                 const monthlyCounts: {[month: string] : number} = {}
                 MONTH_KEYS.map(m => {
                     monthlyCounts[m] = response.monthlyTotals[MONTH_OPTIONS[m]] ?? 0
@@ -48,7 +48,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
             }
         }
         getDreams()
-        getStats()
+        getCounts()
     }, [month, year, sort, refetch])  
 
     useEffect(() => {
@@ -70,7 +70,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     }, [search])
 
     return (
-        <DreamsContext.Provider value={{dreams, setDreams, searchResults, setRefetch, stats, setStats}}>
+        <DreamsContext.Provider value={{dreams, setDreams, searchResults, refetch, setRefetch, stats, setStats}}>
             {children}
         </DreamsContext.Provider>
     )
