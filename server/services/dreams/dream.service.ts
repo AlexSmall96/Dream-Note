@@ -3,7 +3,7 @@ import { ThemeService } from "../themes/theme.service.js";
 import { Dream } from "../../models/dream.model.js";
 import { DreamInterface, Tone, Style, Length } from "../../interfaces/dream.interfaces.js";
 import { AIService } from "./ai.service.js";
-import { StatsService} from "./stats.service.js";
+import { DreamStatsService } from "./stats.service.js";
 import { AppError } from "../../utils/appError.js";
 import { Types } from "mongoose";
 
@@ -19,7 +19,7 @@ export class DreamService {
     constructor(
         @inject(ThemeService) private themeService: ThemeService,
         @inject(AIService) private aiService: AIService,
-        @inject(StatsService) private statsService: StatsService
+        @inject(DreamStatsService) private statsService: DreamStatsService
     ){}
 
     // Save dream used by logNewDream

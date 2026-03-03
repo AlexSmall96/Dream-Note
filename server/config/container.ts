@@ -15,8 +15,8 @@ import { AccountController } from "../controllers/account.controller.js";
 import { OtpService } from "../services/users/otp.service.js";
 import { ResetTokenService } from "../services/users/reset-token.service.js";
 import { AIService } from "../services/dreams/ai.service.js";
-import { StatsService } from "../services/dreams/stats.service.js";
-import { CountsService } from "../services/themes/counts.service.js";
+import { DreamStatsService } from "../services/dreams/stats.service.js";
+import { ThemeStatsService } from "../services/themes/stats.service.js";
 
 export const container: Container = new Container();
 
@@ -40,14 +40,15 @@ container.bind(DreamController).toSelf().inTransientScope()
 container.bind(DreamRouter).toSelf().inTransientScope()
 container.bind(DreamService).toSelf().inTransientScope()
 
-// Dream AI and stats, theme counts (services only)
+// Dream AI and stats (services only)
 container.bind(AIService).toSelf().inTransientScope()
-container.bind(StatsService).toSelf().inTransientScope()
-container.bind(CountsService).toSelf().inTransientScope()
+container.bind(DreamStatsService).toSelf().inTransientScope()
 
 // Themes
 container.bind(ThemeController).toSelf().inTransientScope()
 container.bind(ThemeRouter).toSelf().inTransientScope()
 container.bind(ThemeService).toSelf().inTransientScope()
+container.bind(ThemeStatsService).toSelf().inTransientScope()
+
 
 
