@@ -29,6 +29,17 @@ export class ThemeController {
         }
     }
 
+    public getThemeChartStats = async (req: Request, res: Response, next: NextFunction) => {
+        const authReq = req as AuthenticatedRequest
+        const userId = authReq.user._id.toString() 
+        try {
+            const topThemesMonthly = await this.themeService.getThemeChartStats(userId)
+            res.json(topThemesMonthly)
+        } catch (err){
+            next(err)
+        }       
+    }
+
     public getThemeSuggestions = async (req: Request, res: Response, next: NextFunction) => {
         const authReq = req as AuthenticatedRequest
         const userId = authReq.user._id.toString() 

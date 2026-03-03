@@ -20,8 +20,12 @@ export class ThemeRouter {
         // Get all users themes
         this.router.get('/', auth, this.themeController.getAllThemesWithCounts)
         
+        // Get suggestions for dream create and edit forms
         this.router.get('/suggestions', auth, this.themeController.getThemeSuggestions)
         
+        // Get chart stats for home page
+        this.router.get('/chart-stats', auth, this.themeController.getThemeChartStats)
+
         // Remove a theme
         this.router.delete(
             '/delete/:id',  
