@@ -1,9 +1,9 @@
-
 export type TooltipPayloadItem = {
     name: string
     value: number
-    color: string
+    color?: string
 }
+
 
 type CustomTooltipProps = {
     active?: boolean
@@ -21,10 +21,10 @@ export default function CustomTooltip({
     }
 
     return (
-        <div role='img' aria-label="custom-tooltip" style={{ background: 'white', padding: 10, border: '1px solid #ccc' }}>
+        <div role='tooltip' aria-label="custom-tooltip" style={{ background: 'white', padding: 10, border: '1px solid #ccc' }}>
             <p aria-label={label}><strong>{label}</strong></p>
             {payload.map((entry) => (
-                <p key={entry.name} style={{ color: entry.color }} aria-label={entry.name}>
+                <p key={entry.name} style={{ color: entry.color ?? "#100879" }} aria-label={entry.name}>
                     {entry.name}: {entry.value}
                 </p>
             ))}
