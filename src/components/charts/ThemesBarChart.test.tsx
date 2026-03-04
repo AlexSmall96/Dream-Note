@@ -38,17 +38,21 @@ import { themeStatsUrl } from '@/tests/mocks/handlers';
 
 setupTests()
 
-beforeEach(() => {
+const renderComponent = () => {
     render(
         <ThemeChartProvider>
             <ThemesBarChart />
         </ThemeChartProvider>
     )
+}
+
+beforeEach(() => {
+    renderComponent()
 })
 
-describe('When non empty, valid data is fetched, ThemeBarChart should:', () => {
+describe('When there is data to display, ThemeBarChart should:', () => {
 
-    test('Render correctly.', async () => {
+    test('Appear correctly.', async () => {
         const chart = await screen.findByRole('img', {name: /themes-chart/})
         expect(chart).toBeInTheDocument()
     })
@@ -64,7 +68,7 @@ describe('When non empty, valid data is fetched, ThemeBarChart should:', () => {
         expect(bars).toHaveLength(5)
     })
 
-    test('Render the bars with correct theme names.', async () => {
+    test('Display the bars with correct theme names.', async () => {
         for (const theme of themes) {
             await screen.findByRole('img', {
                 name: `bar-${theme}`,
@@ -84,11 +88,7 @@ describe('When there is no data to display, ThemeBarChart should:', () => {
             }, {status: 200})
         })
         server.resetHandlers(handler)
-        render(
-            <ThemeChartProvider>
-                <ThemesBarChart />
-            </ThemeChartProvider>
-        )
+        renderComponent()
         // Use waitFor to avoid false positive test - component renders after test
         const chart = await waitFor(() => screen.queryByRole('img', {name: /themes-chart/}))
         expect(chart).not.toBeInTheDocument()
