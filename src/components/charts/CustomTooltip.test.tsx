@@ -2,8 +2,8 @@
  * @vitest-environment jsdom
  */
 import '@testing-library/jest-dom/vitest';
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
-import { test, expect, vi, beforeEach, describe} from 'vitest';
+import { cleanup, render, screen } from '@testing-library/react';
+import { test, expect, beforeEach, describe} from 'vitest';
 import setupTests from '@/tests/utils/setupServer';
 import CustomTooltip, { TooltipPayloadItem } from './CustomTooltip';
 import { themes } from '@/tests/mocks/data';
@@ -31,12 +31,12 @@ beforeEach(() => {
     )
 })
 
-describe('If all props are passed in, CustomToolTip should:', () => {
-    test('Render correctly.', () => {
-        const tooltip = screen.getByRole('img', {name: /custom-tooltip/})
+describe('If it is active and there is theme data to display, CustomToolTip should:', () => {
+    test('Appear correctly.', () => {
+        const tooltip = screen.getByRole('tooltip', {name: /custom-tooltip/})
         expect(tooltip).toBeInTheDocument()
     })
-    test('Render each theme with correct value.', () => {
+    test('Show each theme with correct value.', () => {
         themes.forEach((theme, index) => {
             const regEx = new RegExp(theme)
             const themePar = screen.getByRole('paragraph', {name: regEx})
@@ -50,13 +50,25 @@ describe('If all props are passed in, CustomToolTip should:', () => {
     })
 })
 
+describe('If it is active and there is dream data to display, CustomToolTip should:', () => {
+    test('Show the correct dream count.', () => {
+        cleanup()
+        render(
+            <CustomTooltip active payload={[{name: 'dreams', value: 2}]} label='Jan' />
+        )
+        const dreamsPar = screen.getByRole('paragraph', {name: /dreams/})
+        expect(dreamsPar).toHaveTextContent('dreams: 2')
+
+    })
+})
+
 describe('CustomTooltip should not appear if:', () => {
     test('It is inactive.', () => {
         cleanup()
         render(
             <CustomTooltip  payload={payload} label='Jan' />
         )
-        const tooltip = screen.queryByRole('img', {name: /custom-tooltip/})
+        const tooltip = screen.queryByRole('tooltip', {name: /custom-tooltip/})
         expect(tooltip).not.toBeInTheDocument()        
     })
     test('There is no data to display.', () => {
@@ -64,7 +76,7 @@ describe('CustomTooltip should not appear if:', () => {
         render(
             <CustomTooltip active label='Jan' />
         )
-        const tooltip = screen.queryByRole('img', {name: /custom-tooltip/})
+        const tooltip = screen.queryByRole('tooltip', {name: /custom-tooltip/})
         expect(tooltip).not.toBeInTheDocument()          
     })
     test('The data array is empty.', () => {
@@ -72,7 +84,7 @@ describe('CustomTooltip should not appear if:', () => {
         render(
             <CustomTooltip active payload={[]} label='Jan' />
         )
-        const tooltip = screen.queryByRole('img', {name: /custom-tooltip/})
+        const tooltip = screen.queryByRole('tooltip', {name: /custom-tooltip/})
         expect(tooltip).not.toBeInTheDocument()          
     })
 })
