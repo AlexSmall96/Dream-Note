@@ -1,5 +1,5 @@
 
-type TooltipPayloadItem = {
+export type TooltipPayloadItem = {
     name: string
     value: number
     color: string
@@ -21,12 +21,12 @@ export default function CustomTooltip({
     }
 
     return (
-        <div data-testid="custom-tooltip" style={{ background: 'white', padding: 10, border: '1px solid #ccc' }}>
-            <p><strong>{label}</strong></p>
+        <div role='img' aria-label="custom-tooltip" style={{ background: 'white', padding: 10, border: '1px solid #ccc' }}>
+            <p aria-label={label}><strong>{label}</strong></p>
             {payload.map((entry) => (
-            <p key={entry.name} style={{ color: entry.color }}>
-                {entry.name}: {entry.value}
-            </p>
+                <p key={entry.name} style={{ color: entry.color }} aria-label={entry.name}>
+                    {entry.name}: {entry.value}
+                </p>
             ))}
         </div>
     )
