@@ -11,6 +11,8 @@
     "start:server": "cross-env NODE_ENV=production node dist/server/server.js",
     "test": "vitest",
     "test:backend": "vitest server --run",
+    "test:frontend": "vitest src --run",
+    "test:frontend:watch": "vitest src --watch ",
     "test:watch": "vitest --watch",
     "coverage": "vitest run --coverage"
   },
@@ -44,8 +46,10 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/dotenv": "^8.2.3",
@@ -53,14 +57,17 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.14.10",
     "@types/nodemailer": "^7.0.4",
-    "@types/react": "^18.2.20",
-    "@types/react-dom": "^18.2.7",
+    "@types/react": "^18.3.28",
+    "@types/react-dom": "^18.3.7",
     "@types/supertest": "^6.0.3",
     "@vitest/coverage-v8": "^2.1.9",
     "autoprefixer": "^10.4.22",
+    "baseline-browser-mapping": "^2.10.0",
     "cross-env": "^10.1.0",
     "jest-environment-jsdom": "^30.2.0",
+    "jsdom": "^28.1.0",
     "mailslurp-client": "^16.0.0",
+    "msw": "^2.12.10",
     "nodemon": "^3.1.9",
     "postcss": "^8.5.6",
     "supertest": "^7.1.4",
@@ -68,6 +75,12 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
     "typescript": "^5.7.3",
+    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^2.1.1"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }
