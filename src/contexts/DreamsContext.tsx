@@ -1,9 +1,8 @@
 import { DreamOverview, DreamStats } from '@/types/dreams'
 import { createContext, useState, useEffect, useContext} from 'react'
-import { fetchDreams, fetchDreamCounts, fetchSearchResults } from '@/lib/api/dreams'
+import { fetchDreams, fetchSearchResults } from '@/lib/api/dreams'
 import { useThemesAside } from './ThemesAsideContext'
 import { setterFunction } from '@/types/setterFunctions'
-import { MONTH_KEYS, MONTH_OPTIONS } from '@/lib/filters/dateRanges'
 
 type DreamsContextType = {
     dreams: DreamOverview[],
@@ -11,8 +10,6 @@ type DreamsContextType = {
     searchResults: DreamOverview[],
     refetch: boolean,
     setRefetch: setterFunction<boolean>,
-    stats: DreamStats,
-    setStats: setterFunction<DreamStats>,
 }
 
 const DreamsContext = createContext<DreamsContextType | null>(null)
@@ -20,7 +17,6 @@ const DreamsContext = createContext<DreamsContextType | null>(null)
 export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     const [dreams, setDreams] = useState<DreamOverview[]>([])
     const [searchResults, setSearchResults] = useState<DreamOverview[]>([])
-    const [stats, setStats] = useState<DreamStats>({monthlyTotals: {}, total: 0, thisMonthTotal: 0})
     const [refetch, setRefetch] = useState<boolean>(false)
     const { month, year, sort, search } = useThemesAside()
 
@@ -33,22 +29,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
                 console.log(err)
             }
         } 
-        
-        const getCounts = async () => {
-            try {
-                const response = await fetchDreamCounts(year)
-                const monthlyCounts: {[month: string] : number} = {}
-                MONTH_KEYS.map(m => {
-                    monthlyCounts[m] = response.monthlyTotals[MONTH_OPTIONS[m]] ?? 0
-                })
-                setStats({...response, monthlyTotals : monthlyCounts})
-            } catch (err){
-                console.log(err)
-
-            }
-        }
         getDreams()
-        getCounts()
     }, [month, year, sort, refetch])  
 
     useEffect(() => {
@@ -70,7 +51,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     }, [search])
 
     return (
-        <DreamsContext.Provider value={{dreams, setDreams, searchResults, refetch, setRefetch, stats, setStats}}>
+        <DreamsContext.Provider value={{dreams, setDreams, searchResults, refetch, setRefetch}}>
             {children}
         </DreamsContext.Provider>
     )
