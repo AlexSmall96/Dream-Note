@@ -56,6 +56,9 @@ jobs:
         
       - name: Set frontend env vars
         run: echo "NEXT_PUBLIC_API_URL=http://localhost:3000/api" >> $GITHUB_ENV
-          
+        
+      - name: Run frontend tests
+        run: npm run test:frontend
+
       - name: Build
         run: npm run build
