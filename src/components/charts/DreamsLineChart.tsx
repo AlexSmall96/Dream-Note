@@ -1,9 +1,9 @@
-import { useStats } from "@/contexts/StatsContext"
+import { useDreamChart } from "@/contexts/DreamChartContext"
 import { LineChart, Tooltip, XAxis, CartesianGrid, Line } from "recharts"
 
 export default function DreamsLineChart () {
 
-    const {dreamCounts} = useStats()
+    const { dreamCounts } = useDreamChart()
 
     return (
         <LineChart width={400} height={400} data={dreamCounts} margin={{ top: 20, right: 20, bottom: 40, left: 20 }}>
