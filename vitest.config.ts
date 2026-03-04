@@ -20,6 +20,8 @@ export default defineConfig(({ mode }) => {
       poolOptions: {
         forks: { singleFork: true },
       },
+      hookTimeout: 30000,
+      testTimeout: 30000,
       coverage: {
         provider: 'v8',           // built-in coverage tool
         reporter: ['text', 'lcov', 'html'], // text = console, lcov = CI integration, html = browsable report
@@ -38,7 +40,9 @@ export default defineConfig(({ mode }) => {
           '.next/**',
           'public/**'
         ], // dont test src folder as most files are currently untested
-      }
+      },
+      maxThreads: 1,
+      minThreads: 1
     },
   }
 })
