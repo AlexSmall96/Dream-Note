@@ -73,8 +73,8 @@ describe('When non empty, valid data is fetched, ThemeBarChart should:', () => {
     })
 })
 
-describe('When top themes or monthly counts is empty, ThemeBarChart should:', () => {
-    test('Render null.', async () => {
+describe('When there is no data to display, ThemeBarChart should:', () => {
+    test('Not appear.', async () => {
         // Remove chart from previous render
         cleanup()
         // Update get theme stats handler to return empty data
