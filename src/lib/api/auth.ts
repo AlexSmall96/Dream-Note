@@ -2,7 +2,7 @@ import { apiFetch } from "@/lib/api/client";
 import {userError, authInput, user, logoutSuccess, currentUser} from "@/types/users"
 
 export async function signup(data: authInput) {
-    return apiFetch<user | userError, authInput>('/users/signup', {method: 'POST', body: data})
+    return apiFetch<{user: user, message: string} | userError, authInput>('/users/signup', {method: 'POST', body: data})
 }
 
 export async function login(data: authInput){

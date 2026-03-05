@@ -13,12 +13,22 @@ export class EmailService {
         }
     }); 
 
-    public sendMailWithData(purpose: purposeType, email: string, OTP: string, expiresIn: number, expiresInUnit: 'minutes' | 'hours' = 'minutes') {
+    public sendMailWithData(purpose: purposeType, email: string, OTP: string, expiresIn: number, expiresInUnit: 'minutes' | 'hours' = 'minutes', onSignup: boolean = false) {
+        
+        const forEmailVer = purpose === 'email-verification'
+
+        const onSignupText = 'Thank you for signing up to Dream Note.'
+        const generalText = `Your one time passcode (OTP) is ${OTP}. This will expire in ${expiresIn} ${expiresInUnit}.`
+        const emailVerText = 'Please visit the account page and enter this passcode to verify your email address.'
+
+        const text = (onSignup? onSignupText + '\n' : '') + (generalText) + (forEmailVer ? '\n' + emailVerText : '')
+        const subject = `Your Dream Note OTP for ${purpose}.`
+
         return this.transporter.sendMail({
             from: process.env.SMTP_MAIL,
             to: email,
-            subject: `Your Dream Note OTP for ${purpose}.`,
-            text: `Your one time passcode (OTP) is ${OTP}. This will expire in ${expiresIn} ${expiresInUnit}.`            
+            subject,
+            text           
         })
     }
 }

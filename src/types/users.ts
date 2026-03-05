@@ -1,6 +1,7 @@
 export type user = {
     id: string,
-    email: string
+    email: string,
+    isVerified: boolean
 }
 
 export type currentUser = {

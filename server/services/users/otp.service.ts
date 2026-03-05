@@ -33,19 +33,24 @@ export class OtpService {
             // Don't throw error if no user found for password reset to prevent email enumeration
             return null
         }
-
         const otp = generateOtp()
         // If purpose is password reset, existingUser must exist at this point due to early return
         // If purpose is email-update, incomingUserId must exist at this point due to throw error
         const userId = purpose === "password-reset" ? existingUser!._id.toString() : incomingUserId
+
+        // Remove all current users OTPs with same purpose
+        await Otp.deleteMany({
+            userId, email, purpose
+        })
+
         const expiresAt = new Date(Date.now() + expiresIn) 
-            await Otp.create({
-                userId,
-                email,
-                otp,
-                purpose,
-                expiresAt,
-            })
+        await Otp.create({
+            userId,
+            email,
+            otp,
+            purpose,
+            expiresAt,
+        })
         return otp
     }
 
@@ -61,7 +66,7 @@ export class OtpService {
             expiresAt: { $gt: new Date() }
         }
         const otpRecord = await Otp.findOne(criteria) 
-        
+
         if (!otpRecord){
             return null
         }
@@ -95,9 +100,9 @@ export class OtpService {
         })
         return otp
     }
-    
+
     public async deleteOtp(otpId: string){
         await Otp.findByIdAndDelete(otpId)
     }
-
+    
 }
