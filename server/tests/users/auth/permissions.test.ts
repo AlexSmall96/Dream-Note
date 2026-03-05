@@ -17,6 +17,7 @@ beforeEach(async () => {
     await wipeDB()
     userOne = await createUser(userOneCreds)
     userOneAuth = getAuthHeader(userOne.tokens[0])
+    vi.clearAllMocks() // Reset number of send mail calls
 })
 
 // Mock nodemailer with vi 
@@ -87,33 +88,41 @@ describe('If valid data is provided: ', () => {
         expect(savedUser).not.toBeNull()
         expect(savedUser.isVerified).toBe(false)
     })
-    test.only('Verification email should be sent to supplied email address.', async () => {
+    test('Verification email should be sent to supplied email address.', async () => {
         // Assert to otp is not saved in db yet
         const nullOtp = await Otp.find()
         expect(nullOtp).toHaveLength(0) 
         const sendMailMock = nodemailer.createTransport().sendMail;
         
         // Post correct data
+        const newEmail = 'user2@email.com'
         const response = await request(server).post(signupUrl).send({
-            email: 'user2@email.com',
+            email: newEmail ,
             password: 'apple123'
         }).expect(201)      
 
         // Assert email has correct data
         expect(response.body.message).toBe('Signup succesful. Please check your emails for verification instructions.')
         expect(sendMailMock).toHaveBeenCalledTimes(1)
+
+        const thankYouText = 'Thank you for signing up to Dream Note.\n'
+        const otpText = 'Your one time passcode (OTP) is 123456. This will expire in 24 hours.\n'
+        const instructionsText = 'Please visit the account page and enter this passcode to verify your email address.'
+        const text = thankYouText + otpText + instructionsText
+        const subject = 'Your Dream Note OTP for email-verification.'
+
         expect(sendMailMock).toHaveBeenCalledWith({
             from: process.env.SMTP_MAIL,
-            to: 'user2@email.com',
-            subject: `Your Dream Note OTP for email-verification.`,
-            text: `Thank you for signing up to Dream Note. Your one time passcode (OTP) is 123456. This will expire in 24 hours.`            
+            to: newEmail,
+            subject,
+            text          
         }) 
 
-        const user = await User.findByEmailOrThrowError('user2@email.com')
+        const user = await User.findByEmailOrThrowError(newEmail)
         // Otp should now be saved in db
         const otpRecords = await Otp.find({
             userId: user._id,
-            email: 'user2@email.com',
+            email: newEmail,
             purpose: 'email-verification',
             used: false
         })

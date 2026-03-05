@@ -78,11 +78,17 @@ describe('Requesting email verification should succeed if:', () => {
         const response = await request(server).post(url).set(...userOneAuth).expect(200)
         expect(response.body.message).toBe("A OTP (one time passcode) has been sent to your email address.")
         expect(sendMailMock).toHaveBeenCalledTimes(1)
+
+        const otpText = 'Your one time passcode (OTP) is 123456. This will expire in 24 hours.\n'
+        const instructionsText = 'Please visit the account page and enter this passcode to verify your email address.'
+        const text = otpText + instructionsText
+        const subject = 'Your Dream Note OTP for email-verification.'
+
         expect(sendMailMock).toHaveBeenCalledWith({
             from: process.env.SMTP_MAIL,
             to: userOneCreds.email,
-            subject: `Your Dream Note OTP for email-verification.`,
-            text: `Your one time passcode (OTP) is 123456. This will expire in 24 hours.`            
+            subject,
+            text           
         }) 
         
         // Otp should now be saved in db
