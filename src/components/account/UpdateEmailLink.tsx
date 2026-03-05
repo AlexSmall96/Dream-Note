@@ -15,7 +15,9 @@ export default function UpdateEmailLink () {
                 Email: {isVerified ? 
                     <span className="text-xs text-gray-500">
                         Verified <FontAwesomeIcon icon={check} className='text-green-500' />
-                    </span>:''
+                    </span>
+                :
+                    <span className="text-xs text-gray-500">Not verified </span>
                 }</label>
             <p></p>
             <p></p>
