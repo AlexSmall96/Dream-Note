@@ -7,6 +7,7 @@ import { userOneCreds } from '../data.js';
 import { assertSingleError } from '../utils/assertErrors.js';
 import { getSentOtp, mailOptionsType } from '../utils/getSentOtp.js';
 import { User } from '../../../models/user.model.js';
+import bcrypt from "bcrypt";
 
 let userOneAuth: [string, string]
 let userOneId: string
@@ -41,6 +42,7 @@ vi.mock("nodemailer", () => {
 // Import server after mock
 import { server } from '../../setup/testServer.js'
 import { patchDataWithAuth } from '../utils/sendData.js';
+import { Otp } from '../../../models/OTP.model.js';
 
 const url = baseUrl + '/request-email-verification'
 
@@ -72,4 +74,30 @@ test('Authenticated user can request email verification and verify email using r
     // Asser that user can delete account
     const deleteUrl = baseUrl + '/delete'
     await request(server).delete(deleteUrl).set(...userOneAuth).expect(200)
+})
+
+test('Requesting verification again before using an otp should delete old otp.', async () => {
+    // Request email verification
+    await request(server).post(url).set(...userOneAuth).expect(200)
+    // Extract mail options
+    const otpOne = getSentOtp(sentMail)  
+    
+    // Make request again
+    await request(server).post(url).set(...userOneAuth).expect(200)
+    const otpTwo = getSentOtp(sentMail)  
+
+    // otpOne should be deleted
+    const verifyUrl = baseUrl + '/verify-email'
+    const errResponse = await request(server).patch(verifyUrl).set(...userOneAuth).send({otp: otpOne}).expect(400)
+    assertSingleError(errResponse.body.errors, 'Invalid or expired OTP.', 'otp')
+
+    const otpRecords = await Otp.find({userId: userOneId})
+    expect(otpRecords).toHaveLength(1)
+    const hashedOtp = otpRecords[0].otp
+    const isMatch = await bcrypt.compare(otpTwo, hashedOtp) // Only otp left associated with userOne is otpTwo
+    expect(isMatch).toBe(true)
+
+    // otpTwo should be valid
+    const response = await request(server).patch(verifyUrl).set(...userOneAuth).send({otp: otpTwo}).expect(200)
+    expect(response.body.message).toBe("Email verified successfully.")
 })
