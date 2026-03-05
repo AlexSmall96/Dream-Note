@@ -54,12 +54,11 @@ export class AuthController {
 
     public getCurrAuth = async (req: Request, res: Response, next: NextFunction) => {
         const authReq = req as AuthenticatedRequest
+        const user = authReq.user
+        const { _id, email, isVerified } = user
         try {
             res.json({
-                user: {
-                    _id: authReq.user._id,
-                    email: authReq.user.email
-                }, 
+                user: { _id, email, isVerified }, 
                 isGuest: authReq.isGuest
             })
         } catch (err){
