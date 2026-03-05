@@ -3,9 +3,11 @@ import PasswordForm from "@/components/account/PasswordForm";
 import UpdateEmailLink from "@/components/account/UpdateEmailLink";
 import VerifyEmail from "@/components/account/VerifyEmail";
 import { useCurrentUser } from "@/contexts/CurrentUserContext";
+import { useState } from "react";
 
 export default function Account(){
-    const { isGuest, currentUser } = useCurrentUser()
+    const { isGuest, currentUser, setCurrentUser } = useCurrentUser()
+    const [verifiedMsg, setVerifiedMsg] = useState<string | null>(null)
 
     if (!currentUser) return null
 
@@ -18,9 +20,9 @@ export default function Account(){
             <>
                 <UpdateEmailLink email={email} />
                 {isVerified ?  
-                    <PasswordForm />
+                    <PasswordForm verifiedMsg={verifiedMsg} />
                 :
-                    <VerifyEmail />
+                    <VerifyEmail  setVerifiedMsg={setVerifiedMsg} setCurrentUser={setCurrentUser}/>
                 }
             </>
             : 

@@ -2,9 +2,8 @@
 import { useCurrentUser } from "@/contexts/CurrentUserContext"
 import { updatePassword } from "@/lib/api/account"
 import { useEffect, useState } from "react"
-import UpdateEmailLink from "./UpdateEmailLink"
 
-export default function PasswordForm(){
+export default function PasswordForm({verifiedMsg}:{verifiedMsg: string | null}){
     const {currentUser} = useCurrentUser()
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
@@ -70,6 +69,7 @@ export default function PasswordForm(){
     return (
         currentUser ? 
             <form className="flex flex-col gap-2 w-80" onSubmit={handlePasswordSubmit}>  
+                {verifiedMsg ?? ''}
                 <label htmlFor="email" className='m-2'>Password:</label>
                 <input 
                     type='password'
