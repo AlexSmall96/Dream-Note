@@ -4,7 +4,7 @@ export default function UpdateEmailLink ({email}:{email:string}) {
     const router = useRouter()
     
     return (
-        <>
+        <form className="flex flex-col gap-2 w-80">
             <label htmlFor="email" className='m-2'>Email:</label>
             <input
                 type='text'
@@ -14,6 +14,6 @@ export default function UpdateEmailLink ({email}:{email:string}) {
                 className='p-2 bg-gray-100'
             />
             <button type='button' onClick={() => router.replace('/account/update/email')} className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 m-2'>Update Email</button>
-        </>
+        </form>
     )
 }

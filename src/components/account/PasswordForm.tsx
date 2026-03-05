@@ -70,7 +70,7 @@ export default function PasswordForm(){
     return (
         currentUser ? 
             <form className="flex flex-col gap-2 w-80" onSubmit={handlePasswordSubmit}>  
-                <UpdateEmailLink email={currentUser.email} />
+                <label htmlFor="email" className='m-2'>Password:</label>
                 <input 
                     type='password'
                     name='password0'
