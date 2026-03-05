@@ -1,18 +1,24 @@
-import { injectable } from "inversify";
+import { injectable, inject} from "inversify";
 import { Dream } from "../../models/dream.model.js";
 import { Theme } from "../../models/theme.model.js";
 import { User } from "../../models/user.model.js";
 import { UserInterface, UserDocument } from "../../interfaces/user.interfaces.js";
 import { guestData } from '../../seed-data/guestSeedData.js'
+import { AccountService } from "./account.service.js";
 
 @injectable()
 export class AuthService {
+
+    constructor(
+        @inject(AccountService) private accountService: AccountService,
+    ){}
 
     // Sign up
     public async signUp(data: UserInterface){
         const user = new User(data);
         await user.save();
-        return {email: user.email, id: user._id}
+        await this.accountService.requestEmailVerification(data.email, user._id.toString(), true)
+        return {email: user.email, id: user._id, message: 'Signup succesful. Please check your emails for verification instructions.'}
     }
 
     // Login

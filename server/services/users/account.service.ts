@@ -24,7 +24,6 @@ export class AccountService {
         @inject(OtpService) private otpService: OtpService,
         @inject(ResetTokenService) private resetTokenService: ResetTokenService,
         @inject(EmailService) private emailService: EmailService,
-
     ){}
 
     public async findUserById(userId: string){
@@ -53,7 +52,7 @@ export class AccountService {
         }
     }
 
-    public async requestEmailVerification(email: string, userId: string){
+    public async requestEmailVerification(email: string, userId: string, onSignup: boolean = false){
         const user = await User.findByIdOrThrowError(userId)
         if (user.isVerified){
             throw new AppError('Email address is already verified.', 400, 'email')
@@ -61,7 +60,7 @@ export class AccountService {
         const ONE_DAY = 24 * 60 * 60 * 1000
         const otp = await this.otpService.generateOTP(email, 'email-verification', userId, ONE_DAY)
         if (otp){
-            await this.emailService.sendMailWithData('email-verification', email, otp, 24, 'hours')
+            await this.emailService.sendMailWithData('email-verification', email, otp, 24, 'hours', onSignup)
         }
     }
 

@@ -1,11 +1,13 @@
 import request from 'supertest';
-import { server } from '../../setup/testServer.js';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { User } from '../../../models/user.model.js';
 import { assertErrors, assertSingleError } from '../utils/assertErrors.js'
 import { createUser, userType, getAuthHeader } from '../utils/userCreation.js';
 import { baseUrl, userOneCreds } from '../data.js';
 import { wipeDB } from '../../setup/wipeDB.js';
+import * as otpUtils from "../../../services/utils/otp.js";
+import nodemailer from 'nodemailer';
+import bcrypt from "bcrypt";
 
 let userOne: userType
 let userOneAuth: [string, string]
@@ -17,13 +19,30 @@ beforeEach(async () => {
     userOneAuth = getAuthHeader(userOne.tokens[0])
 })
 
+// Mock nodemailer with vi 
+vi.mock("nodemailer", () => {
+    // Mock sendMail function which is called by emailService
+    const sendMail = vi.fn().mockResolvedValue(true);
+    return {
+        default: {
+            createTransport: vi.fn(() => ({sendMail}))
+        }
+    }
+})
+
+// Mock generated OTP to assert correct email body
+vi.spyOn(otpUtils, "generateOtp").mockReturnValue('123456');
+
+import { server } from '../../setup/testServer.js';
+import { Otp } from '../../../models/OTP.model.js';
+
 // Define url
 const signupUrl = baseUrl + '/signup'
 
 // Signup tests
-describe('SIGNUP FAILURE', () => {
+describe('Signup should fail if:', () => {
 
-    test('Signup should fail with taken email address or password too short.', async () => {
+    test('Email address is taken or password is too short.', async () => {
         // Post should fail
         const response = await request(server).post(signupUrl).send({
             email: 'user1@email.com',
@@ -37,7 +56,7 @@ describe('SIGNUP FAILURE', () => {
         }])
     })
 
-    test('Signup should fail with invalid email address or password containing "password".', async () => {
+    test('Email address is invalid or password contains "password".', async () => {
         const response = await request(server).post(signupUrl).send({
             email: 'user1',
             password: 'password'
@@ -51,8 +70,8 @@ describe('SIGNUP FAILURE', () => {
     })
 })
 
-describe('SIGNUP SUCCESS', () => {
-    test('Signup should succeed with valid data.', async() => {
+describe('If valid data is provided: ', () => {
+    test('Signup should be successful.', async() => {
         // Assert db contains no user with email user2@email.com
         let user = await User.findOne({email: 'user2@email.com'})
         expect(user).toBeNull()
@@ -68,14 +87,49 @@ describe('SIGNUP SUCCESS', () => {
         expect(savedUser).not.toBeNull()
         expect(savedUser.isVerified).toBe(false)
     })
+    test.only('Verification email should be sent to supplied email address.', async () => {
+        // Assert to otp is not saved in db yet
+        const nullOtp = await Otp.find()
+        expect(nullOtp).toHaveLength(0) 
+        const sendMailMock = nodemailer.createTransport().sendMail;
+        
+        // Post correct data
+        const response = await request(server).post(signupUrl).send({
+            email: 'user2@email.com',
+            password: 'apple123'
+        }).expect(201)      
+
+        // Assert email has correct data
+        expect(response.body.message).toBe('Signup succesful. Please check your emails for verification instructions.')
+        expect(sendMailMock).toHaveBeenCalledTimes(1)
+        expect(sendMailMock).toHaveBeenCalledWith({
+            from: process.env.SMTP_MAIL,
+            to: 'user2@email.com',
+            subject: `Your Dream Note OTP for email-verification.`,
+            text: `Thank you for signing up to Dream Note. Your one time passcode (OTP) is 123456. This will expire in 24 hours.`            
+        }) 
+
+        const user = await User.findByEmailOrThrowError('user2@email.com')
+        // Otp should now be saved in db
+        const otpRecords = await Otp.find({
+            userId: user._id,
+            email: 'user2@email.com',
+            purpose: 'email-verification',
+            used: false
+        })
+        expect(otpRecords).toHaveLength(1)
+        const hashedOtp = otpRecords[0].otp
+        const isMatch = await bcrypt.compare('123456', hashedOtp)
+        expect(isMatch).toBe(true)
+    })
 })
 
 // Define url
 const loginUrl = baseUrl + '/login'
 
 // Auth tests: Login, Logout and auth/me
-describe('LOGIN FAILURE', () => {
-    test('Login should fail with incorrect email address.', async () => {
+describe('Login should fail if:', () => {
+    test('Email address is incorrect.', async () => {
         // Post unused email address
         const response = await request(server).post(loginUrl).send({
             email: 'notauser@email.com',
@@ -85,7 +139,7 @@ describe('LOGIN FAILURE', () => {
         assertSingleError(response.body.errors, 'No account found associated with provided email address.', 'email')
     })
 
-    test('Login should fail with incorrect password.', async () => {
+    test('Password is incorrect.', async () => {
         // Post correct email address with incorrect password
         const response = await request(server).post(loginUrl).send({
             email: 'user1@email.com',
@@ -96,8 +150,8 @@ describe('LOGIN FAILURE', () => {
     })
 })
 
-describe('LOGOUT FAILURE', () => {
-    test('Logout should fail when not authenticated.', async () => {
+describe('Logout should fail if:', () => {
+    test('User is not authenticated.', async () => {
         // No token
         const responseNoToken = await request(server).post(`${baseUrl}/logout`).expect(401)
         assertErrors(responseNoToken.body.errors, [{param: 'token', msg: 'Please provide json web token to authenticate.'}])
@@ -107,8 +161,8 @@ describe('LOGOUT FAILURE', () => {
     })
 })
 
-describe('GET AUTHENTICATED USER', () => {
-    test('Get currently authenticated user returns correct data.', async () => {
+describe('Get currently authenticated user should:', () => {
+    test('Return correct data.', async () => {
         const response = await request(server).get(`${baseUrl}/auth/me`).set(...userOneAuth).expect(200)
         expect(response.body.user._id).toBe(userOne._id.toString())
         expect(response.body.user.email).toBe(userOne.email)

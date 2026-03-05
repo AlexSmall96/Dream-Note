@@ -13,12 +13,12 @@ export class EmailService {
         }
     }); 
 
-    public sendMailWithData(purpose: purposeType, email: string, OTP: string, expiresIn: number, expiresInUnit: 'minutes' | 'hours' = 'minutes') {
+    public sendMailWithData(purpose: purposeType, email: string, OTP: string, expiresIn: number, expiresInUnit: 'minutes' | 'hours' = 'minutes', onSignup: boolean = false) {
         return this.transporter.sendMail({
             from: process.env.SMTP_MAIL,
             to: email,
             subject: `Your Dream Note OTP for ${purpose}.`,
-            text: `Your one time passcode (OTP) is ${OTP}. This will expire in ${expiresIn} ${expiresInUnit}.`            
+            text: `${onSignup? 'Thank you for signing up to Dream Note. ': ''}Your one time passcode (OTP) is ${OTP}. This will expire in ${expiresIn} ${expiresInUnit}.`            
         })
     }
 }
