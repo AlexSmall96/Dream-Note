@@ -5,7 +5,9 @@ import mongoose from 'mongoose'
 import { connectToDB } from '../server/utils/connectToDB.js'
 
 beforeAll(async () => {
-    await connectToDB(true)
+    if (process.env.DATABASE_URL){
+        await connectToDB(true)
+    }
 })
 
 
