@@ -22,6 +22,10 @@ export async function verifyResetOTP(data: {otp: string, email: string}) {
     return apiFetch<accountError | resetTokenRes, verifyResetOTPInput>('/users/verify-reset-otp', {method: 'POST', body: data})
 }
 
+export async function requestEmailVerification(){
+    return apiFetch<accountErrorArray | accountMessage, {email: string}>('/users/request-email-verification', {method: 'POST'})
+}
+
 // Reset password while logged out using token
 // Return type may be array or object due to use of mongoose internal validator
 export async function resetPassword(password: string, resetToken: string){
