@@ -8,6 +8,7 @@ export default function SignupForm() {
     const router = useRouter();
     const [formData, setFormData] = useState({email: '', password1: '', password2: ''});
     const [errors, setErrors] = useState({password: '', email: ''});
+    const [msg, setMsg] = useState("Already have an account?")
 
     const getError = (array: {value: string, msg: string, param: string}[], param: string) => {
         const errorObj = array.filter((
@@ -23,6 +24,7 @@ export default function SignupForm() {
         const {name, value} = e.target
         setFormData({...formData, [name]: value})
         setErrors({password: '', email: ''}) // Clear error messages
+        setMsg("Already have an account?") // Set message to original
     }
 
     async function handleSubmit(e: React.FormEvent) {
@@ -38,7 +40,7 @@ export default function SignupForm() {
             
             return setErrors({email: emailError, password: pwdError})
         }   
-        router.push("/auth/login");
+        setMsg(result.message)
   }
 
   return (
@@ -66,6 +68,8 @@ export default function SignupForm() {
         />
         {errors.password?? ''}
       <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold'>Sign up</button>
+      {msg ?? ''}
+      <button type="button" onClick={() => router.replace('/auth/login')} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Login</button>
     </form>
   );
 }
