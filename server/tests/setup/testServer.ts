@@ -15,8 +15,4 @@ addRoutes(server)
 
 server.use(errorHandler)
 
-// Connect to test database
-connectToDB(true);
-
-
 export { server }

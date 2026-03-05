@@ -1,9 +1,11 @@
 'use client';
 import { DreamsProvider } from '@/contexts/DreamsContext';
-import { StatsProvider } from '@/contexts/StatsContext';
+import { DreamChartProvider } from '@/contexts/DreamChartContext';
 import { ThemesAsideProvider } from '@/contexts/ThemesAsideContext';
 import { ThemesProvider } from '@/contexts/ThemesContext';
+import { ThemeChartProvider } from '@/contexts/ThemeChartContext'
 import React from 'react';
+import { DreamCountsProvider } from '@/contexts/DreamCountsContext';
 
 export default function DreamsLayout({
 	children,
@@ -17,14 +19,18 @@ export default function DreamsLayout({
 			<div className="flex h-screen">
 				<ThemesAsideProvider>
 					<DreamsProvider>
-						<StatsProvider>
-							<aside>
-								{aside}
-							</aside>
-							<main className="flex-1 p-6">
-								{children}
-							</main>
-						</StatsProvider>
+						<DreamCountsProvider>
+						<ThemeChartProvider>
+							<DreamChartProvider>
+								<aside>
+									{aside}
+								</aside>
+								<main className="flex-1 p-6">
+									{children}
+								</main>
+							</DreamChartProvider>
+						</ThemeChartProvider>
+						</DreamCountsProvider>
 					</DreamsProvider>
 				</ThemesAsideProvider>
 			</div>

@@ -1,9 +1,9 @@
-import { useDreams } from "@/contexts/DreamsContext"
 import DreamsLineChart from "@/components/charts/DreamsLineChart"
 import ThemesBarChart from "../charts/ThemesBarChart"
+import { useDreamCounts } from "@/contexts/DreamCountsContext"
 
 export default function DreamDashboard () {
-    const { stats } = useDreams()
+    const { stats } = useDreamCounts()
 	const { total, thisMonthTotal } = stats
 
     return (

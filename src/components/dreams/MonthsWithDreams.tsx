@@ -3,12 +3,12 @@
 import { useThemesAside } from "@/contexts/ThemesAsideContext"
 import { MONTH_KEYS, MonthLabel } from "@/lib/filters/dateRanges"
 import DreamsList from "./DreamsList"
-import { useDreams } from "@/contexts/DreamsContext"
+import { useDreamCounts } from "@/contexts/DreamCountsContext"
 
 export default function MonthsWithDreams(){
 
     const { month, setMonth, year, setYear, showDreams, setShowDreams, sort, setSort } = useThemesAside()
-    const { stats } = useDreams()
+    const { stats } = useDreamCounts()
     const monthlyTotals = stats.monthlyTotals
     const now = new Date()
     const currentYear = now.getFullYear()
