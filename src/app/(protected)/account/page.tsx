@@ -3,26 +3,22 @@ import PasswordForm from "@/components/account/PasswordForm";
 import UpdateEmailLink from "@/components/account/UpdateEmailLink";
 import VerifyEmail from "@/components/account/VerifyEmail";
 import { useCurrentUser } from "@/contexts/CurrentUserContext";
-import { useState } from "react";
 
 export default function Account(){
-    const { isGuest, currentUser, setCurrentUser } = useCurrentUser()
-    const [verifiedMsg, setVerifiedMsg] = useState<string | null>(null)
+    const { isGuest, currentUser } = useCurrentUser()
 
-    if (!currentUser) return null
-
-    const {email, isVerified} = currentUser
+    const isVerified = currentUser?.isVerified
 
     return (
         <div className="flex flex-col items-center">
             <h1 className="text-l font-bold m-4">Account</h1>
             {!isGuest ?
             <>
-                <UpdateEmailLink email={email} />
+                <UpdateEmailLink />
                 {isVerified ?  
-                    <PasswordForm verifiedMsg={verifiedMsg} />
+                    <PasswordForm />
                 :
-                    <VerifyEmail  setVerifiedMsg={setVerifiedMsg} setCurrentUser={setCurrentUser}/>
+                    <VerifyEmail />
                 }
             </>
             : 

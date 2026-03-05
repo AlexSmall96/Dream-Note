@@ -1,18 +1,12 @@
+import { useCurrentUser } from "@/contexts/CurrentUserContext"
 import { requestEmailVerification, verifyEmail } from "@/lib/api/account"
-import { setterFunction } from "@/types/setterFunctions"
-import { user } from "@/types/users"
 import { useState } from "react"
 
-export default function VerifyEmail({
-    setVerifiedMsg, 
-    setCurrentUser
-}:{
-    setVerifiedMsg: setterFunction<string | null>
-    setCurrentUser: setterFunction<user | null>
-}){
+export default function VerifyEmail(){
 
     const [errors, setErrors] = useState<{email: string, otp: string}>({email: '', otp: ''})
     const [otp, setOtp] = useState('')
+    const {setCurrentUser} = useCurrentUser()
 
     const handleResend = async () => {
         try {
@@ -37,7 +31,6 @@ export default function VerifyEmail({
             if ('errors' in result){
                 setErrors({...errors, otp:result.errors[0].msg})
             } else {
-                setVerifiedMsg(result.message)
                 setCurrentUser(prev => {
                     if (!prev) return prev;
                     return { ...prev, isVerified: true };
