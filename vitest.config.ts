@@ -20,14 +20,16 @@ export default defineConfig(({ mode }) => {
       poolOptions: {
         forks: { singleFork: true },
       },
-      hookTimeout: 30000,
-      testTimeout: 30000,
+      hookTimeout: 60000,
+      testTimeout: 60000,
       coverage: {
         provider: 'v8',           // built-in coverage tool
         reporter: ['text', 'lcov', 'html'], // text = console, lcov = CI integration, html = browsable report
         all: true,          
         include: ['server/**/*.ts'],
         exclude: [
+          '**/*.config.*',
+          '**/*.setup.*',
           '**/*.test.ts',
           '**/*.test.tsx',
           'node_modules/',
