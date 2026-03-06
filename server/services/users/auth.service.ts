@@ -18,7 +18,7 @@ export class AuthService {
         const user = new User(data);
         await user.save();
         await this.accountService.requestEmailVerification(data.email, user._id.toString(), true)
-        return {email: user.email, id: user._id, message: 'Signup succesful. Please check your emails for verification instructions.'}
+        return {user, message: 'Signup succesful. Please check your emails for verification instructions.'}
     }
 
     // Login
