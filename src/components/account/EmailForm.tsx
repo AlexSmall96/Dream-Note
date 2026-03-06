@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { accountError, accountMessage, resetTokenRes, accountErrorArray } from '@/types/accounts';
+import { accountMessage, resetTokenRes, accountErrorArray } from '@/types/accounts';
 import { useRouter } from "next/navigation"
 import SubmitButton from '../ui/SubmitButton';
 
@@ -9,8 +9,8 @@ export default function EmailForm<TVerifyPayload>({
     verifyFn,
     buildVerifyPayload
 }:{
-    requestFn: (email:string) => Promise<accountError | accountErrorArray | accountMessage>
-    verifyFn: (data: TVerifyPayload) => Promise<accountError | accountErrorArray | accountMessage | resetTokenRes> 
+    requestFn: (email:string) => Promise<accountErrorArray | accountMessage>
+    verifyFn: (data: TVerifyPayload) => Promise<accountErrorArray | accountMessage | resetTokenRes> 
     buildVerifyPayload: (otp:string, email:string) => TVerifyPayload
 }){
     const [email, setEmail] = useState('');
@@ -25,10 +25,7 @@ export default function EmailForm<TVerifyPayload>({
     const handleSendOtp = async (event: React.FormEvent) => {
         event.preventDefault()
         try {
-            const result = await requestFn(email)
-            if ('error' in result){
-                return setError(result.error)
-            } 
+            const result = await requestFn(email) 
             if ('errors' in result){
                 return setError(result.errors[0].msg)
             }
@@ -48,9 +45,6 @@ export default function EmailForm<TVerifyPayload>({
         }
         try {
             const result = await verifyFn(buildVerifyPayload(otp, email))
-            if ('error' in result){
-                return setError(result.error)
-            }
             if ('errors' in result){
                 return setError(result.errors[0].msg)
             }

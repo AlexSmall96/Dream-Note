@@ -1,75 +1,125 @@
 "use client";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { signup } from "@/lib/api/auth";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { parseErrors } from "@/lib/utils/parseErrors";
+import SubmitButton from '@/components/ui/SubmitButton';
 
 export default function SignupForm() {
-    const router = useRouter();
-    const [formData, setFormData] = useState({email: '', password1: '', password2: ''});
-    const [errors, setErrors] = useState({password: '', email: ''});
-    const [msg, setMsg] = useState("Already have an account?")
 
-    const getError = (array: {value: string, msg: string, param: string}[], param: string) => {
-        const errorObj = array.filter((
-            err: {value: string, msg: string, param: string}
-        ) => {
-            return err.param === param
-        })
-        
-        return errorObj[0]?.msg ?? ''
+    type ErrorType = {
+        email: string | null,
+        password1: string | null,
+        general: string | null
     }
+
+
+    const [formData, setFormData] = useState({email: '', password1: '', password2: ''});
+    const [errors, setErrors] = useState<ErrorType>({password1: null, email: null, general: null});
+    const defautltMsg = 'Already have an account?'
+    const [msg, setMsg] = useState(defautltMsg)
+    const [disabled, setDisabled] = useState(false)
+    const [waiting, setWaiting] = useState(false)
+    const [success, setSuccess] = useState(false)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (waiting) return
+        setSuccess(false)
         const {name, value} = e.target
         setFormData({...formData, [name]: value})
-        setErrors({password: '', email: ''}) // Clear error messages
-        setMsg("Already have an account?") // Set message to original
+        // Clear error for changed input
+        if (name === 'password2'){
+            // Remove password error if either password input is changed
+            setErrors(prevErrors => ({ ...prevErrors, password1: null, general: null }))
+        } else {
+            setErrors(prevErrors => ({ ...prevErrors, [name]: null, general: null }))
+        }
+        setMsg(defautltMsg) // Set message to default
     }
 
+    useEffect(() => {
+        const errorExists = errors.email || errors.password1 || errors.general || false
+        const {email, password1, password2} = formData
+        const emptyInput = email === '' || password1 === '' || password2 === ''
+        if (waiting || emptyInput || success || errorExists){
+            setDisabled(true)
+        } else {
+            setDisabled(false)
+        }
+    }, [waiting, success, errors, formData])
+
+    
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         const {email, password1, password2} = formData
         if (password1 !== password2){
-            return setErrors({password: 'Password and confirm password must match.', email: errors.email})
+            return setErrors({...errors, password1: 'Password and confirm password must match.'})
         } 
-        const result = await signup({ email, password: password1 });
-        if ('errors' in result){
-            const emailError = getError(result.errors, 'email')
-            const pwdError = getError(result.errors, 'password')
-            
-            return setErrors({email: emailError, password: pwdError})
-        }   
-        setMsg(result.message)
-  }
+        try {
+            setWaiting(true)
+            const result = await signup({ email, password: password1 });
+            if ('errors' in result){
+                const emailError = parseErrors(result.errors, 'email')
+                const pwdError = parseErrors(result.errors, 'password')
+                setErrors({...errors, email: emailError, password1: pwdError})
+                
+            } else {
+                setMsg(result.message)
+                setSuccess(true)
+            }
+            setWaiting(false)
+        } catch (err){
+            setErrors({general: 'Currently unable to signup due to system issues.', email: null, password1: null})
+        }
+    }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
-        <input
-            value={formData.email}
-            onChange={handleChange}
-            name="email"
-            placeholder="Email"
-        />
-        {errors.email?? ''}
-        <input
-            type="password"
-            value={formData.password1}
-            onChange={handleChange}
-            name="password1"
-            placeholder="Password"
-        />
-        <input
-            type="password"
-            value={formData.password2}
-            onChange={handleChange}
-            name="password2"
-            placeholder="Confirm Password"
-        />
-        {errors.password?? ''}
-      <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold'>Sign up</button>
-      {msg ?? ''}
-      <button type="button" onClick={() => router.replace('/auth/login')} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Login</button>
-    </form>
-  );
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
+            <input
+                value={formData.email}
+                onChange={handleChange}
+                name="email"
+                placeholder="Email"
+                disabled={waiting}
+                className='rounded-sm'
+                aria-label="email"
+            />
+            {errors.email && <p role='alert'>{errors.email}</p>}
+            <input
+                type="password"
+                value={formData.password1}
+                onChange={handleChange}
+                name="password1"
+                placeholder="Password"
+                disabled={waiting}
+                className='rounded-sm'
+                aria-label="password"
+            />
+            <input
+                type="password"
+                value={formData.password2}
+                onChange={handleChange}
+                name="password2"
+                placeholder="Confirm Password"
+                disabled={waiting}
+                className='rounded-sm'
+                aria-label="confirm password"
+            />
+
+            {errors.password1 && <p role='alert'>{errors.password1}</p>}
+
+            <SubmitButton disabled={disabled} text={waiting? 'Signing up...' : 'Sign up'}/>
+
+            {errors.general && <p role='alert'>{errors.general}</p>} 
+
+            <div className="text-center">
+                <span className="text-gray-500">{msg} </span>
+                <Link 
+                    href={`/auth/${waiting? 'signup' : 'login'}`}
+                    className={waiting? 'text-gray-500 pointer-events-none' :"hover:underline text-blue-500"}>
+                    Login
+                </Link>
+            </div>
+        </form>
+    )
 }

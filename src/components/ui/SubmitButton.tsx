@@ -10,7 +10,7 @@ export default function ({
     return (
         <button 
             type='submit' 
-            className={`${colorClass} text-white font-bold p-2 m-2`} disabled={disabled}
+            className={`rounded-sm ${colorClass} text-white font-bold`} disabled={disabled}
         >
                 {text}
         </button>
