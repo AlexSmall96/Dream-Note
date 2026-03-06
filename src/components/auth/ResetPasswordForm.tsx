@@ -3,6 +3,7 @@ import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 import SubmitButton from "../ui/SubmitButton"
 import { resetPassword } from '@/lib/api/account'
+import { useRouter } from "next/navigation";
 
 export default function ResetPasswordForm () {
 
@@ -14,6 +15,7 @@ export default function ResetPasswordForm () {
     const [message, setMessage] = useState('')
     const searchParams = useSearchParams()
     const token = searchParams.get('token')
+    const router = useRouter();
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData({
@@ -42,9 +44,6 @@ export default function ResetPasswordForm () {
         }
         try {
             const result = await resetPassword(formData.password1, token)
-            if ('error' in result){
-                return setError(result.error)
-            }
             if ('errors' in result){
                 return setError(result.errors[0].msg)
             }
@@ -73,6 +72,9 @@ export default function ResetPasswordForm () {
             {error ?? ''}
             {message ?? ''}
             <SubmitButton text={'Change password'} disabled={disabled} />
+            {message?
+                <button type="button" onClick={() => router.replace('/auth/login')} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Login</button>
+            :''}
         </form>
     )
 }
