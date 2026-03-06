@@ -10,12 +10,11 @@ export default defineConfig(({ mode }) => {
     define: { 'process.env': env },
     test: {
       environment: 'node', // default for backend
-      include: ['server/**/*.test.ts', 'src/**/*.test.{ts,tsx}'],
+      include: ['server/**/*.test.ts'],
       environmentMatchGlobs: [
-        ['src/**', 'jsdom'],     // frontend = jsdom
         ['server/**', 'node'],   // backend = node
       ],
-      setupFiles: ['./test/setupEnv.ts'],
+      setupFiles: ['./test/setupEnv.ts', './test/setupBackend.ts'],
       pool: 'forks',
       poolOptions: {
         forks: { singleFork: true },
@@ -41,7 +40,7 @@ export default defineConfig(({ mode }) => {
           'src/**',
           '.next/**',
           'public/**'
-        ], // dont test src folder as most files are currently untested
+        ],
       },
       maxThreads: 1,
       minThreads: 1

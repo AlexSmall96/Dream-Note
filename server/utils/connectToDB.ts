@@ -12,7 +12,9 @@ export async function connectToDB(test: boolean) {
             dbName: process.env.DATABASE_NAME,
         }
         );
-        console.log("Connnected To MongoDB", test? 'test database': '');
+        if (!test){
+            console.log("Connnected To MongoDB");
+        }
     } catch (error) {
         console.error(error);
         process.exit(1);
