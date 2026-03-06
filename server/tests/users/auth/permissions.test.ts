@@ -74,15 +74,19 @@ describe('Signup should fail if:', () => {
 describe('If valid data is provided: ', () => {
     test('Signup should be successful.', async() => {
         // Assert db contains no user with email user2@email.com
-        let user = await User.findOne({email: 'user2@email.com'})
+        const email = 'user2@email.com'
+        let user = await User.findOne({email})
         expect(user).toBeNull()
         // Post correct data
         const response = await request(server).post(signupUrl).send({
-            email: 'user2@email.com',
+            email,
             password: 'apple123'
         }).expect(201)
         // Response contains correct details - contains email and not password
-        expect(response.body).not.toHaveProperty('password')
+        expect(response.body.user).not.toHaveProperty('password')
+        expect(response.body.user).toMatchObject({
+            email, isVerified: false
+        })
         // Assert the database was changed
         const savedUser = await User.findByEmailOrThrowError('user2@email.com')
         expect(savedUser).not.toBeNull()
