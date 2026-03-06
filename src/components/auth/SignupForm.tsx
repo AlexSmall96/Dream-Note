@@ -3,6 +3,7 @@ import { useState } from "react";
 import { signup } from "@/lib/api/auth";
 import Link from "next/link";
 import { parseErrors } from "@/lib/utils/parseErrors";
+import SubmitButton from '@/components/ui/SubmitButton';
 
 export default function SignupForm() {
 
@@ -50,6 +51,7 @@ export default function SignupForm() {
                 name="email"
                 placeholder="Email"
                 disabled={waiting}
+                className='rounded-sm'
             />
             {errors.email?? ''}
             <input
@@ -59,6 +61,7 @@ export default function SignupForm() {
                 name="password1"
                 placeholder="Password"
                 disabled={waiting}
+                className='rounded-sm'
             />
             <input
                 type="password"
@@ -67,15 +70,10 @@ export default function SignupForm() {
                 name="password2"
                 placeholder="Confirm Password"
                 disabled={waiting}
+                className='rounded-sm'
             />
             {errors.password?? ''}
-            <button 
-                type="submit" 
-                disabled={waiting} 
-                className={`${waiting? 'bg-blue-300': 'bg-blue-500'} hover:bg-blue-700 text-white font-bold`}
-            >
-                {waiting? 'Signing up...' : 'Sign up'}
-            </button>
+            <SubmitButton disabled={waiting} text={waiting? 'Signing up...' : 'Sign up'}/>
             {/* Dont render p for system error unless its non empty */}
             {errors.general && <p>{errors.general}</p>} 
             <div className="text-center">
