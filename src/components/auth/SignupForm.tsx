@@ -1,75 +1,91 @@
 "use client";
-
 import { useState } from "react";
 import { signup } from "@/lib/api/auth";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { parseErrors } from "@/lib/utils/parseErrors";
 
 export default function SignupForm() {
-    const router = useRouter();
-    const [formData, setFormData] = useState({email: '', password1: '', password2: ''});
-    const [errors, setErrors] = useState({password: '', email: ''});
-    const [msg, setMsg] = useState("Already have an account?")
 
-    const getError = (array: {value: string, msg: string, param: string}[], param: string) => {
-        const errorObj = array.filter((
-            err: {value: string, msg: string, param: string}
-        ) => {
-            return err.param === param
-        })
-        
-        return errorObj[0]?.msg ?? ''
-    }
+    const [formData, setFormData] = useState({email: '', password1: '', password2: ''});
+    const [errors, setErrors] = useState({password: '', email: '', general: ''});
+    const defautltMsg = 'Already have an account?'
+    const [msg, setMsg] = useState(defautltMsg)
+    const [waiting, setWaiting] = useState(false)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (waiting) return
         const {name, value} = e.target
         setFormData({...formData, [name]: value})
-        setErrors({password: '', email: ''}) // Clear error messages
-        setMsg("Already have an account?") // Set message to original
+        setErrors({password: '', email: '', general: ''}) // Clear error messages
+        setMsg(defautltMsg) // Set message to default
     }
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         const {email, password1, password2} = formData
         if (password1 !== password2){
-            return setErrors({password: 'Password and confirm password must match.', email: errors.email})
+            return setErrors({...errors, password: 'Password and confirm password must match.'})
         } 
-        const result = await signup({ email, password: password1 });
-        if ('errors' in result){
-            const emailError = getError(result.errors, 'email')
-            const pwdError = getError(result.errors, 'password')
-            
-            return setErrors({email: emailError, password: pwdError})
-        }   
-        setMsg(result.message)
-  }
+        try {
+            setWaiting(true)
+            const result = await signup({ email, password: password1 });
+            if ('errors' in result){
+                const emailError = parseErrors(result.errors, 'email')
+                const pwdError = parseErrors(result.errors, 'password')
+                setErrors({...errors, email: emailError, password: pwdError})
+            } else {
+                setMsg(result.message)
+            }
+            setWaiting(false)
+        } catch (err){
+            setErrors({general: 'Currently unable to signup due to system issues.', email: '', password: ''})
+        }
+    }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
-        <input
-            value={formData.email}
-            onChange={handleChange}
-            name="email"
-            placeholder="Email"
-        />
-        {errors.email?? ''}
-        <input
-            type="password"
-            value={formData.password1}
-            onChange={handleChange}
-            name="password1"
-            placeholder="Password"
-        />
-        <input
-            type="password"
-            value={formData.password2}
-            onChange={handleChange}
-            name="password2"
-            placeholder="Confirm Password"
-        />
-        {errors.password?? ''}
-      <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold'>Sign up</button>
-      {msg ?? ''}
-      <button type="button" onClick={() => router.replace('/auth/login')} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Login</button>
-    </form>
-  );
+        <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
+            <input
+                value={formData.email}
+                onChange={handleChange}
+                name="email"
+                placeholder="Email"
+                disabled={waiting}
+            />
+            {errors.email?? ''}
+            <input
+                type="password"
+                value={formData.password1}
+                onChange={handleChange}
+                name="password1"
+                placeholder="Password"
+                disabled={waiting}
+            />
+            <input
+                type="password"
+                value={formData.password2}
+                onChange={handleChange}
+                name="password2"
+                placeholder="Confirm Password"
+                disabled={waiting}
+            />
+            {errors.password?? ''}
+            <button 
+                type="submit" 
+                disabled={waiting} 
+                className={`${waiting? 'bg-blue-300': 'bg-blue-500'} hover:bg-blue-700 text-white font-bold`}
+            >
+                {waiting? 'Signing up...' : 'Sign up'}
+            </button>
+            {/* Dont render p for system error unless its non empty */}
+            {errors.general && <p>{errors.general}</p>} 
+            <div className="text-center">
+                <span className="text-gray-500">{msg} </span>
+                <Link 
+                    href={`/auth/${waiting? 'signup' : 'login'}`}
+                    className={waiting? 'text-gray-500 pointer-events-none' :"hover:underline text-blue-500"}>
+                    Login
+                </Link>
+            </div>
+        </form>
+    )
 }
