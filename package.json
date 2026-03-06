@@ -11,6 +11,7 @@
     "start:server": "cross-env NODE_ENV=production node dist/server/server.js",
     "test": "vitest",
     "test:backend": "vitest server --run",
+    "test:backend:watch": "vitest server --watch",
     "test:frontend": "vitest src --run",
     "test:frontend:watch": "vitest src --watch ",
     "test:watch": "vitest --watch",

@@ -5,10 +5,14 @@ import { useRouter } from "next/navigation"
 import SubmitButton from '../ui/SubmitButton';
 
 export default function EmailForm<TVerifyPayload>({
+    emailPlaceholder,
+    emailButtonText,
     requestFn, 
     verifyFn,
     buildVerifyPayload
 }:{
+    emailPlaceholder: string,
+    emailButtonText: string,
     requestFn: (email:string) => Promise<accountErrorArray | accountMessage>
     verifyFn: (data: TVerifyPayload) => Promise<accountErrorArray | accountMessage | resetTokenRes> 
     buildVerifyPayload: (otp:string, email:string) => TVerifyPayload
@@ -25,7 +29,7 @@ export default function EmailForm<TVerifyPayload>({
     const handleSendOtp = async (event: React.FormEvent) => {
         event.preventDefault()
         try {
-            const result = await requestFn(email) 
+            const result = await requestFn(email)
             if ('errors' in result){
                 return setError(result.errors[0].msg)
             }
@@ -81,7 +85,7 @@ export default function EmailForm<TVerifyPayload>({
                         name='email'
                         value={email}
                         onChange={handleChange}
-                        placeholder='Enter new email'
+                        placeholder={emailPlaceholder}
                         className='bg-blue-100 p-2'
                     />
                 </> 
@@ -100,7 +104,7 @@ export default function EmailForm<TVerifyPayload>({
                 {message ?? ''}
                 {error && <p className="text-red-500">{error}</p>}
                 <SubmitButton 
-                    text={!otpSent ? 'Send OTP to Verify New Email' : 'Verify OTP'}
+                    text={!otpSent ? emailButtonText : 'Verify OTP'}
                     disabled={disabled}
                 />
         </form>

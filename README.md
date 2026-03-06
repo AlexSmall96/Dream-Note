@@ -1,4 +1,6 @@
 # Dream Note
+![CI](https://github.com/AlexSmall96/Dream-Note/actions/workflows/ci.yml/badge.svg)
+
 Dream Note is an AI-assisted dream journal app. Users can:
 - Record dreams, with automatic AI title and theme generation. 
 - View dreams chronologically or by theme.
