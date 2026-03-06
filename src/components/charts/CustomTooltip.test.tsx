@@ -6,7 +6,7 @@ import { cleanup, render, screen } from '@testing-library/react';
 import { test, expect, beforeEach, describe} from 'vitest';
 import setupTests from '@/tests/utils/setupServer';
 import CustomTooltip, { TooltipPayloadItem } from './CustomTooltip';
-import { themes } from '@/tests/mocks/data';
+import { themes } from '@/tests/mocks/charts/data';
 
 const COLORS = [
     "#7f79f7",

@@ -22,8 +22,8 @@ vi.mock('../../contexts/DreamsContext', async (importOriginal) => {
 import setupTests from '@/tests/utils/setupServer';
 import { DreamChartProvider } from '@/contexts/DreamChartContext';
 import DreamsLineChart from './DreamsLineChart';
-import { monthLabels } from '@/tests/mocks/data';
-import { dreamStatsUrl } from '@/tests/mocks/handlers';
+import { monthLabels } from '@/tests/mocks/charts/data';
+import { dreamStatsUrl } from '@/tests/mocks/charts/handlers';
 
 setupTests()
 
