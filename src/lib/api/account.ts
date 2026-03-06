@@ -4,22 +4,22 @@ import { passwordUpdateInput, accountError, accountErrorArray, accountMessage, r
 // Send otp to new email address for email update
 // Return type may be array or object due to use of mongoose internal validator
 export async function requestEmailUpdate(email: string){
-    return apiFetch<accountError | accountErrorArray | accountMessage, {email: string}>('/users/request-email-update', {method: 'POST', body: {email}})
+    return apiFetch<accountErrorArray | accountMessage, {email: string}>('/users/request-email-update', {method: 'POST', body: {email}})
 }
 
 // Verify otp and automatically update the users email to the email associated with saved otp
 export async function verifyOTPAndUpdateEmail({otp}: {otp: string}) {
-    return apiFetch<accountError | accountMessage, {otp: string}>('/users/update-email', {method: 'PATCH', body: {otp}})
+    return apiFetch<accountErrorArray | accountMessage, {otp: string}>('/users/update-email', {method: 'PATCH', body: {otp}})
 }
 
 // Send otp to existing email address for password reset
 export async function requestPasswordReset(email: string){
-    return apiFetch<accountError | accountMessage, {email: string}>('/users/request-password-reset', {method: 'POST', body: {email}})
+    return apiFetch<accountErrorArray | accountMessage, {email: string}>('/users/request-password-reset', {method: 'POST', body: {email}})
 }
 
 // Verify otp for password reset and return a temporary reset token
 export async function verifyResetOTP(data: {otp: string, email: string}) {
-    return apiFetch<accountError | resetTokenRes, verifyResetOTPInput>('/users/verify-reset-otp', {method: 'POST', body: data})
+    return apiFetch<accountErrorArray | resetTokenRes, verifyResetOTPInput>('/users/verify-reset-otp', {method: 'POST', body: data})
 }
 
 export async function requestEmailVerification(){
@@ -33,7 +33,7 @@ export async function verifyEmail(otp: string){
 // Reset password while logged out using token
 // Return type may be array or object due to use of mongoose internal validator
 export async function resetPassword(password: string, resetToken: string){
-    return apiFetch<accountError | accountErrorArray | accountMessage, resetPasswordInput>('/users/reset-password', {method: 'PATCH', body: {password, resetToken}})
+    return apiFetch<accountErrorArray | accountMessage, resetPasswordInput>('/users/reset-password', {method: 'PATCH', body: {password, resetToken}})
 }
 
 // Reset password while logged in using current password
