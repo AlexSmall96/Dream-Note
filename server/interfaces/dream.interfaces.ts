@@ -7,9 +7,9 @@ import { Model, Document, Types} from "mongoose";
 import { UserDocument } from "./user.interfaces.js";
 
 export const options = {
-    tone: ['neutral', 'curious', 'caring', 'excited', 'spiritual'],
+    tone: ['neutral', 'curious', 'caring', 'excited'],
     style: ['poetic', 'clinical', 'spiritual'],
-    length: ['brief', 'long']
+    length: ['brief', 'concise']
 } as const
 
 export type Tone = typeof options.tone[number];
