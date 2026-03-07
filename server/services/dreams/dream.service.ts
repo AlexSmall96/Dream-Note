@@ -6,13 +6,7 @@ import { AIService } from "./ai.service.js";
 import { DreamStatsService } from "./stats.service.js";
 import { AppError } from "../../utils/appError.js";
 import { Types } from "mongoose";
-
-export enum prompts {
-    title = 'Return exactly one short title for the provided dream.',
-    themes =  'Return 1-4 one word themes for the provided dream. Seperate them by commas without spaces.',
-    analysis = `Return a short interpretation of the provided dream. Include only the interpretation itself without any \n.
-                Never use self referntial langugae and never include a follow up question.`
-}
+import { ParamsType } from "../../types/analysis.js";
 
 @injectable()
 export class DreamService {
@@ -39,7 +33,7 @@ export class DreamService {
         return {dream}
     }
 
-    public async getAiAnalysis(description: string, params: {tone: string, style: string, length: string}) {
+    public async getAiAnalysis(description: string, params: ParamsType) {
         const DEV = process.env.DEV
         if (DEV && params){
             const analysis = `Mock analysis response. Description: ${description.substring(0, 30)}...`

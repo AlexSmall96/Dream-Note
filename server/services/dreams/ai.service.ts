@@ -1,12 +1,12 @@
 import { injectable } from "inversify";
 import OpenAI from "openai";
 import { DreamInterface } from "../../interfaces/dream.interfaces.js";
+import { ParamsType, prompts } from "../../types/analysis.js";
 
-export enum prompts {
-    title = 'Return exactly one short title for the provided dream.',
-    themes =  'Return 1-4 one word themes for the provided dream. Seperate them by commas without spaces.',
-    analysis = `Return a short interpretation of the provided dream. Include only the interpretation itself without any \n.
-                Never use self referential language and never include a follow up question.`
+
+const lengthToWords = {
+    brief: 100,
+    concise: 200    
 }
 
 // Dream title service to generate AI title based on description
@@ -24,16 +24,16 @@ export class AIService {
         this.openAI = new OpenAI({apiKey: process.env.API_KEY})
     }
 
-    private setFullSystemPrompt (systemPrompt:prompts, params: {tone: string, style: string, length: string}){
+    private setFullSystemPrompt (systemPrompt:prompts, params: ParamsType){
         const {tone, style, length} = params
         const toneSpec = tone ? `Use a ${tone} tone.` : ''
         const styleSpec = style ? `Write in a ${style} style.` : ''
-        const lengthSpec = length ? `Make the response ${length}` : ''
+        const lengthSpec = length ? `Make the response ${lengthToWords[length]} words or under.` : ''
         return systemPrompt + toneSpec + styleSpec + lengthSpec
     }
 
 
-    private async sendPrompt(systemPrompt:prompts, content: string, params?: {tone: string, style: string, length: string}){
+    private async sendPrompt(systemPrompt:prompts, content: string, params?: ParamsType){
         let fullSystemPrompt = systemPrompt as string
         if (params){
             fullSystemPrompt = this.setFullSystemPrompt(systemPrompt, params)
@@ -65,7 +65,7 @@ export class AIService {
         return themes
     }
 
-    public async generateAnalysis(description: string, params: {tone: string, style: string, length: string}){
+    public async generateAnalysis(description: string, params: ParamsType){
         const response = await this.sendPrompt(prompts.analysis, description, params)
         const analysis = response.output_text.trim()
         return analysis
