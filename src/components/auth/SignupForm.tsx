@@ -4,6 +4,8 @@ import { signup } from "@/lib/api/auth";
 import Link from "next/link";
 import { parseErrors } from "@/lib/utils/parseErrors";
 import SubmitButton from '@/components/ui/SubmitButton';
+import { Card } from "../ui/Card";
+import { Input } from "../ui/Input";
 
 export default function SignupForm() {
 
@@ -12,7 +14,6 @@ export default function SignupForm() {
         password1: string | null,
         general: string | null
     }
-
 
     const [formData, setFormData] = useState({email: '', password1: '', password2: ''});
     const [errors, setErrors] = useState<ErrorType>({password1: null, email: null, general: null});
@@ -74,52 +75,50 @@ export default function SignupForm() {
     }
 
   return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
-            <input
-                value={formData.email}
-                onChange={handleChange}
-                name="email"
-                placeholder="Email"
-                disabled={waiting}
-                className='rounded-sm'
-                aria-label="email"
-            />
-            {errors.email && <p role='alert'>{errors.email}</p>}
-            <input
-                type="password"
-                value={formData.password1}
-                onChange={handleChange}
-                name="password1"
-                placeholder="Password"
-                disabled={waiting}
-                className='rounded-sm'
-                aria-label="password"
-            />
-            <input
-                type="password"
-                value={formData.password2}
-                onChange={handleChange}
-                name="password2"
-                placeholder="Confirm Password"
-                disabled={waiting}
-                className='rounded-sm'
-                aria-label="confirm password"
-            />
+        <Card>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
+                <Input
+                    value={formData.email}
+                    onChange={handleChange}
+                    name="email"
+                    placeholder="Email"
+                    disabled={waiting}
+                    aria-label="email"
+                />
+                {errors.email && <p role='alert'>{errors.email}</p>}
+                <Input
+                    type="password"
+                    value={formData.password1}
+                    onChange={handleChange}
+                    name="password1"
+                    placeholder="Password"
+                    disabled={waiting}
+                    aria-label="password"
+                />
+                <Input
+                    type="password"
+                    value={formData.password2}
+                    onChange={handleChange}
+                    name="password2"
+                    placeholder="Confirm Password"
+                    disabled={waiting}
+                    aria-label="confirm password"
+                />
+                {errors.password1 && <p role='alert'>{errors.password1}</p>}
 
-            {errors.password1 && <p role='alert'>{errors.password1}</p>}
+                <SubmitButton disabled={disabled} text={waiting? 'Signing up...' : 'Sign up'}/>
 
-            <SubmitButton disabled={disabled} text={waiting? 'Signing up...' : 'Sign up'}/>
+                {errors.general && <p role='alert'>{errors.general}</p>} 
 
-            {errors.general && <p role='alert'>{errors.general}</p>} 
-
-            <div className="text-center">
-                <span className="text-gray-500">{msg} </span>
-                <Link 
-                    href={`/auth/${waiting? 'signup' : 'login'}`}
-                    className={waiting? 'text-gray-500 pointer-events-none' :"hover:underline text-blue-500"}>
-                    Login
-                </Link>
-            </div>
-        </form>
+                <div className="text-center">
+                    <span className="text-gray-500">{msg} </span>
+                    <Link 
+                        href={`/auth/${waiting? 'signup' : 'login'}`}
+                        className={waiting? 'text-gray-500 pointer-events-none' :"hover:underline text-blue-500"}>
+                        Login
+                    </Link>
+                </div>
+            </form>
+        </Card>
     )
 }
