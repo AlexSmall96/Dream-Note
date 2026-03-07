@@ -28,6 +28,19 @@ themeSchema.statics.findByThemeOrThrowError = async function (this: ThemeModel, 
     return theme
 }
  
+themeSchema.pre("save", async function (next) {
+    const dream = await mongoose.model("Dream").findById(this.dream)
+
+    if (!dream) {
+        return next(new Error("Associated dream not found."))
+    }
+
+    if (!dream.owner.equals(this.owner)) {
+        return next(new Error("Theme owner must match dream owner."))
+    }
+
+    next()
+})
 
 export const Theme =
     (mongoose.models.Theme as ThemeModel) ||
