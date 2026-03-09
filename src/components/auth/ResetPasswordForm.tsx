@@ -1,7 +1,7 @@
 'use client'
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
-import SubmitButton from "../ui/SubmitButton"
+import SubmitButton from "../forms/Button"
 import { resetPassword } from '@/lib/api/account'
 import { useRouter } from "next/navigation";
 

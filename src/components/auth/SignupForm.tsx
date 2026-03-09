@@ -1,11 +1,11 @@
-"use client";
-import { useEffect, useState } from "react";
-import { signup } from "@/lib/api/auth";
-import Link from "next/link";
-import { parseErrors } from "@/lib/utils/parseErrors";
-import SubmitButton from '@/components/ui/SubmitButton';
-import { Card } from "../ui/Card";
-import { Input } from "../ui/Input";
+'use client';
+import { useEffect, useState } from 'react';
+import { signup } from '@/lib/api/auth';
+import { parseErrors } from '@/lib/utils/parseErrors';
+import Button from '@/components/forms/Button';
+import { Card } from '@/components/ui/Card'
+import { Input } from '@/components/forms/Input'
+import LinkWithMessage from '../forms/LinkWithMessage';
 
 export default function SignupForm() {
 
@@ -76,48 +76,41 @@ export default function SignupForm() {
 
   return (
         <Card>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
+            <form onSubmit={handleSubmit} className='flex flex-col gap-2 w-80'>
                 <Input
                     value={formData.email}
                     onChange={handleChange}
-                    name="email"
-                    placeholder="Email"
+                    name='email'
+                    placeholder='Email'
                     disabled={waiting}
-                    aria-label="email"
+                    aria-label='email'
                 />
                 {errors.email && <p role='alert'>{errors.email}</p>}
                 <Input
-                    type="password"
+                    type='password'
                     value={formData.password1}
                     onChange={handleChange}
-                    name="password1"
-                    placeholder="Password"
+                    name='password1'
+                    placeholder='Password'
                     disabled={waiting}
-                    aria-label="password"
+                    aria-label='password'
                 />
                 <Input
-                    type="password"
+                    type='password'
                     value={formData.password2}
                     onChange={handleChange}
-                    name="password2"
-                    placeholder="Confirm Password"
+                    name='password2'
+                    placeholder='Confirm Password'
                     disabled={waiting}
-                    aria-label="confirm password"
+                    aria-label='confirm password'
                 />
                 {errors.password1 && <p role='alert'>{errors.password1}</p>}
 
-                <SubmitButton disabled={disabled} text={waiting? 'Signing up...' : 'Sign up'}/>
+                <Button disabled={disabled} text={waiting? 'Signing up...' : 'Sign up'}/>
 
                 {errors.general && <p role='alert'>{errors.general}</p>} 
 
-                <div className="text-center">
-                    <span className="text-gray-500">{msg} </span>
-                    <Link 
-                        href={`/auth/${waiting? 'signup' : 'login'}`}
-                        className={waiting? 'text-gray-500 pointer-events-none' :"hover:underline text-blue-500"}>
-                        Login
-                    </Link>
-                </div>
+                <LinkWithMessage msg={msg} disabled={waiting} href='/auth/login' linkText='Login' />
             </form>
         </Card>
     )
