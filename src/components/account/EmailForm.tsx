@@ -1,8 +1,9 @@
 
 import { useState } from 'react';
-import { accountMessage, resetTokenRes, accountErrorArray } from '@/types/accounts';
+import { resetTokenRes } from '@/types/accounts';
 import { useRouter } from "next/navigation"
 import SubmitButton from '../forms/Button';
+import { ErrorResponse, SuccessResponse } from '@/types/responses';
 
 export default function EmailForm<TVerifyPayload>({
     emailPlaceholder,
@@ -13,8 +14,8 @@ export default function EmailForm<TVerifyPayload>({
 }:{
     emailPlaceholder: string,
     emailButtonText: string,
-    requestFn: (email:string) => Promise<accountErrorArray | accountMessage>
-    verifyFn: (data: TVerifyPayload) => Promise<accountErrorArray | accountMessage | resetTokenRes> 
+    requestFn: (email:string) => Promise<ErrorResponse | SuccessResponse>
+    verifyFn: (data: TVerifyPayload) => Promise<ErrorResponse | SuccessResponse | resetTokenRes> 
     buildVerifyPayload: (otp:string, email:string) => TVerifyPayload
 }){
     const [email, setEmail] = useState('');

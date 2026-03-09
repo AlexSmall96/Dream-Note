@@ -38,9 +38,9 @@ export function useDreamSubmit(){
                         themes: payload.description ? payload.themes || [] : [],
                 })                
             }
-            if ('error' in result) {
-                setMsg(result.error)
-                return { success: false, error: result.error }
+            if ('errors' in result) {
+                setMsg(result.errors[0].msg)
+                return { success: false, error: result.errors[0].msg }
             }  
 
             // Update dreams list

@@ -1,16 +1,16 @@
 import { fetchDreamChartStats } from "@/lib/api/dreams";
-import { last6monthsDreams } from "@/types/dreams";
+import { DreamCounts } from "@/types/dreams";
 import { createContext, useEffect, useState, useContext } from "react";
 import { useDreams } from "./DreamsContext";
 
 type DreamChartContextType = {
-    dreamCounts: last6monthsDreams,
+    dreamCounts: DreamCounts,
 }
 
 const DreamChartContext = createContext<DreamChartContextType | null>(null)
 
 export function DreamChartProvider({ children }:{ children: React.ReactNode }){
-    const [dreamCounts, setDreamCounts] = useState<last6monthsDreams>([])
+    const [dreamCounts, setDreamCounts] = useState<DreamCounts>([])
 
     const { refetch } = useDreams()
 

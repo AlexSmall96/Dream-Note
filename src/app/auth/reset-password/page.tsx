@@ -1,5 +1,5 @@
 "use client"
-import { requestPasswordReset, verifyResetOTP } from "@/lib/api/account";
+import { requestPasswordReset, verifyResetOTP } from "@/lib/api/auth";
 import EmailForm from "@/components/account/EmailForm"
 
 export default function RequestPasswordReset () {

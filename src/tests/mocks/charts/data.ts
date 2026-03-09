@@ -1,10 +1,10 @@
-import { last6monthsDreams } from "@/types/dreams";
+import { DreamCounts } from "@/types/dreams";
 import { ThemeMonthCount } from "@/types/themes";
 import { MonthLabel } from "@/lib/filters/dateRanges";
 
 const now = new Date()
 const themeData: ThemeMonthCount[] = []
-const dreamCounts: last6monthsDreams = []
+const dreamCounts: DreamCounts = []
 
 const themes = ['Fear', 'Nature', 'Adventure', 'Animals', 'Freedom']
 const monthLabels: MonthLabel[] = []
