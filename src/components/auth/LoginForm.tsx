@@ -2,7 +2,10 @@
 
 import { useState } from "react"
 import { login, loginGuest } from '@/lib/api/auth'
-import { useRouter } from "next/navigation"
+import LinkWithMessage from "../forms/LinkWithMessage"
+import { Input } from "../forms/Input"
+import Button from "../forms/Button"
+import { Card } from "../ui/Card"
 
 export default function LoginForm() {
     const [formData, setFormData] = useState({email: '', password: ''})
@@ -33,33 +36,29 @@ export default function LoginForm() {
         setFormData(prevData => ({ ...prevData, [name]: value }))
     }
     
-    const router = useRouter()
-
     return (
-        <>
+        <Card>
             <form onSubmit={handleSubmit} className="flex flex-col gap-2 w-80">
-                <input
+                <Input 
                     value={formData.email}
                     onChange={handleChange}
                     name="email"
                     placeholder="Email"
                 />
                 {error.param === 'email' ? error.msg : ''}
-                <input
+                <Input 
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
                     name="password"
-                    placeholder="Password"
+                    placeholder="Password"                
                 />
                 {error.param === 'password' ? error.msg : ''}
-                <button type="submit" className='bg-blue-500 hover:bg-blue-700 text-white font-bold'>Login</button>
-                <button type="button" onClick={handleLoginGuest} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Continue as Guest</button>
-                <p>Don't have an account?</p>
-                <button type="button" onClick={() => router.replace('/auth/signup')} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Signup</button>
-                Forgotten password?
-                <button type="button" onClick={() => router.replace('/auth/reset-password')} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Reset Password</button>
+                <Button text='Login' disabled={false} />
+                <Button text='Continue as Guest' disabled={false} onClick={handleLoginGuest}/>
+                <LinkWithMessage msg="Don't have an account?" href='/auth/signup' linkText="Signup" disabled={false} />
+                <LinkWithMessage msg="Forgotten password?" href='/auth/reset-password' linkText="Reset Password" disabled={false} />
             </form>
-        </>
+        </Card>
     )
 }
