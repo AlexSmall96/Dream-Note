@@ -3,14 +3,14 @@ import { ChartStats, DreamFullView } from "@/types/dreams";
 import { 
     DreamBodyType, 
     DreamResponseType, 
-    ErrorMsg, 
     DreamList, 
     DreamStats
 } from "@/types/dreams";
 import { MONTH_OPTIONS, MonthLabel } from '@/lib/filters/dateRanges'
+import { ErrorResponse } from "@/types/responses";
 
 export async function logNewDream(body: DreamBodyType){
-    return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>('/dreams/log', {method: 'POST', body})
+    return apiFetch<DreamResponseType | ErrorResponse, DreamBodyType>('/dreams/log', {method: 'POST', body})
 }
 
 export async function fetchDreams({year, month, sort = false}:{year: number, month: MonthLabel, sort: boolean}) {
@@ -42,7 +42,7 @@ export async function fetchFullDream(id: string){
 }
 
 export async function updateDream(id: string, body: DreamBodyType) {
-    return apiFetch<DreamResponseType | ErrorMsg , DreamBodyType>(`/dreams/update/${id}`, {method: 'PATCH', body}
+    return apiFetch<DreamResponseType | ErrorResponse, DreamBodyType>(`/dreams/update/${id}`, {method: 'PATCH', body}
     )
 }
 

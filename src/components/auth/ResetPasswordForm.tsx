@@ -2,7 +2,7 @@
 import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 import SubmitButton from "../forms/Button"
-import { resetPassword } from '@/lib/api/account'
+import { resetPassword } from '@/lib/api/auth'
 import { useRouter } from "next/navigation";
 
 export default function ResetPasswordForm () {

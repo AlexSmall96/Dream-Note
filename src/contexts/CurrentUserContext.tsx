@@ -2,7 +2,7 @@
 import { fetchCurrentUser } from '@/lib/api/auth'
 import { setterFunction } from '@/types/setterFunctions'
 import { createContext, useState, useEffect, useContext} from 'react'
-import {user} from '@/types/users'
+import {user} from '@/types/auth'
 
 type UserContextType = {
     currentUser: user | null,
