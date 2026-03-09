@@ -11,6 +11,10 @@ import * as api from '@/lib/api/auth';
 
 setupTests()
 
+vi.mock("next/navigation", () => ({
+    usePathname: () => '/auth/signup',
+}))
+
 function setup() {
     render(<SignupForm />)
 
