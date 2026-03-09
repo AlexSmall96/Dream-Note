@@ -156,7 +156,7 @@ describe('Sign up button:', () => {
         expect(button).not.toBeDisabled()
     })
 
-    test('Remains disabled if sign up is successful, until user changes an input value.', async () => {
+    test('Remains disabled if sign up is successful, until user changes email input value.', async () => {
         const page = setup()   
         const { user } = page
         await enterData(page, 'user2@email.com', 'orange123', 'orange123')
@@ -165,7 +165,9 @@ describe('Sign up button:', () => {
 
         expect(await screen.findByText(/Signup successful/i)).toBeInTheDocument()
         expect(button).toBeDisabled()
-
+        // Changing password should not enable button, changing email should
+        await page.enterPassword('orange')
+        expect(button).toBeDisabled()
         await page.enterEmail('user3@email.com')
         // Message should be back to default 
         expect(await screen.findByText(/Already have an account\?/i)).toBeInTheDocument()
