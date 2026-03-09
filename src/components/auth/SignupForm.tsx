@@ -25,8 +25,11 @@ export default function SignupForm() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (waiting) return
-        setSuccess(false)
         const {name, value} = e.target
+        if (name === 'email'){
+            // Re-enables button after success only if email is changed
+            setSuccess(false)
+        }
         setFormData({...formData, [name]: value})
         // Clear error for changed input
         if (name === 'password2'){
