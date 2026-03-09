@@ -3,10 +3,6 @@ export type passwordUpdateInput = {
     password?: string
 }
 
-export type accountMessage = {
-    message: string
-}
-
 export type resetTokenRes = {
     resetToken: string
 }

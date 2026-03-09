@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api/client";
-import { accountMessage, resetPasswordInput, resetTokenRes, verifyResetOTPInput } from "@/types/accounts";
+import { resetPasswordInput, resetTokenRes, verifyResetOTPInput } from "@/types/accounts";
 import { authInput, user, logoutSuccess, currentUser} from "@/types/auth"
 import { SuccessResponse, ErrorResponse } from "@/types/responses";
 
@@ -24,7 +24,7 @@ export async function logout(){
 }
 
 export async function requestPasswordReset(email: string){
-    return apiFetch<ErrorResponse | accountMessage, {email: string}>('/users/request-password-reset', {method: 'POST', body: {email}})
+    return apiFetch<ErrorResponse | SuccessResponse, {email: string}>('/users/request-password-reset', {method: 'POST', body: {email}})
 }
 
 export async function verifyResetOTP(data: {otp: string, email: string}) {
