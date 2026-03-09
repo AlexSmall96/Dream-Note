@@ -38,6 +38,34 @@ export const authHandlers = [
         return HttpResponse.json({
             user: {email, password}, message: 'Signup successful. Please check your emails for verification instructions.'
         }, {status: 201})
+    }),
+
+    http.post(`${url}/login`, async ({request}) => {
+        const { email, password } = (await request.json()) as SignupRequestBody
+        // Keep errors in standard format even for single error
+        const errors: {msg: string}[] = []
+
+        // Generic error message is returned regardless of parameter
+        // Avoids email enumeration
+        if (email !== userOneCreds.email){
+            errors.push(
+                {msg: 'Incorrect email or password.'}
+            )
+        }
+
+        if (email === userOneCreds.email && password !== 'apple123'){
+            errors.push(
+                {msg: 'Incorrect email or password.'}
+            )            
+        }
+
+        if (errors.length){
+            return HttpResponse.json({errors}, {status: 400})
+        }
+
+        return HttpResponse.json({
+            user: {email, password}
+        }, {status: 201})
     })
 
 ]
