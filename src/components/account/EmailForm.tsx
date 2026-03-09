@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { accountMessage, resetTokenRes, accountErrorArray } from '@/types/accounts';
 import { useRouter } from "next/navigation"
-import SubmitButton from '../ui/SubmitButton';
+import SubmitButton from '../forms/Button';
 
 export default function EmailForm<TVerifyPayload>({
     emailPlaceholder,
