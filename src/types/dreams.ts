@@ -30,7 +30,7 @@ export type DreamStats = {
     thisMonthTotal: number
 }
 
-export type last6monthsDreams = {
+export type DreamCounts = {
     month: number,
     label: MonthLabel
     year: number,
@@ -39,7 +39,7 @@ export type last6monthsDreams = {
 
 
 export type ChartStats = {
-    dreamCounts: last6monthsDreams
+    dreamCounts: DreamCounts
 }
 
 // Main dream view
@@ -70,7 +70,3 @@ export type DreamResponseType = {
     themes?: ThemeResponse[]
 }
 
-
-export type ErrorMsg = {
-    error: string
-}
