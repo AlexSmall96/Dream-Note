@@ -9,10 +9,6 @@ export type currentUser = {
     isGuest: boolean
 }
 
-export type userError = {
-    errors: {value: string, param: string, msg: string}[]
-}
-
 export type authInput = {
     email: string,
     password: string
