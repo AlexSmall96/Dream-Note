@@ -1,4 +1,4 @@
-import { connectToDB } from '../server/utils/connectToDB'
+import { connectToDB } from '../../utils/connectToDB'
 import { beforeAll, afterAll } from 'vitest'
 import mongoose from 'mongoose'
 
