@@ -11,7 +11,7 @@ const userOneCreds = {
     password: 'apple123'
 }
 
-const url = baseUrl + '/users'
+const url = baseUrl + '/auth'
 
 export const authHandlers = [
 
