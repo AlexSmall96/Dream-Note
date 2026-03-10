@@ -1,6 +1,5 @@
 import request from 'supertest';
-import { server } from '../../setup/testServer.js';
-import { beforeEach, describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { Theme } from '../../../models/theme.model.js';
 import { Dream } from '../../../models/dream.model.js';
 import { assertSingleError } from '../utils/assertErrors.js'
@@ -9,6 +8,7 @@ import { userThreeCreds, guestUserCreds, userOneCreds, accountUrl } from '../dat
 import { oldDreamData } from '../../dreams/data.js';
 import { Types } from 'mongoose';
 import { wipeDB } from '../../setup/wipeDB.js';
+import nodemailer from 'nodemailer';
 
 let userThreeAuth: [string, string]
 let guestAuth: [string, string]
@@ -39,6 +39,19 @@ beforeEach(async () => {
     const userOne = await createUser({...userOneCreds, isVerified: false})
     userOneAuth = getAuthHeader(userOne.tokens[0])
 }) 
+
+// Mock nodemailer with vi 
+vi.mock("nodemailer", () => {
+    // Mock sendMail function which is called by emailService
+    const sendMail = vi.fn().mockResolvedValue(true);
+    return {
+        default: {
+            createTransport: vi.fn(() => ({sendMail}))
+        }
+    }
+})
+
+import { server } from '../../setup/testServer.js';
 
 const url = accountUrl + '/delete' 
 
@@ -73,7 +86,7 @@ describe('Account deletion should fail if:', () => {
 
 describe('Account deletion should be successful if:', () => {
 
-    test('User is authenticated. Associated dreams and themes should be deleted.', async () => {
+    test('User is authenticated. Associated dreams and themes should be deleted, and confirmation email should be sent.', async () => {
         // First prove that only 1 dream exists for userThree
         const dreams = await Dream.find({owner: userThreeId})
         expect(dreams).toHaveLength(1)
@@ -90,6 +103,16 @@ describe('Account deletion should be successful if:', () => {
         expect(nullDreams).toHaveLength(0)
         const nullThemes = await Theme.find({dream: dreamId})
         expect(nullThemes).toHaveLength(0)
+
+        const sendMailMock = nodemailer.createTransport().sendMail;
+        expect(sendMailMock).toHaveBeenCalledTimes(1);
+        expect(sendMailMock).toHaveBeenCalledWith({
+            from: process.env.SMTP_MAIL,
+            to: userThreeCreds.email,
+            subject: 'Your Dream Note account has been deleted.',
+            text: 'Your account has been successfully deleted. We are sorry to see you go.'
+        })
+        
     })
 })
 
