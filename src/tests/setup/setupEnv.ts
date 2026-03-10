@@ -1,2 +1,7 @@
 import dotenv from 'dotenv';
-dotenv.config({ path: './src/test.frontend.env', quiet: true });
+import path from 'path';
+
+dotenv.config({
+    path: path.resolve(__dirname, "../../env.test"),
+    quiet: true
+});

@@ -34,11 +34,10 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files
+env.test
 test.env
 .env
 .env.local
-test.frontend.env
-test.backend.env
 
 # vercel
 .vercel
