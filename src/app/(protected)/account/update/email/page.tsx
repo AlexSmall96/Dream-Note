@@ -8,7 +8,7 @@ export default function UpdateEmail(){
         <div className="flex flex-col items-center m-4">
             <EmailForm<{otp: string}> 
                 emailPlaceholder='Enter new email'
-                emailButtonText='Send OTP to Verify New Email'
+                emailButtonText='verify your new email'
                 requestFn={requestEmailUpdate} 
                 verifyFn={verifyOTPAndUpdateEmail}
                 buildVerifyPayload={(otp, _email) => ({otp})}
