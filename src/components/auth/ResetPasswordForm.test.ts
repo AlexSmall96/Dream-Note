@@ -8,3 +8,6 @@ import setupTests from '@/tests/setup/setupServer'
 
 setupTests()
 
+test('Pass', () => {
+
+})
