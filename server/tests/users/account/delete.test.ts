@@ -5,7 +5,7 @@ import { Theme } from '../../../models/theme.model.js';
 import { Dream } from '../../../models/dream.model.js';
 import { assertSingleError } from '../utils/assertErrors.js'
 import { getAuthHeader, createUser } from '../utils/userCreation.js';
-import { baseUrl, userThreeCreds, guestUserCreds, userOneCreds } from '../data.js';
+import { userThreeCreds, guestUserCreds, userOneCreds, accountUrl } from '../data.js';
 import { oldDreamData } from '../../dreams/data.js';
 import { Types } from 'mongoose';
 import { wipeDB } from '../../setup/wipeDB.js';
@@ -40,7 +40,7 @@ beforeEach(async () => {
     userOneAuth = getAuthHeader(userOne.tokens[0])
 }) 
 
-const url = baseUrl + '/delete' 
+const url = accountUrl + '/delete' 
 
 // Tests
 

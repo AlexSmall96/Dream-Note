@@ -5,9 +5,10 @@ const userFourCreds = {email: 'user4@email.com', password: 'pear123'}
 const guestUserCreds = {email: 'demo-test@email.com', password: 'demotest123'}
 
 // Define base url for user router
-const baseUrl = '/api/users'
+const authUrl = '/api/auth'
+const accountUrl = '/api/account'
 
 export {
-    userOneCreds, userFourCreds, userThreeCreds, guestUserCreds, baseUrl
+    userOneCreds, userFourCreds, userThreeCreds, guestUserCreds, authUrl, accountUrl
 }
 

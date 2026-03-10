@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { wipeDB } from '../../setup/wipeDB.js'
 import { beforeEach, expect, test, vi } from 'vitest';
-import { baseUrl } from '../data.js';
+import { accountUrl } from '../data.js';
 import { createUser, getAuthHeader } from '../utils/userCreation.js';
 import { userOneCreds } from '../data.js';
 import { assertSingleError } from '../utils/assertErrors.js';
@@ -44,7 +44,7 @@ import { server } from '../../setup/testServer.js'
 import { patchDataWithAuth } from '../utils/sendData.js';
 import { Otp } from '../../../models/OTP.model.js';
 
-const url = baseUrl + '/request-email-verification'
+const url = accountUrl + '/request-email-verification'
 
 test('Authenticated user can request email verification and verify email using real OTP.', async () => {
     // Request email verification
@@ -53,7 +53,7 @@ test('Authenticated user can request email verification and verify email using r
     const otp = getSentOtp(sentMail)
 
     // Verify otp value
-    const verifyUrl = baseUrl + '/verify-email'
+    const verifyUrl = accountUrl + '/verify-email'
     const response = await request(server).patch(verifyUrl).set(...userOneAuth).send({otp}).expect(200)
     expect(response.body.message).toBe("Email verified successfully.")
 
@@ -67,12 +67,12 @@ test('Authenticated user can request email verification and verify email using r
 
     // Assert that user can now update password
     const newPassword = '1@3c5t!r'
-    const updatePasswordUrl = baseUrl + '/update-password'
+    const updatePasswordUrl = accountUrl + '/update-password'
     const updateResponse = await patchDataWithAuth(server, updatePasswordUrl, {currPassword: userOneCreds.password, password: newPassword}, 200, userOneAuth)
     expect(updateResponse.body.message).toBe("Password updated successfully.")
 
     // Asser that user can delete account
-    const deleteUrl = baseUrl + '/delete'
+    const deleteUrl = accountUrl + '/delete'
     await request(server).delete(deleteUrl).set(...userOneAuth).expect(200)
 })
 
@@ -87,7 +87,7 @@ test('Requesting verification again before using an otp should delete old otp.',
     const otpTwo = getSentOtp(sentMail)  
 
     // otpOne should be deleted
-    const verifyUrl = baseUrl + '/verify-email'
+    const verifyUrl = accountUrl + '/verify-email'
     const errResponse = await request(server).patch(verifyUrl).set(...userOneAuth).send({otp: otpOne}).expect(400)
     assertSingleError(errResponse.body.errors, 'Invalid or expired OTP.', 'otp')
 

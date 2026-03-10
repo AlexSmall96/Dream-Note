@@ -3,7 +3,7 @@ import * as otpUtils from "../../../services/utils/otp.js";
 import request from 'supertest';
 import { wipeDB } from '../../setup/wipeDB.js'
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { baseUrl } from '../data.js';
+import { authUrl } from '../data.js';
 import { createUser } from '../utils/userCreation.js';
 import { userOneCreds } from '../data.js';
 import { assertSingleError } from '../utils/assertErrors.js';
@@ -40,7 +40,7 @@ import { server } from '../../setup/testServer.js'
 import { Otp } from '../../../models/OTP.model.js';
 
 
-const url = baseUrl + '/request-password-reset'
+const url = authUrl + '/request-password-reset'
 
 // Tests
 

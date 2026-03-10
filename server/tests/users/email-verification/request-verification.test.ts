@@ -3,7 +3,7 @@ import * as otpUtils from "../../../services/utils/otp.js";
 import request from 'supertest';
 import { wipeDB } from '../../setup/wipeDB.js'
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { baseUrl, guestUserCreds, userThreeCreds } from '../data.js';
+import { accountUrl, guestUserCreds, userThreeCreds } from '../data.js';
 import { createUser, getAuthHeader } from '../utils/userCreation.js';
 import { userOneCreds } from '../data.js';
 import { assertSingleError } from '../utils/assertErrors.js';
@@ -53,7 +53,7 @@ vi.spyOn(otpUtils, "generateOtp").mockReturnValue('123456');
 import { server } from '../../setup/testServer.js'
 
 
-const url = baseUrl + '/request-email-verification'
+const url = accountUrl + '/request-email-verification'
 
 describe('Requesting email verification should fail if:', () => {
     test('User is authenticated as guest.', async () => {

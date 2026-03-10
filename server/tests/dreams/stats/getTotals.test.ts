@@ -84,7 +84,4 @@ test('Monthly totals should be correct for each month.', async () => {
 test('All time total should be correct.', async () => {
     const response = await request(server).get(`${url}`).set(...userOneAuth)
     expect(response.body.total).toBe(17)
-    console.log(response.body)
 })
-
-test('')

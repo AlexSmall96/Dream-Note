@@ -2,7 +2,7 @@ import { server } from '../../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { assertErrors, assertSingleError } from '../utils/assertErrors.js';
 import { createUser, getAuthHeader } from '../utils/userCreation.js';
-import { baseUrl, userOneCreds, guestUserCreds, userThreeCreds } from '../data.js';
+import { accountUrl, userOneCreds, guestUserCreds, userThreeCreds } from '../data.js';
 import { wipeDB } from '../../setup/wipeDB.js';
 import { patchDataWithAuth } from '../utils/sendData.js';
 
@@ -27,7 +27,7 @@ beforeEach(async () => {
     guestAuth = getAuthHeader(guest.tokens[0])
 })
 
-const url = baseUrl + '/update-password'
+const url = accountUrl + '/update-password'
 
 // Tests
 
