@@ -8,10 +8,10 @@ import { ThemeRouter } from '../routers/theme.router.js'
 export function addRoutes(server: Application): Application{
 
     const authRouter = container.get<AuthRouter>(AuthRouter);
-    server.use('/api/users', authRouter.router);
+    server.use('/api/auth', authRouter.router);
 
     const accountRouter = container.get<AccountRouter>(AccountRouter);
-    server.use('/api/users', accountRouter.router);
+    server.use('/api/account', accountRouter.router);
 
     const dreamRouter = container.get<DreamRouter>(DreamRouter);
     server.use('/api/dreams', dreamRouter.router)
