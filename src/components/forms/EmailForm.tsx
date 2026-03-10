@@ -6,6 +6,8 @@ import { Card } from '@/components/ui/Card'
 import { Input } from '@/components/forms/Input'
 import Button from '@/components/forms/Button'
 
+export type requestFnType = (email:string) => Promise<ErrorResponse | SuccessResponse>
+
 export default function EmailForm<TVerifyPayload>({
     emailPlaceholder,
     emailButtonText,
@@ -15,7 +17,7 @@ export default function EmailForm<TVerifyPayload>({
 }:{
     emailPlaceholder: string,
     emailButtonText: string,
-    requestFn: (email:string) => Promise<ErrorResponse | SuccessResponse>
+    requestFn: requestFnType,
     verifyFn: (data: TVerifyPayload) => Promise<ErrorResponse | SuccessResponse | resetTokenRes> 
     buildVerifyPayload: (otp:string, email:string) => TVerifyPayload
 }){
@@ -48,7 +50,7 @@ export default function EmailForm<TVerifyPayload>({
     }
 
     // Verifies otp entered into form against backend
-    // Updates email address if otp is valid
+    // Updates email address or redirects to password reset page if otp is valid
     const handleVerifyOtp = async (event: React.FormEvent) => {
         event.preventDefault()
         if (!email){
@@ -59,6 +61,7 @@ export default function EmailForm<TVerifyPayload>({
             const result = await verifyFn(buildVerifyPayload(otp, email))
             if ('errors' in result){
                 setWaiting(false)
+                setDisabled(true)
                 return setError(result.errors[0].msg)
             }
             if ('resetToken' in result){
@@ -111,6 +114,7 @@ export default function EmailForm<TVerifyPayload>({
                             placeholder={emailPlaceholder}
                             className='bg-blue-100 p-2'
                             disabled={waiting}
+                            aria-label='email'
                         />
                     </> 
                 :   
@@ -123,10 +127,11 @@ export default function EmailForm<TVerifyPayload>({
                             placeholder='Enter OTP'
                             className='bg-blue-100 p-2'
                             disabled={waiting}
+                            aria-label='otp'
                         />
                     </>
                 }
-                    {message ?? ''}
+                    {message && <p>{message}</p>}
                     {error && <p role='alert' className="text-red-500">{error}</p>}
                     <Button
                         text={btnText}
