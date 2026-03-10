@@ -19,7 +19,7 @@ vi.mock('../../contexts/DreamsContext', async (importOriginal) => {
 })
 
 // Import components after mocks
-import setupTests from '@/tests/utils/setupServer';
+import setupTests from '@/tests/setup/setupServer';
 import { DreamChartProvider } from '@/contexts/DreamChartContext';
 import DreamsLineChart from './DreamsLineChart';
 import { monthLabels } from '@/tests/mocks/charts/data';

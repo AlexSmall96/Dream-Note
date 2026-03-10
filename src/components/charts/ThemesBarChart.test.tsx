@@ -32,7 +32,7 @@ vi.mock('recharts', async () => {
 // Import components after mocks
 import ThemesBarChart from '@/components/charts/ThemesBarChart';
 import { ThemeChartProvider } from '@/contexts/ThemeChartContext';
-import setupTests from '@/tests/utils/setupServer';
+import setupTests from '@/tests/setup/setupServer';
 import { monthLabels, themes } from '@/tests/mocks/charts/data';
 import { themeStatsUrl } from '@/tests/mocks/charts/handlers';
 

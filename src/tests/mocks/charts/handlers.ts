@@ -1,6 +1,6 @@
 import { http, HttpResponse } from "msw";
 import { themes, themeData, dreamCounts } from '@/tests/mocks/charts/data'
-import baseUrl from "@/tests/utils/setUrl";
+import baseUrl from "@/tests/setup/setUrl";
 
 export const themeStatsUrl = `${baseUrl}/themes/chart-stats`
 export const dreamStatsUrl = `${baseUrl}/dreams/chart-stats`

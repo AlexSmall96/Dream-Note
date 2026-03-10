@@ -1,4 +1,4 @@
-import baseUrl from "@/tests/utils/setUrl";
+import baseUrl from "@/tests/setup/setUrl";
 import { http, HttpResponse } from "msw";
 
 type SignupRequestBody = {

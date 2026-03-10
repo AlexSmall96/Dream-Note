@@ -4,7 +4,7 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup, render, screen } from '@testing-library/react';
 import { test, expect, beforeEach, describe} from 'vitest';
-import setupTests from '@/tests/utils/setupServer';
+import setupTests from '@/tests/setup/setupServer';
 import CustomTooltip, { TooltipPayloadItem } from './CustomTooltip';
 import { themes } from '@/tests/mocks/charts/data';
 
