@@ -37,16 +37,7 @@ export class AccountRouter {
             this.accountController.requestEmailUpdate
         )
 
-        // Request password by while unauthenticated sending OTP to existing email address
-        this.router.post(
-            '/request-password-reset',
-            body("email")
-            .notEmpty().withMessage("Email required").bail()
-            .isEmail().withMessage("Invalid email format"),
-            validateRequest,
-            this.accountController.requestPasswordReset
-        )
-
+        // Request email verification by sending OTP to current email address
         this.router.post(
             '/request-email-verification',
             auth,
@@ -54,6 +45,7 @@ export class AccountRouter {
             this.accountController.requestEmailVerification
         )
 
+        // Verify email using sent otp
         this.router.patch(
             '/verify-email',
             auth,
@@ -73,30 +65,6 @@ export class AccountRouter {
             .notEmpty().withMessage('Please provide the OTP that was sent to your email address.'),
             validateRequest,
             this.accountController.updateEmail
-        )
-
-        // Verify password reset otp to generate a reset token
-        this.router.post(
-            '/verify-reset-otp',
-            body("otp")
-            .notEmpty().withMessage('Please provide the OTP that was sent to your email address.').bail(),
-            validateRequest,  
-            body('email')
-            .notEmpty().withMessage('Email must be provided to verify otp.'),
-            validateRequest,  
-            this.accountController.verifyResetOtp        
-        )
-
-        // Resets password using reset token
-        this.router.patch(
-            '/reset-password',
-            body('resetToken')
-            .notEmpty().withMessage('Reset token must be provided.').bail(),
-            body('password')
-            .notEmpty().withMessage('New password must be provided.'),
-            signupOrUpdateValidator, 
-            validateRequest,
-            this.accountController.resetPassword
         )
 
         // Update password while authenticated

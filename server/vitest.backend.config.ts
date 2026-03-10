@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => {
       environmentMatchGlobs: [
         ['server/**', 'node'],   // backend = node
       ],
-      setupFiles: ['./test/setupEnv.ts', './test/setupBackend.ts'],
+      setupFiles: ['./server/tests/setup/setupEnv.ts', './server/tests/setup/connectAndClose.ts'],
       pool: 'forks',
       poolOptions: {
         forks: { singleFork: true },

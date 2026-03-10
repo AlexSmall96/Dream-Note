@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { User } from '../../../models/user.model.js';
 import { assertErrors, assertSingleError } from '../utils/assertErrors.js'
 import { createUser, userType, getAuthHeader } from '../utils/userCreation.js';
-import { baseUrl, userOneCreds } from '../data.js';
+import { authUrl, userOneCreds } from '../data.js';
 import { wipeDB } from '../../setup/wipeDB.js';
 import * as otpUtils from "../../../services/utils/otp.js";
 import nodemailer from 'nodemailer';
@@ -38,7 +38,7 @@ import { server } from '../../setup/testServer.js';
 import { Otp } from '../../../models/OTP.model.js';
 
 // Define url
-const signupUrl = baseUrl + '/signup'
+const signupUrl = authUrl + '/signup'
 
 // Signup tests
 describe('Signup should fail if:', () => {
@@ -138,7 +138,7 @@ describe('If valid data is provided: ', () => {
 })
 
 // Define url
-const loginUrl = baseUrl + '/login'
+const loginUrl = authUrl + '/login'
 
 // Auth tests: Login, Logout and auth/me
 describe('Login should fail if:', () => {
@@ -166,17 +166,17 @@ describe('Login should fail if:', () => {
 describe('Logout should fail if:', () => {
     test('User is not authenticated.', async () => {
         // No token
-        const responseNoToken = await request(server).post(`${baseUrl}/logout`).expect(401)
+        const responseNoToken = await request(server).post(`${authUrl}/logout`).expect(401)
         assertErrors(responseNoToken.body.errors, [{param: 'token', msg: 'Please provide json web token to authenticate.'}])
         // Invalid token
-        const responseInvalidToken = await request(server).post(`${baseUrl}/logout`).set('Authorization', `Bearer 123`).expect(401)
+        const responseInvalidToken = await request(server).post(`${authUrl}/logout`).set('Authorization', `Bearer 123`).expect(401)
         assertSingleError(responseInvalidToken.body.errors, 'Invalid token.', 'token')
     })
 })
 
 describe('Get currently authenticated user should:', () => {
     test('Return correct data.', async () => {
-        const response = await request(server).get(`${baseUrl}/auth/me`).set(...userOneAuth).expect(200)
+        const response = await request(server).get(`${authUrl}/me`).set(...userOneAuth).expect(200)
         expect(response.body.user._id).toBe(userOne._id.toString())
         expect(response.body.user.email).toBe(userOne.email)
         expect(response.body.isGuest).toBe(false)

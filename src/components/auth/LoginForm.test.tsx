@@ -4,7 +4,7 @@
 import '@testing-library/jest-dom/vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { test, expect, describe, vi } from 'vitest';
-import setupTests from '@/tests/utils/setupServer';
+import setupTests from '@/tests/setup/setupServer';
 import LoginForm from './LoginForm';
 import * as api from '@/lib/api/auth';
 import { userEvent, UserEvent } from '@testing-library/user-event';

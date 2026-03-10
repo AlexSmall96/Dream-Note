@@ -1,6 +1,6 @@
 import { wipeDB } from '../../setup/wipeDB.js'
 import { beforeEach, expect, test, vi } from 'vitest';
-import { baseUrl } from '../data.js';
+import { accountUrl, authUrl } from '../data.js';
 import { createUser, getAuthHeader } from '../utils/userCreation.js';
 import { userOneCreds } from '../data.js';
 import { Types } from 'mongoose';
@@ -44,14 +44,14 @@ import { server } from '../../setup/testServer.js'
 
 test('Authenticated user can request email update and update email using real OTP.', async () => {
     // Request email update by sending otp to new email address  
-    let url = baseUrl + '/request-email-update'
+    let url = accountUrl + '/request-email-update'
     const newEmail = 'new@email.com'
     await postDataWithAuth(server, url, {email: newEmail}, 200, userOneAuth)
     // Extract mail options
     const otp = getSentOtp(sentMail)
 
     // Verify otp recieved in email
-    url = baseUrl + '/update-email'
+    url = accountUrl + '/update-email'
     const response = await patchDataWithAuth(server, url, {otp}, 200, userOneAuth)
     expect(response.body.message).toBe('Email updated successfully.')
 
@@ -60,7 +60,7 @@ test('Authenticated user can request email update and update email using real OT
     expect(user.email).toBe(newEmail)
 
     // Asser that user can login with new email
-    url = baseUrl + '/login'
+    url = authUrl + '/login'
     const loginResponse = await postDataWithNoAuth(server, url, {email: newEmail, password: userOneCreds.password}, 200)
     const body = loginResponse.body
     expect(body.isGuest).toBe(false)

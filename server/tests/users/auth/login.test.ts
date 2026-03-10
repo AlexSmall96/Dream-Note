@@ -2,7 +2,7 @@ import request from 'supertest';
 import { server } from '../../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { User } from '../../../models/user.model.js';
-import { userOneCreds, baseUrl } from '../data.js';
+import { userOneCreds, authUrl } from '../data.js';
 import { userType, createUser } from '../utils/userCreation.js';
 import { wipeDB } from '../../setup/wipeDB.js';
 import { Dream } from '../../../models/dream.model.js';
@@ -42,7 +42,7 @@ beforeEach(async () => {
 const guestTitles = guestData.map(d => d.dream.title)
 
 // Define url
-const loginUrl = baseUrl + '/login'
+const loginUrl = authUrl + '/login'
 
 test('Login to non guest account should be successful with correct credentials, and logout should succeed using generated token.', async () => {
     // Extract user id
@@ -63,7 +63,7 @@ test('Login to non guest account should be successful with correct credentials, 
     user = await User.findByIdOrThrowError(id)
     expect(user.tokens).toHaveLength(1)
     // Logout
-    await request(server).post(`${baseUrl}/logout`).set('Authorization', `Bearer ${token}`).expect(200)
+    await request(server).post(`${authUrl}/logout`).set('Authorization', `Bearer ${token}`).expect(200)
     // Assert database has changed - Token should have been removed
     user = await User.findByIdOrThrowError(id)
     expect(user.tokens).toHaveLength(0)        
@@ -76,7 +76,7 @@ test('Login to guest account should be successful and seed data should be reset.
     expect(newDream).not.toBeNull()
     expect(newTheme).not.toBeNull()
     // Login as guest
-    const response = await request(server).post(baseUrl + '/login-guest').send({}).expect(200)
+    const response = await request(server).post(authUrl + '/login-guest').send({}).expect(200)
     expect(response.body.isGuest).toBe(true)
 
     // Correct seed dream and theme data is created

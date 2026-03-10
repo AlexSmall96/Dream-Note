@@ -1,6 +1,6 @@
 import { wipeDB } from '../../setup/wipeDB.js'
 import { beforeEach, describe, expect, test } from 'vitest';
-import { baseUrl, guestUserCreds, userThreeCreds } from '../data.js';
+import { accountUrl, guestUserCreds, userThreeCreds } from '../data.js';
 import { createUser, getAuthHeader } from '../utils/userCreation.js';
 import { userOneCreds } from '../data.js';
 import { server } from '../../setup/testServer.js'
@@ -61,7 +61,7 @@ beforeEach(async () => {
     }).save()
 })  
 
-const url = baseUrl + '/verify-email'
+const url = accountUrl + '/verify-email'
 
 describe('Verify otp should fail if:', () => {
     test('User is authenticated as guest.', async () => {

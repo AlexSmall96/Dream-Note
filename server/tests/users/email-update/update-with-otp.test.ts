@@ -1,7 +1,7 @@
 import { server } from '../../setup/testServer.js';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { createUser, getAuthHeader } from '../utils/userCreation.js';
-import { baseUrl, userOneCreds, guestUserCreds, userThreeCreds } from '../data.js';
+import { accountUrl, userOneCreds, guestUserCreds, userThreeCreds } from '../data.js';
 import { wipeDB } from '../../setup/wipeDB.js';
 import { Types } from 'mongoose';
 import { patchDataWithAuth, sendData } from '../utils/sendData.js';
@@ -60,7 +60,7 @@ beforeEach(async () => {
     }).save()    
 })
 
-const url = baseUrl + '/update-email'
+const url = accountUrl + '/update-email'
 
 // Tests
 

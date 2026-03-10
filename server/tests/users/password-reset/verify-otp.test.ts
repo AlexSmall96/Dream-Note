@@ -1,6 +1,6 @@
 import { wipeDB } from '../../setup/wipeDB.js'
 import { beforeEach, describe, expect, test } from 'vitest';
-import { baseUrl } from '../data.js';
+import { authUrl } from '../data.js';
 import { createUser } from '../utils/userCreation.js';
 import { userOneCreds } from '../data.js';
 import { server } from '../../setup/testServer.js'
@@ -39,7 +39,7 @@ beforeEach(async () => {
     }).save()
 })  
 
-const url = baseUrl + '/verify-reset-otp'
+const url = authUrl + '/verify-reset-otp'
 
 // Tests
 

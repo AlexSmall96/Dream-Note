@@ -15,7 +15,7 @@ out
 
 # testing
 /coverage
-
+test-template.ts
 # next.js
 /.next/
 /out/
@@ -34,6 +34,7 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files
+env.test
 test.env
 .env
 .env.local

@@ -1,6 +1,6 @@
 import { wipeDB } from '../../setup/wipeDB.js'
 import { beforeEach, expect, test, vi } from 'vitest';
-import { baseUrl } from '../data.js';
+import { authUrl } from '../data.js';
 import { createUser } from '../utils/userCreation.js';
 import { userOneCreds } from '../data.js';
 import { Types } from 'mongoose';
@@ -41,18 +41,18 @@ import { patchDataWithNoAuth, postDataWithNoAuth } from '../utils/sendData.js';
 
 test('Unauthenticated user can request password reset and reset password using real OTP.', async () => {
     // Request password reset with email   
-    let url = baseUrl + '/request-password-reset'
+    let url = authUrl + '/request-password-reset'
     await postDataWithNoAuth(server, url, {email: userOneCreds.email}, 200)
     // Extract mail options
     const otp = getSentOtp(sentMail)
 
     // Verify otp value
-    url = baseUrl + '/verify-reset-otp'
+    url = authUrl + '/verify-reset-otp'
     const response = await postDataWithNoAuth(server, url, {email: userOneCreds.email, otp}, 200)
     const resetToken = response.body.resetToken
 
     // Reset password using reset token
-    url = baseUrl + '/reset-password'
+    url = authUrl + '/reset-password'
     const newPassword = '1@3c5t!r'
     const finalResponse = await patchDataWithNoAuth(server, url, {resetToken, password: newPassword }, 200)
     expect(finalResponse.body.message).toBe("Password updated successfully.")
@@ -63,7 +63,7 @@ test('Unauthenticated user can request password reset and reset password using r
     expect(isMatch).toBe(true)
 
     // Assert that user can login with new password
-    url = baseUrl + '/login'
+    url = authUrl + '/login'
     const loginResponse = await postDataWithNoAuth(server, url, {email: userOneCreds.email, password: newPassword}, 200)
     const body = loginResponse.body
     expect(body.isGuest).toBe(false)
