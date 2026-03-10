@@ -1,5 +1,5 @@
 "use client"
-import EmailForm from "@/components/account/EmailForm";
+import EmailForm from "@/components/forms/EmailForm";
 import { requestEmailUpdate, verifyOTPAndUpdateEmail } from "@/lib/api/account";
 
 export default function UpdateEmail(){
