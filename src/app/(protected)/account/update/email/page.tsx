@@ -1,5 +1,5 @@
 "use client"
-import EmailForm from "@/components/account/EmailForm";
+import EmailForm from "@/components/forms/EmailForm";
 import { requestEmailUpdate, verifyOTPAndUpdateEmail } from "@/lib/api/account";
 
 export default function UpdateEmail(){
@@ -8,7 +8,7 @@ export default function UpdateEmail(){
         <div className="flex flex-col items-center m-4">
             <EmailForm<{otp: string}> 
                 emailPlaceholder='Enter new email'
-                emailButtonText='Send OTP to Verify New Email'
+                emailButtonText='verify your new email'
                 requestFn={requestEmailUpdate} 
                 verifyFn={verifyOTPAndUpdateEmail}
                 buildVerifyPayload={(otp, _email) => ({otp})}
