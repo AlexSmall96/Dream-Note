@@ -63,6 +63,12 @@ describe('Account deletion should fail if:', () => {
         const response = await request(server).delete(url).set(...userOneAuth).expect(403)
         assertSingleError(response.body.errors, 'Please verify your email address to delete your account.')
     })
+
+    test('User does not provide password.', async () => {
+        // Send response with missing password
+        const response = await request(server).delete(url).set(...userThreeAuth).expect(400)
+        assertSingleError(response.body.errors, 'Please provide your password to delete your account.', 'currPassword')
+    })
 })
 
 describe('Account deletion should be successful if:', () => {
@@ -78,7 +84,7 @@ describe('Account deletion should be successful if:', () => {
         expect(themes).toHaveLength(2)
         themes.map(t => expect(['Adventure', 'Freedom'].includes(t.theme)))
         // Delete user 3
-        await request(server).delete(url).set(...userThreeAuth).expect(200)
+        const response = await request(server).delete(url).send({currPassword: userThreeCreds.password}).set(...userThreeAuth).expect(200)
         // Assert deletion cascade works: dreams and themes should be gone
         const nullDreams = await Dream.find({owner: userThreeId})
         expect(nullDreams).toHaveLength(0)
