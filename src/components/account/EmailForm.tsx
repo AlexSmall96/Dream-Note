@@ -1,9 +1,10 @@
-
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { resetTokenRes } from '@/types/accounts';
 import { useRouter } from "next/navigation"
-import SubmitButton from '../forms/Button';
 import { ErrorResponse, SuccessResponse } from '@/types/responses';
+import { Card } from '@/components/ui/Card'
+import { Input } from '@/components/forms/Input'
+import Button from '@/components/forms/Button'
 
 export default function EmailForm<TVerifyPayload>({
     emailPlaceholder,
@@ -22,20 +23,25 @@ export default function EmailForm<TVerifyPayload>({
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
     const [otpSent, setOtpSent] = useState(false)
-    const [otp, setOtp] = useState('')
+    const [otp, setOtp] = useState<string>('')
     const router = useRouter()
     const [disabled, setDisabled] = useState(true)
+    const [waiting, setWaiting] = useState(false)
+    const [btnText, setBtnText] = useState(`Send OTP to ${emailButtonText}`)
 
     // Sends a otp to the provided email address
     const handleSendOtp = async (event: React.FormEvent) => {
         event.preventDefault()
         try {
+            setWaiting(true)
             const result = await requestFn(email)
             if ('errors' in result){
+                setWaiting(false)
                 return setError(result.errors[0].msg)
             }
             setMessage(result.message)
             setOtpSent(true)
+            setWaiting(false)
         } catch (err){
             setError('Currently unable to send OTP due to system issues. Please try again later.')
         }
@@ -49,17 +55,20 @@ export default function EmailForm<TVerifyPayload>({
             return
         }
         try {
+            setWaiting(true)
             const result = await verifyFn(buildVerifyPayload(otp, email))
             if ('errors' in result){
+                setWaiting(false)
                 return setError(result.errors[0].msg)
             }
             if ('resetToken' in result){
-                return  router.replace(`/auth/reset-password/new?token=${result.resetToken}`)
+                return router.replace(`/auth/reset-password/new?token=${result.resetToken}`)
             }
             setMessage(result.message)
             setOtp('')
             setEmail('')
             setOtpSent(false)
+            setWaiting(false)
         } catch (err){
             setError('Currently unable to verify OTP due to system issues. Please try again later.')
         }
@@ -77,37 +86,53 @@ export default function EmailForm<TVerifyPayload>({
         setDisabled(value === '')
     }
 
+    useEffect(() => {
+        if (waiting && !otpSent){
+            setBtnText('Sending OTP...')
+        }
+        if (waiting && otpSent){
+            setBtnText('Verifying OTP...')
+        }
+        if (!waiting && otpSent){
+            setBtnText('Verify OTP')
+        }
+    }, [waiting, otpSent])
+    
     return (
-        <form onSubmit={!otpSent? handleSendOtp : handleVerifyOtp} className="flex flex-col gap-2 w-80">
-            {!otpSent?
-                <>
-                    <input 
-                        type='email'
-                        name='email'
-                        value={email}
-                        onChange={handleChange}
-                        placeholder={emailPlaceholder}
-                        className='bg-blue-100 p-2'
+        <Card>
+            <form onSubmit={!otpSent? handleSendOtp : handleVerifyOtp} className="flex flex-col gap-2 w-80">
+                {!otpSent?
+                    <>
+                        <Input
+                            type='email'
+                            name='email'
+                            value={email}
+                            onChange={handleChange}
+                            placeholder={emailPlaceholder}
+                            className='bg-blue-100 p-2'
+                            disabled={waiting}
+                        />
+                    </> 
+                :   
+                    <>     
+                        <Input 
+                            type='text'
+                            name='otp'
+                            value={otp}
+                            onChange={handleChange}
+                            placeholder='Enter OTP'
+                            className='bg-blue-100 p-2'
+                            disabled={waiting}
+                        />
+                    </>
+                }
+                    {message ?? ''}
+                    {error && <p role='alert' className="text-red-500">{error}</p>}
+                    <Button
+                        text={btnText}
+                        disabled={disabled || waiting || (otpSent && !otp)}
                     />
-                </> 
-            :   
-                <>     
-                    <input 
-                        type='text'
-                        name='otp'
-                        value={otp}
-                        onChange={handleChange}
-                        placeholder='Enter OTP'
-                        className='bg-blue-100 p-2'
-                    />
-                </>
-            }
-                {message ?? ''}
-                {error && <p className="text-red-500">{error}</p>}
-                <SubmitButton 
-                    text={!otpSent ? emailButtonText : 'Verify OTP'}
-                    disabled={disabled}
-                />
-        </form>
+            </form>
+        </Card>
     )
 }
