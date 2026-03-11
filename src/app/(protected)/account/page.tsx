@@ -2,7 +2,9 @@
 import PasswordForm from "@/components/account/PasswordForm";
 import UpdateEmailLink from "@/components/account/UpdateEmailLink";
 import VerifyEmail from "@/components/account/VerifyEmail";
+import LinkWithMessage from "@/components/forms/LinkWithMessage";
 import { useCurrentUser } from "@/contexts/CurrentUserContext";
+import { faTriangleExclamation as faWarn } from "@fortawesome/free-solid-svg-icons";
 
 export default function Account(){
     const { isGuest, currentUser } = useCurrentUser()
@@ -15,8 +17,11 @@ export default function Account(){
             {!isGuest ?
             <>
                 <UpdateEmailLink />
-                {isVerified ?  
+                {isVerified ? 
+                <>
                     <PasswordForm />
+                    <LinkWithMessage href='/account/delete' linkText='Delete Account' icon={faWarn} danger />
+                </> 
                 :
                     <VerifyEmail />
                 }
