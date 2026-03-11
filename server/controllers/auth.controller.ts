@@ -64,6 +64,17 @@ export class AuthController {
         }
     }
 
+    // Verify reset token to allow user to access reset password form
+    public verifyResetToken = async (req: Request, res: Response, next: NextFunction) => {
+        const resetToken = req.body.resetToken
+        try {
+            await this.authService.verifyResetToken(resetToken)
+            res.json({ message: "Reset token is valid." })
+        } catch (err) {
+            next(err)
+        }
+    }
+    
     // Verify otp for password reset, requires email that otp was sent to and otp value
     public verifyResetOtp = async (req: Request, res:Response, next: NextFunction) => {
         const otp = req.body.otp
