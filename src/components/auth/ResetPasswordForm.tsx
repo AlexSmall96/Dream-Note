@@ -1,11 +1,10 @@
 'use client'
-import { useSearchParams } from 'next/navigation'
 import { useState, useEffect } from "react"
 import SubmitButton from "../forms/Button"
 import { resetPassword } from '@/lib/api/auth'
 import { useRouter } from "next/navigation";
 
-export default function ResetPasswordForm () {
+export default function ResetPasswordForm ({token}:{token: string}) {
 
     const [formData, setFormData] = useState({
         password1: '', password2: ''
@@ -13,8 +12,6 @@ export default function ResetPasswordForm () {
     const [disabled, setDisabled] = useState(true)
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
-    const searchParams = useSearchParams()
-    const token = searchParams.get('token')
     const router = useRouter();
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
