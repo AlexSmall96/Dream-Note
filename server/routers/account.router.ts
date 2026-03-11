@@ -90,6 +90,10 @@ export class AccountRouter {
             auth, 
             forbidGuest('Guest users are not authorized to delete account.'),
             forbidUnverified('Please verify your email address to delete your account.'),
+            body('currPassword')
+            .notEmpty().withMessage('Please provide your password to delete your account.'),
+            validateRequest,
+            comparePasswords,
             this.accountController.deleteAccount
         )
     }

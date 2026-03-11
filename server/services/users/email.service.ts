@@ -31,4 +31,15 @@ export class EmailService {
             text           
         })
     }
+
+    public sendAccountDeletionConfirmation(email: string){
+        const subject = 'Your Dream Note account has been deleted.'
+        const text = 'Your account has been successfully deleted. We are sorry to see you go.'
+        return this.transporter.sendMail({
+            from: process.env.SMTP_MAIL,
+            to: email,
+            subject,
+            text           
+        })
+    }
 }

@@ -21,3 +21,7 @@ export async function verifyEmail(otp: string){
 export async function updatePassword(data:passwordUpdateInput) {
     return apiFetch<ErrorResponse | SuccessResponse, passwordUpdateInput>('/account/update-password', {method: 'PATCH', body: data})
 }
+
+export async function deleteAccount(password: string) {
+    return apiFetch<ErrorResponse | SuccessResponse, {currPassword: string}>('/account/delete', {method: 'DELETE', body: {currPassword: password}})
+}

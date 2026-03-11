@@ -51,7 +51,11 @@ export class AccountService {
     }
    
     public async deleteAccount(userId: string){
+        const user = await User.findByIdOrThrowError(userId)
+        const email = user.email
         await User.findOneAndDelete({ _id: userId})
+        await this.emailService.sendAccountDeletionConfirmation(email)
+        return { message: 'Account deleted successfully.' }
     }
 
     public async updateEmailAndDeleteOtp(otp: string, userId: string){
