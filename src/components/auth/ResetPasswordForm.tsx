@@ -1,8 +1,10 @@
 'use client'
 import { useState, useEffect } from "react"
-import SubmitButton from "../forms/Button"
 import { resetPassword } from '@/lib/api/auth'
-import { useRouter } from "next/navigation";
+import { Card } from "../ui/Card";
+import { Input } from "../forms/Input";
+import LinkWithMessage from "../forms/LinkWithMessage";
+import Button from "../forms/Button";
 
 export default function ResetPasswordForm ({token}:{token: string}) {
 
@@ -12,8 +14,8 @@ export default function ResetPasswordForm ({token}:{token: string}) {
     const [disabled, setDisabled] = useState(true)
     const [error, setError] = useState('')
     const [message, setMessage] = useState('')
-    const router = useRouter();
-
+    const [invalidSession, setInvalidSession] = useState(false)
+    const [waiting, setWaiting] = useState(false)
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setFormData({
 			...formData, [event.target.name]: event.target.value
@@ -36,42 +38,60 @@ export default function ResetPasswordForm ({token}:{token: string}) {
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
+        setWaiting(true)
         if (!token){
             return
         }
         try {
             const result = await resetPassword(formData.password1, token)
+            if ('errors' in result && result.errors[0].msg === 'Invalid reset session.'){
+                return setInvalidSession(true)
+            }
             if ('errors' in result){
                 return setError(result.errors[0].msg)
             }
             setMessage(result.message)
         } catch (err){
             setError('Currently unable to change password due to system issues. Please try again later.')
+        } finally {
+            setWaiting(false)
         }
     }
 
     return (
-        <form className='flex flex-col gap-2 w-80' onSubmit={handleSubmit}>
-            <input 
-                name='password1'
-                value={formData.password1}
-                type='password'
-                placeholder="Enter your new password."
-                onChange={handleChange}
-            />
-            <input 
-                name='password2'
-                value={formData.password2}
-                type='password'
-                placeholder="Confirm your new password."
-                onChange={handleChange}
-            />
-            {error ?? ''}
-            {message ?? ''}
-            <SubmitButton text={'Change password'} disabled={disabled} />
-            {message?
-                <button type="button" onClick={() => router.replace('/auth/login')} className='bg-gray-500 hover:bg-gray-700 text-white font-bold'>Login</button>
-            :''}
-        </form>
+        <Card>
+            <form className='flex flex-col gap-2 w-80' onSubmit={handleSubmit}>
+                <Input
+                    name='password1'
+                    value={formData.password1}
+                    type='password'
+                    placeholder="Enter your new password."
+                    onChange={handleChange}
+                    aria-label='password'
+                    disabled={waiting}
+                />
+                <Input 
+                    name='password2'
+                    value={formData.password2}
+                    type='password'
+                    placeholder="Confirm your new password."
+                    onChange={handleChange}
+                    aria-label='confirm password'
+                    disabled={waiting}
+                />
+                {error && <p role="alert" className="text-red-500">{error}</p>}
+
+                {message && <LinkWithMessage href='/auth/login' linkText="Login" msg={message} />}
+
+                {!message && !invalidSession ? 
+                    <Button text={waiting ? 'Changing password...' : 'Change password'} disabled={disabled || waiting} /> 
+                : 
+                    invalidSession ? 
+                        <LinkWithMessage href='/auth/reset-password' linkText="Request new password reset" msg={'Reset session invalid.'} />
+                    :
+                        <LinkWithMessage href='/auth/reset-password' linkText="Reset Password" msg={'Need to change your password again?'} />
+                }
+            </form>
+        </Card>
     )
 }

@@ -6,10 +6,18 @@ type SignupRequestBody = {
     password: string;
 }
 
+type ResetPasswordBody = {
+    password: string, 
+    resetToken: string
+}
+
 const userOneCreds = {
     email: 'user1@email.com',
     password: 'apple123'
 }
+
+// Keep errors in standard format even for single error
+type ErrorArray = {param?: string, msg: string, value?: string}[]
 
 const url = baseUrl + '/auth'
 
@@ -18,7 +26,7 @@ export const authHandlers = [
     http.post(`${url}/signup`, async ({request}) => {
         // Mock valid and invalid sign up data
         const { email, password } = (await request.json()) as SignupRequestBody
-        const errors: {param: string, msg: string, value: string}[] = []
+        const errors: ErrorArray = []
         if (email === userOneCreds.email){
             errors.push(
                 {param: 'email', msg: 'Email address already in use.', value: email}
@@ -42,8 +50,7 @@ export const authHandlers = [
 
     http.post(`${url}/login`, async ({request}) => {
         const { email, password } = (await request.json()) as SignupRequestBody
-        // Keep errors in standard format even for single error
-        const errors: {msg: string}[] = []
+        const errors:ErrorArray = []
 
         // Generic error message is returned regardless of parameter
         // Avoids email enumeration
@@ -66,6 +73,28 @@ export const authHandlers = [
         return HttpResponse.json({
             user: {email, password}
         }, {status: 201})
+    }),
+
+    http.patch(`${url}/reset-password`, async ({request}) => {
+        const { password, resetToken } = (await request.json()) as ResetPasswordBody
+        const errors: ErrorArray = []
+        if (password.includes('password')) {
+            errors.push(
+                {msg: 'Password cannot contain "password".'}
+            )            
+        }
+        if (resetToken !== 'valid-token'){
+            errors.push(
+                {msg: 'Invalid reset session.'}
+            )
+        }
+        if (errors.length){
+            return HttpResponse.json({errors}, {status: 400})
+        }
+        return HttpResponse.json({
+            message: 'Password reset successful.'
+        }, {status: 200})
+
     })
 
 ]

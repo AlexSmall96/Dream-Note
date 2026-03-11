@@ -18,7 +18,7 @@ export const errorHandler = (
 		// JWT errors
 		if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
 			return res.status(400).json({
-				errors: [{ msg: "Invalid or expired session." }]
+				errors: [{ msg: "Invalid reset session." }]
 			})
 		}
 		

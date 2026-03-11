@@ -26,7 +26,7 @@ describe('Verifying password reset token should fail if:', () => {
 
     test('Reset token is invalid.', async () => {
         const response = await postDataWithNoAuth(server, url, { resetToken: 'invalidtoken' }, 400)
-        assertSingleError(response.body.errors, 'Invalid or expired session.')
+        assertSingleError(response.body.errors, 'Invalid reset session.')
     })
 })
 
