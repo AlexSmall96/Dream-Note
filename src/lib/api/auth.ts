@@ -27,6 +27,10 @@ export async function requestPasswordReset(email: string){
     return apiFetch<ErrorResponse | SuccessResponse, {email: string}>('/auth/request-password-reset', {method: 'POST', body: {email}})
 }
 
+export async function verifyResetToken(resetToken: string){
+    return apiFetch<ErrorResponse | SuccessResponse, {resetToken: string}>('/auth/verify-token', {method: 'POST', body: {resetToken}})
+}
+
 export async function verifyResetOTP(data: {otp: string, email: string}) {
     return apiFetch<ErrorResponse | resetTokenRes, verifyResetOTPInput>('/auth/verify-reset-otp', {method: 'POST', body: data})
 }
