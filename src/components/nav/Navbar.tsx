@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useCurrentUser } from "@/contexts/CurrentUserContext"
+import Image from "next/image"
 
 function LoggedOutNav() {
   return (
@@ -14,7 +15,7 @@ function LoggedOutNav() {
 
 function LogoutButton() {
   	const handleLogout = async () => {
-    await fetch("/api/users/logout", {
+    await fetch("/api/auth/logout", {
       	method: "POST",
       	credentials: "include",
     })
@@ -41,10 +42,17 @@ export default function Navbar() {
 
 
   return (
-    <nav className="w-full border-b bg-white">
+    <nav className="w-full border-b bg-purple-200">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link href="/" className="text-lg font-semibold">
-          DreamNote
+        <Link href="/" className="flex items-center text-lg font-semibold font-poppins">
+          DreamN
+          <Image
+            alt="sleepy emoji"
+            width={25}
+            height={25}
+            src="/images/sleepy.png"
+          />
+          te
         </Link>
         <div className="flex gap-4">
           {loading? null : currentUser ? <LoggedInNav /> : <LoggedOutNav />}
