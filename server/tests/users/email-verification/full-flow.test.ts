@@ -71,9 +71,11 @@ test('Authenticated user can request email verification and verify email using r
     const updateResponse = await patchDataWithAuth(server, updatePasswordUrl, {currPassword: userOneCreds.password, password: newPassword}, 200, userOneAuth)
     expect(updateResponse.body.message).toBe("Password updated successfully.")
 
-    // Asser that user can delete account
+    // Assert that user can delete account
     const deleteUrl = accountUrl + '/delete'
-    await request(server).delete(deleteUrl).set(...userOneAuth).expect(200)
+    await request(server).delete(deleteUrl).send({currPassword: newPassword}).set(...userOneAuth).expect(200)
+    const deletedUser = await User.findById(userOneId)
+    expect(deletedUser).toBeNull()
 })
 
 test('Requesting verification again before using an otp should delete old otp.', async () => {
