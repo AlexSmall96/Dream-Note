@@ -47,7 +47,7 @@ export class AuthService {
         }
     }
 
-        public async resetPassword(resetToken: string, newPassword: string){
+    public async verifyResetToken(resetToken: string){
         const payload = this.resetTokenService.verifyPasswordResetToken(resetToken)
         const { userId, otpId } = payload
         const user = await User.findById(userId)
@@ -59,6 +59,13 @@ export class AuthService {
         if (!otp){
             throw new AppError('Invalid reset session.', 400, 'resetToken')
         }
+        return {otpId, userId}
+    }
+
+
+
+    public async resetPassword(resetToken: string, newPassword: string){
+        const {otpId, userId} = await this.verifyResetToken(resetToken)
         // Delete otp as password update is successful
         await this.accountService.updatePassword(newPassword, userId)
         await this.otpService.deleteOtp(otpId)
@@ -73,6 +80,7 @@ export class AuthService {
         const resetToken = this.resetTokenService.generatePasswordResetToken(otpRecord.userId.toString(), otpRecord._id.toString())
         return resetToken
     }
+
     // Save dreams and themes when guest logs in
     public async seedGuestData(guestId: string){
         await Promise.all(guestData.map(async (data) => {

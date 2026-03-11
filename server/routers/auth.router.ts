@@ -53,6 +53,16 @@ export class AuthRouter {
             validateRequest,  
             this.authController.verifyResetOtp        
         )
+
+        // A seperate route is required for token verification only
+        // This prevents users accessing reset password form with a fake token in the url
+        this.router.post(
+            '/verify-token',
+            body('resetToken')
+            .notEmpty().withMessage('Reset token must be provided.').bail(),
+            validateRequest,
+            this.authController.verifyResetToken
+        )
         
         // Resets password using reset token
         this.router.patch(
