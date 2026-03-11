@@ -98,6 +98,7 @@ describe('Account deletion should be successful if:', () => {
         themes.map(t => expect(['Adventure', 'Freedom'].includes(t.theme)))
         // Delete user 3
         const response = await request(server).delete(url).send({currPassword: userThreeCreds.password}).set(...userThreeAuth).expect(200)
+        expect(response.body.message).toBe('Account deleted successfully.')
         // Assert deletion cascade works: dreams and themes should be gone
         const nullDreams = await Dream.find({owner: userThreeId})
         expect(nullDreams).toHaveLength(0)
