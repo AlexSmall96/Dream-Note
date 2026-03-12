@@ -5,33 +5,53 @@ import { useRouter } from "next/navigation";
 import LinkWithMessage from "../forms/LinkWithMessage";
 import { useParams } from "next/navigation"
 import DreamCard from "./DreamCard";
+import { fetchFullDream } from "@/lib/api/dreams";
+import { useEffect } from "react";
+import { useDreamAnalysis } from "@/app/hooks/useDreamAnalysis";
+import { useDreamNavigation } from "@/app/hooks/useDreamNavigation";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faChevronRight as faNext } from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft as faPrev } from "@fortawesome/free-solid-svg-icons";
 
-export default function DreamView ({
-    getAnalysis,
-    saveAnalysis, 
-    onNext, 
-    onPrev, 
-    index,
-    maxIndex,
-}:{
-    getAnalysis: () => Promise<void>, 
-    saveAnalysis: () => Promise<void>, 
-    onNext: () => void,
-    onPrev: () => void,
-    index: number,
-    maxIndex: number,
-}){
+export default function DreamView ({dreamId}:{dreamId:string}){
+    const { dream, setDream, setThemes, analysis, showSettings, setShowSettings, tone, setTone, style, setStyle, length, setLength, options } = useDreamView()
+    const params = useParams()
+    const { getAnalysis, saveAnalysis } = useDreamAnalysis(dreamId)
+    const { index, goToNextDream, goToPrevDream, maxIndex } = useDreamNavigation(dreamId)
+    const id = params.id as string
 
-    const { dream, analysis, showSettings, setShowSettings, tone, setTone, style, setStyle, length, setLength, options } = useDreamView()
+    useEffect(() => {
+        const getFullDream = async () => {
+            try {
+                const response = await fetchFullDream(id)
+                setDream(response.dream) 
+                setThemes(response.themes || [])
+            } catch (err){
+                console.log(err)
+            }
+        }
+        getFullDream()
+    }, [params.id])
+
     const { chronView } = useThemesAside()
     const router = useRouter()
-    const params = useParams()
-    const id = params.id
+
 
     return (
+        <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col items-center">
+            {chronView &&
+                <span>
+                    {index !== 0 && 
+                    <button onClick={goToPrevDream} className='bg-gray-200 px-2 py-1 m-1'>
+                        <FontAwesomeIcon icon={faPrev} />
+                    </button>}
+                    {index !== maxIndex && 
+                    <button onClick={goToNextDream} className='bg-gray-200 px-2 py-1 m-1'>
+                        <FontAwesomeIcon icon={faNext} />
+                    </button>}
+                </span>}
             <DreamCard />
-            <p>{dream.notes}</p>
 
             <p className="italic">{analysis ?? ''}</p>
             {analysis !== '' && 
@@ -42,12 +62,18 @@ export default function DreamView ({
                     Save
                 </button>
             }
+            <LinkWithMessage 
+                href='/dreams'
+                linkText="Back to Dashboard"
+            />
+        </div>
+        <div className="flex flex-col items-center">
             <button 
                 onClick={getAnalysis}
                 disabled={!dream.description}
                 className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 disabled:cursor-not-allowed disabled:bg-gray-400'
             >
-                Get New AI Analysis
+                Analyse
             </button>
             <button 
                 onClick={() => setShowSettings(prev => !prev)} 
@@ -65,17 +91,7 @@ export default function DreamView ({
             <button className='bg-blue-400 p-2 m-1' onClick={() => router.replace(`/dreams/${id}/analysis`)}>
                 View Previous AI Analysis
             </button>
-
-
-            <LinkWithMessage 
-                href='/dreams'
-                linkText="Back to Dashboard"
-            />
-            {chronView &&
-            <span>
-                {index !== 0 && <button onClick={onPrev} className='bg-gray-200 px-2 py-1 m-1'>Previous dream</button>}
-                {index !== maxIndex && <button onClick={onNext} className='bg-gray-200 px-2 py-1 m-1'>Next dream</button>}
-            </span>}
+        </div>
         </div>
     )
 }
