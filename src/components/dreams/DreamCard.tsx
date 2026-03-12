@@ -3,14 +3,15 @@ import LinkWithMessage from "../forms/LinkWithMessage";
 import { faFeatherPointed as faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan as faDelete } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "next/navigation"
+import { faMagnifyingGlass as faAnalyse } from "@fortawesome/free-solid-svg-icons";
 
 export default function DreamCard () {
     const {dream, themes } = useDreamView()
     const params = useParams()
-    const id = params.id
+    const id = params.id as string
 
     return (
-        <div className="mt-8 mb-8 p-8 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg shadow-lg border border-purple-100 w-full max-w-xl">
+        <div className="relative mt-8 mb-16 p-8 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg shadow-lg border border-purple-100 w-full max-w-xl">
             <div className="flex justify-between items-start mb-4">
                 <div>
                     <h2 className="text-lg text-gray-700 italic">
@@ -22,15 +23,22 @@ export default function DreamCard () {
                 </div>
         
                 <div className="flex gap-3">
+                    <LinkWithMessage 
+                        href={`/dreams/${id}/analysis`}
+                        icon={faAnalyse}
+                        extraClass="text-xl"
+                    />
                     <LinkWithMessage
                         href={`/dreams/${id}/edit`}
                         icon={faEdit}
                         textColor="text-gray-500"
+                        extraClass="text-xl"
                     />
                     <LinkWithMessage
                         href={`/dreams/${id}/delete`}
                         icon={faDelete}
                         textColor="text-black"
+                        extraClass="text-xl"
                         danger
                     />
                 </div>
@@ -48,6 +56,11 @@ export default function DreamCard () {
                     </span>
                 ))}
             </div>
+
+            {dream.notes &&
+              <div className="absolute -bottom-6 right-6 rotate-2 bg-yellow-200 p-3 shadow-lg rounded-sm w-48">
+                <p className="text-sm text-gray-800">{dream.notes}</p>
+            </div>}
         </div>
     )
 }
