@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useDreamNavigation } from "@/app/hooks/useDreamNavigation";
 import { faChevronRight as faNext } from "@fortawesome/free-solid-svg-icons";
 import { faChevronLeft as faPrev } from "@fortawesome/free-solid-svg-icons";
-import Button from "../forms/Button";
+import IconWithTooltip from "../ui/IconWithTooltip";
 
 
 export default function DreamView ({dreamId}:{dreamId:string}){
@@ -37,39 +37,39 @@ export default function DreamView ({dreamId}:{dreamId:string}){
     return (
         <div className="grid grid-cols-6">
             <div className='col-span-1 flex flex-col justify-center items-center'>
-                {chronView && <Button 
-                    type='button'
-                    onClick={goToPrevDream}
-                    icon={faPrev}
-                    color='bg-purple-300 hover:bg-purple-400'
-                    disabled={index === 0}
-                /> }
+                {chronView && 
+                    <IconWithTooltip 
+                        onClick={goToPrevDream}
+                        icon={faPrev}
+                        tooltipText="Previous Dream"
+                        extraClass={`text-2xl`}
+                        disabled={index === 0}
+                    />}
             </div>
             <div className="col-span-4 flex flex-col items-center">
+                <LinkWithMessage 
+                    href='/dreams'
+                    linkText="Back to Dashboard"
+                    extraClass="text-lg"
+                />
                 {loading ? 
                     <div className="flex justify-center items-center py-10">
                         <div className="w-6 h-6 border-2 border-purple-200 border-t-purple-500 rounded-full animate-spin"></div>
-                    </div>:
-                    <>
+                    </div>
+                :
                         <DreamCard />
-
-                        <LinkWithMessage 
-                            href='/dreams'
-                            linkText="Back to Dashboard"
-                            extraClass="text-xl"
-                        />
-                    </>
                 }
             </div>
             <div className='col-span-1 flex flex-col justify-center items-center'>
-                {chronView && <Button 
-                    type='button'
+                {chronView && 
+                <IconWithTooltip
                     onClick={goToNextDream}
                     icon={faNext}
-                    color='bg-purple-300 hover:bg-purple-400'
+                    extraClass="text-2xl"
+                    tooltipText="Next Dream"
                     disabled={index === maxIndex}
                 />}
             </div>
-    </div>
+        </div>
     )
 }
