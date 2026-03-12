@@ -2,6 +2,9 @@ import Dropdown from "@/components/ui/Dropdown"
 import { useDreamView } from "@/contexts/DreamViewContext"
 import { useThemesAside } from "@/contexts/ThemesAsideContext";
 import { useRouter } from "next/navigation";
+import LinkWithMessage from "../forms/LinkWithMessage";
+import { useParams } from "next/navigation"
+import DreamCard from "./DreamCard";
 
 export default function DreamView ({
     getAnalysis,
@@ -10,7 +13,6 @@ export default function DreamView ({
     onPrev, 
     index,
     maxIndex,
-    id
 }:{
     getAnalysis: () => Promise<void>, 
     saveAnalysis: () => Promise<void>, 
@@ -18,24 +20,19 @@ export default function DreamView ({
     onPrev: () => void,
     index: number,
     maxIndex: number,
-    id: string
 }){
 
-    const {dream, themes, analysis, showSettings, setShowSettings, tone, setTone, style, setStyle, length, setLength, options } = useDreamView()
+    const { dream, analysis, showSettings, setShowSettings, tone, setTone, style, setStyle, length, setLength, options } = useDreamView()
     const { chronView } = useThemesAside()
     const router = useRouter()
+    const params = useParams()
+    const id = params.id
 
     return (
         <div className="flex flex-col items-center">
-            <h1>{dream.title}</h1>
-            <h1>{new Date(dream.date).toLocaleDateString()}</h1>
-            <p>{dream.description}</p>
+            <DreamCard />
             <p>{dream.notes}</p>
-            {themes.map(theme =>
-                <span key={theme.theme} className="bg-brand-softer border border-brand-subtle text-fg-brand-strong text-xs font-medium px-1.5 py-0.5 rounded">
-                    {theme.theme}
-                </span>
-                )}
+
             <p className="italic">{analysis ?? ''}</p>
             {analysis !== '' && 
                 <button 
@@ -68,9 +65,12 @@ export default function DreamView ({
             <button className='bg-blue-400 p-2 m-1' onClick={() => router.replace(`/dreams/${id}/analysis`)}>
                 View Previous AI Analysis
             </button>
-            <button className='bg-blue-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/edit`)}>Edit</button>
-            <button className='bg-green-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/delete`)}>Delete</button>
-            <button className='bg-gray-300 p-1 m-1' onClick={() => router.replace(`/dreams/`)}>Back to Dashboard</button>
+
+
+            <LinkWithMessage 
+                href='/dreams'
+                linkText="Back to Dashboard"
+            />
             {chronView &&
             <span>
                 {index !== 0 && <button onClick={onPrev} className='bg-gray-200 px-2 py-1 m-1'>Previous dream</button>}
