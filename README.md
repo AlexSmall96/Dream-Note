@@ -1,35 +1,30 @@
-# Dream Note
+# DreamNote
 
 ![CI](https://github.com/AlexSmall96/Dream-Note/actions/workflows/ci.yml/badge.svg)
 
-Dream Note is an AI-assisted dream journal app. Users can:
+Dream Note is an AI-assisted dream journal app where users can:
 - Record dreams, with automatic AI title and theme generation. 
 - View dreams chronologically or by theme.
 - Generate customizable, AI dream analysis. 
 
-This project is actively in development. 
+This project is currently under active development. 
 
-Current focus: Frontend styling and testing
-## 🌐 Live Site
-[https://dream-note-uh6p.onrender.com/](https://dream-note-uh6p.onrender.com/)
+Current focus: Frontend styling and testing.
+
+### [🌐 Live Site](https://dream-note-uh6p.onrender.com/)
+
+### [📖 Repository](https://github.com/AlexSmall96/Dream-Note)
 
 **Note:** Mock versions of AI-assisted features are currently being used to minimize costs while the project is in development.
-
-## 📖 Repository
-[https://github.com/AlexSmall96/Dream-Note](https://github.com/AlexSmall96/Dream-Note)
-
-## 👤 Author
-Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
 
 ## 🔍 Key Features
 
 ## 💻 Tech Stack
-| Backend | Frontend | Database | Testing | Other Tools |
+| Backend | Frontend | Database | Testing (Vitest) | Other Tools |
 | :------:|:------: | :------: | :------: | :------: |
-| Node.js |   React      | MongodDB          | Vitest           |  GitHub       |  
-| Express |   Next.js      | Mongoose          | React Testing Library          | Postman        |  
-| TypeScript  |  TailwindCSS       |          |  Mock Service Worker         |   lucidchart      |  
-|  |         |          |    Supertest       |  dbdiagram       |  
+| Node.js   |   React      | MongodDB          | Supertest         |  GitHub       |  
+|Express  |   Next.js      | Mongoose          | React Testing Library         | Postman        |  
+|TypeScript  |  TailwindCSS       | MongoDB Compass         |  Mock Service Worker         |   dbdiagram      |  
 
 ## 🔧 Architecture
 ### 🗃️ Database Schema
@@ -51,6 +46,9 @@ Manual testing is detailed fully in [TESTING.MD](TESTING.MD)
 ## 📈 Future Improvements
 
 ## 💻 Setup
+
+## 👤Author 
+Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
 
 ## 🤝 Credits
 ### Courses
