@@ -1,81 +1,75 @@
-import Dropdown from "@/components/ui/Dropdown"
 import { useDreamView } from "@/contexts/DreamViewContext"
 import { useThemesAside } from "@/contexts/ThemesAsideContext";
-import { useRouter } from "next/navigation";
+import LinkWithMessage from "../forms/LinkWithMessage";
+import { useParams } from "next/navigation"
+import DreamCard from "./DreamCard";
+import { fetchFullDream } from "@/lib/api/dreams";
+import { useEffect, useState } from "react";
+import { useDreamNavigation } from "@/app/hooks/useDreamNavigation";
+import { faChevronRight as faNext } from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft as faPrev } from "@fortawesome/free-solid-svg-icons";
+import IconWithTooltip from "../ui/IconWithTooltip";
 
-export default function DreamView ({
-    getAnalysis,
-    saveAnalysis, 
-    onNext, 
-    onPrev, 
-    index,
-    maxIndex,
-    id
-}:{
-    getAnalysis: () => Promise<void>, 
-    saveAnalysis: () => Promise<void>, 
-    onNext: () => void,
-    onPrev: () => void,
-    index: number,
-    maxIndex: number,
-    id: string
-}){
 
-    const {dream, themes, analysis, showSettings, setShowSettings, tone, setTone, style, setStyle, length, setLength, options } = useDreamView()
+export default function DreamView ({dreamId}:{dreamId:string}){
+    const { setDream, setThemes } = useDreamView()
+    const params = useParams()
+    const [loading, setLoading] = useState(true)
+    const { index, goToNextDream, goToPrevDream, maxIndex } = useDreamNavigation(dreamId)
+    const id = params.id as string
+
+    useEffect(() => {
+        const getFullDream = async () => {
+            try {
+                const response = await fetchFullDream(id)
+                setDream(response.dream) 
+                setThemes(response.themes || [])
+                setLoading(false)
+            } catch (err){
+                console.log(err)
+            }
+        }
+        getFullDream()
+    }, [params.id])
+
     const { chronView } = useThemesAside()
-    const router = useRouter()
 
     return (
-        <div className="flex flex-col items-center">
-            <h1>{dream.title}</h1>
-            <h1>{new Date(dream.date).toLocaleDateString()}</h1>
-            <p>{dream.description}</p>
-            <p>{dream.notes}</p>
-            {themes.map(theme =>
-                <span key={theme.theme} className="bg-brand-softer border border-brand-subtle text-fg-brand-strong text-xs font-medium px-1.5 py-0.5 rounded">
-                    {theme.theme}
-                </span>
-                )}
-            <p className="italic">{analysis ?? ''}</p>
-            {analysis !== '' && 
-                <button 
-                    className='bg-green-500 hover:bg-green-700 text-white font-bold p-2 m-2 disabled:cursor-not-allowed disabled:bg-gray-400'
-                    onClick={saveAnalysis}
-                >
-                    Save
-                </button>
-            }
-            <button 
-                onClick={getAnalysis}
-                disabled={!dream.description}
-                className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 disabled:cursor-not-allowed disabled:bg-gray-400'
-            >
-                Get New AI Analysis
-            </button>
-            <button 
-                onClick={() => setShowSettings(prev => !prev)} 
-                className='bg-cyan-500 text-white font-bold p-2 m-2'
-            >
-                {!showSettings? 'Show': 'Hide'} settings  
-            </button>
-            {showSettings?
-                    <>
-                        <Dropdown<string> parameter={tone} setParameter={setTone} options={options.tone} parameterName="tone"/>
-                        <Dropdown<string> parameter={style} setParameter={setStyle} options={options.style} parameterName="style" />                        
-                        <Dropdown<string> parameter={length} setParameter={setLength} options={options.length} parameterName="length" />                        
-                    </>
-                :''}
-            <button className='bg-blue-400 p-2 m-1' onClick={() => router.replace(`/dreams/${id}/analysis`)}>
-                View Previous AI Analysis
-            </button>
-            <button className='bg-blue-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/edit`)}>Edit</button>
-            <button className='bg-green-300 p-1 m-1' onClick={() => router.replace(`/dreams/${id}/delete`)}>Delete</button>
-            <button className='bg-gray-300 p-1 m-1' onClick={() => router.replace(`/dreams/`)}>Back to Dashboard</button>
-            {chronView &&
-            <span>
-                {index !== 0 && <button onClick={onPrev} className='bg-gray-200 px-2 py-1 m-1'>Previous dream</button>}
-                {index !== maxIndex && <button onClick={onNext} className='bg-gray-200 px-2 py-1 m-1'>Next dream</button>}
-            </span>}
+        <div className="grid grid-cols-6">
+            <div className='col-span-1 flex flex-col justify-center items-center'>
+                {chronView && 
+                    <IconWithTooltip 
+                        onClick={goToPrevDream}
+                        icon={faPrev}
+                        tooltipText="Previous Dream"
+                        extraClass={`text-2xl`}
+                        disabled={index === 0}
+                    />}
+            </div>
+            <div className="col-span-4 flex flex-col items-center">
+                <LinkWithMessage 
+                    href='/dreams'
+                    linkText="Back to Dashboard"
+                    extraClass="text-lg"
+                />
+                {loading ? 
+                    <div className="flex justify-center items-center py-10">
+                        <div className="w-6 h-6 border-2 border-purple-200 border-t-purple-500 rounded-full animate-spin"></div>
+                    </div>
+                :
+                        <DreamCard />
+                }
+            </div>
+            <div className='col-span-1 flex flex-col justify-center items-center'>
+                {chronView && 
+                <IconWithTooltip
+                    onClick={goToNextDream}
+                    icon={faNext}
+                    extraClass="text-2xl"
+                    tooltipText="Next Dream"
+                    disabled={index === maxIndex}
+                />}
+            </div>
         </div>
     )
 }
