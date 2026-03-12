@@ -73,7 +73,7 @@ export default function DreamPage({ params }: { params: { id: string } }) {
 
     return (
         <div className="flex flex-col items-center m-4">
-            <DreamView getAnalysis={getAnalysis} saveAnalysis={saveAnalysis} id={params.id} onNext={goToNextDream} onPrev={goToPrevDream} index={index} maxIndex={dreams.length - 1} />
+            <DreamView getAnalysis={getAnalysis} saveAnalysis={saveAnalysis} onNext={goToNextDream} onPrev={goToPrevDream} index={index} maxIndex={dreams.length - 1} />
         </div>
     )
 }
