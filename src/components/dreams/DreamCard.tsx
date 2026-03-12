@@ -4,6 +4,7 @@ import { faFeatherPointed as faEdit } from "@fortawesome/free-solid-svg-icons";
 import { faTrashCan as faDelete } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "next/navigation"
 import { faMagnifyingGlass as faAnalyse } from "@fortawesome/free-solid-svg-icons";
+import IconWithTooltip from "../ui/IconWithTooltip";
 
 export default function DreamCard () {
     const {dream, themes } = useDreamView()
@@ -23,21 +24,22 @@ export default function DreamCard () {
                 </div>
         
                 <div className="flex gap-3">
-                    <LinkWithMessage 
+                    <IconWithTooltip
                         href={`/dreams/${id}/analysis`}
                         icon={faAnalyse}
-                        extraClass="text-xl"
+                        tooltipText="Analyse"
+                        extraClass="text-xl text-gray-500"
                     />
-                    <LinkWithMessage
+                    <IconWithTooltip
                         href={`/dreams/${id}/edit`}
                         icon={faEdit}
-                        textColor="text-gray-500"
-                        extraClass="text-xl"
+                        tooltipText="Edit"
+                        extraClass="text-xl text-gray-500"
                     />
-                    <LinkWithMessage
+                    <IconWithTooltip
                         href={`/dreams/${id}/delete`}
                         icon={faDelete}
-                        textColor="text-black"
+                        tooltipText="Delete"
                         extraClass="text-xl"
                         danger
                     />
