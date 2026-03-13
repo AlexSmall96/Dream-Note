@@ -1,20 +1,19 @@
 "use client";
 import { createContext, Dispatch, SetStateAction, useState, useContext, useEffect } from "react"
 import { DreamFullView } from "@/types/dreams"
-import { ThemeResponse } from "@/types/themes"
 import { fetchAiOptions } from "@/lib/api/aiAnalysis";
 
 type optionsType = {
-        tone: string[],
-        style: string[],
-        length: string[]
+    tone: string[],
+    style: string[],
+    length: string[]
 }
 
 type DreamViewContextType = {
     dream: DreamFullView,
     setDream: Dispatch<SetStateAction<DreamFullView>>
-    themes: ThemeResponse[]
-    setThemes: Dispatch<SetStateAction<ThemeResponse[]>>
+    themes: string[]
+    setThemes: Dispatch<SetStateAction<string[]>>
     analysis: string
     setAnalysis: Dispatch<SetStateAction<string>>
     tone: string,
@@ -36,7 +35,7 @@ export function DreamViewProvider({ children }:{ children: React.ReactNode}){
     const [dream, setDream] = useState<DreamFullView>({
         title: '', date: new Date(), owner: '', _id: '', __v: 0
     }) 
-    const [themes, setThemes] = useState<ThemeResponse[]>([])
+    const [themes, setThemes] = useState<string[]>([])
     const [analysis, setAnalysis] = useState('')
 
     const [options, setOptions] = useState<optionsType>({tone: [], style: [], length: []})
