@@ -10,7 +10,7 @@ export function useDreamSubmit(){
     const submitDream = async (payload: {
         id?: string
         title: string
-        description: string | null
+        description: string | null | undefined
         notes: string | null
         date: Date
         themes? : string[]
