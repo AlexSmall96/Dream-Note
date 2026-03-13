@@ -4,25 +4,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 
 export default function Button({
     text,
-    disabled,
+    disabled = false,
     type = 'submit',
     onClick = () => {},
     danger = false,
-    icon
+    icon,
+    color,
 }:{
-    text: string,
-    disabled: boolean
+    text?: string,
+    disabled?: boolean
     type?: 'submit' | 'button'
     onClick?: MouseEventHandler<HTMLButtonElement>
     danger?: boolean,
-    icon?: IconProp
+    icon?: IconProp,
+    color?: string,
 }) {
-    const colorClass = disabled? 'bg-gray-400' : danger ? 'bg-orange-500 hover:bg-orange-700' : 'bg-blue-500 hover:bg-blue-700'
-
+    const className = disabled? 'bg-gray-300' : danger ? 'bg-orange-500 hover:bg-orange-700' : color ?? 'bg-blue-500 hover:bg-blue-700'
     return (
         <button 
             type={type}
-            className={`rounded-lg ${colorClass} text-white font-bold p-2`} disabled={disabled}
+            className={`rounded-lg ${className} text-white font-bold p-2 mx-2`} disabled={disabled}
             onClick={onClick}
         >
                 {icon && <FontAwesomeIcon icon={icon} />} { text}

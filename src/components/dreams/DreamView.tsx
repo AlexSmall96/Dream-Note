@@ -23,7 +23,7 @@ export default function DreamView ({dreamId}:{dreamId:string}){
             try {
                 const response = await fetchFullDream(id)
                 setDream(response.dream) 
-                setThemes(response.themes || [])
+                setThemes(response.themes?.map(t => t.theme) || [])
                 setLoading(false)
             } catch (err){
                 console.log(err)
