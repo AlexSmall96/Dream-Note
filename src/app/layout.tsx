@@ -20,7 +20,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-		<body className='bg-purple-100 font-sans'>
+		<body className='bg-violet-100 font-sans'>
 			<RootClientWrapper>
 				<Navbar />
 				{children}
