@@ -11,7 +11,7 @@ export default function DreamThemeList ({
 }) {
 
     return (
-        <div className="absolute right-[-50px] top-16 flex flex-col gap-2">
+        <div className="absolute right-[-65px] top-16 flex flex-col gap-2">
             {themes.map((theme) => {
                 const color = getColorForTheme(theme)
                 const isPeeling = peelingTheme === theme
