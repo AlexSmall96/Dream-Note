@@ -1,12 +1,13 @@
 import { useDreams } from '@/contexts/DreamsContext'
 import { useState } from 'react'
 import { logNewDream, updateDream } from '@/lib/api/dreams'
+import { useDreamView } from '@/contexts/DreamViewContext'
 
 export function useDreamSubmit(){
 
     const [msg, setMsg] = useState<string>('')
     const { setDreams, setRefetch } = useDreams()
-
+    const { setThemes } = useDreamView()
     const submitDream = async (payload: {
         id?: string
         title: string
@@ -46,7 +47,7 @@ export function useDreamSubmit(){
             // Update dreams list
             const dreamOverview = {title: result.dream.title, date: result.dream.date, _id: result.dream._id} 
             setDreams(prev => [dreamOverview, ... prev.filter(dream => dream._id !==dreamOverview._id)])
-
+            setThemes(payload.themes || [])
             // Trigger refetch to sort dreams
             setRefetch(prev => !prev)
             setMsg(payload.id ? 'Dream updated' : 'Dream created')
