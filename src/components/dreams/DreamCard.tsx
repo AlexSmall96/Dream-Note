@@ -5,12 +5,13 @@ import IconWithTooltip from "../ui/IconWithTooltip";
 import StickyNote from "./StickyNote";
 import DreamThemeList from "./DreamThemeList";
 import { useDreamSubmit } from "@/app/hooks/useDreamSubmit";
+import { useState } from "react";
 
 export default function DreamCard () {
     const { dream, setDream, themes } = useDreamView()
     const params = useParams()
     const id = params.id as string
-    
+    const [peelingTheme, setPeelingTheme] = useState<string | null>(null)
     // Submit new note function requires all dream data - define here and pass into StickyNote as props
     // This avoids importing unused dream data into StickyNote 
     const { submitDream } = useDreamSubmit()
@@ -25,6 +26,21 @@ export default function DreamCard () {
             themes          
         })
         setDream({...dream, notes: notes || undefined})
+    }
+
+    const removeTheme = async (themeToRemove: string) => {
+        const themesToKeep = themes.filter(theme => theme !== themeToRemove)
+        setPeelingTheme(themeToRemove) 
+        await new Promise(res => setTimeout(res, 250))
+        await submitDream({
+            id,
+            title: dream.title,
+            description: dream.description,
+            notes: dream.notes || null,
+            date: new Date(dream.date),
+            themes: themesToKeep             
+        })
+        setPeelingTheme(null)
     }
 
 
@@ -64,8 +80,8 @@ export default function DreamCard () {
             <p className="text-md text-gray-700 leading-relaxed font-light italic overflow-y-auto max-h-60 pr-5 text-justify">
                 {dream.description}
             </p>
-            <DreamThemeList themes={themes} />
-            <StickyNote notes={dream.notes || null} submitNewNote={submitNewNote}/>
+            <DreamThemeList themes={themes} removeTheme={removeTheme} peelingTheme={peelingTheme}  />
+            <StickyNote notes={dream.notes || null} submitNewNote={submitNewNote} />
         </div>
     )
 }
