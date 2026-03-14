@@ -11,13 +11,13 @@ export default function DreamCard () {
     const id = params.id as string
 
     return (
-        <div className="relative mt-8 mb-8 p-8 pb-20 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg shadow-lg border border-purple-100 w-full max-w-xl h-110">
+        <div className="font-caveat relative mt-8 mb-8 p-8 pb-20 bg-[url('/images/paper.jpg')] rounded-lg shadow-lg border border-purple-100 w-full max-w-xl h-110">
             <div className="flex justify-between items-start mb-4">
                 <div>
                     <h2 className="text-lg text-gray-700 italic">
                     {new Date(dream.date).toLocaleDateString()}
                     </h2>
-                    <h1 className="text-2xl font-serif text-gray-900 leading-relaxed">
+                    <h1 className="text-3xl leading-relaxed">
                         {dream.title}
                     </h1>
                 </div>
@@ -49,7 +49,7 @@ export default function DreamCard () {
                     />
                 </div>
             </div>
-            <p className="text-md text-gray-700 leading-relaxed font-light italic overflow-y-auto max-h-60 mb-4 pb-4 pr-5 text-justify">
+            <p className="text-md text-xl text-gray-700 leading-relaxed font-light italic overflow-y-auto max-h-60 mb-4 pb-4 pr-5 text-justify">
                 {dream.description}
             </p>
             <DreamThemeList />
