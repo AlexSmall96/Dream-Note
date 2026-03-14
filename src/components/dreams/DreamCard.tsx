@@ -49,7 +49,7 @@ export default function DreamCard () {
                     />
                 </div>
             </div>
-            <p className="text-md text-gray-700 leading-relaxed font-light italic overflow-y-auto max-h-60 pr-5 text-justify">
+            <p className="text-md text-gray-700 leading-relaxed font-light italic overflow-y-auto max-h-60 mb-4 pb-4 pr-5 text-justify">
                 {dream.description}
             </p>
             <DreamThemeList />
