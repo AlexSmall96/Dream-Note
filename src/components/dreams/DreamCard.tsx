@@ -17,7 +17,7 @@ export default function DreamCard () {
                     <h2 className="text-lg text-gray-700 italic">
                     {new Date(dream.date).toLocaleDateString()}
                     </h2>
-                    <h1 className="text-3xl leading-relaxed">
+                    <h1 className="text-2xl font-playwrite leading-relaxed">
                         {dream.title}
                     </h1>
                 </div>

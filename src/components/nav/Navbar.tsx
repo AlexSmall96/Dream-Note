@@ -44,7 +44,7 @@ export default function Navbar() {
   return (
     <nav className="w-full border-b bg-purple-200">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center text-lg font-semibold font-poppins">
+        <Link href="/" className="font-playwrite flex items-center text-lg font-semibold">
           DreamN
           <Image
             alt="sleepy emoji"
