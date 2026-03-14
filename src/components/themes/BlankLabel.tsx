@@ -46,12 +46,12 @@ export default function BlankLabel ({
                 >    
                     x
                 </button>
-                <button 
+                {newTheme.text !== '' &&<button 
                     className="text-lg text-gray-700 rounded-full w-2 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-1 group-hover:translate-x-0 transition"
                     onClick={handleAddTheme}
                 >    
                     ✓
-                </button>
+                </button>}
                 </span>
     )
 }
