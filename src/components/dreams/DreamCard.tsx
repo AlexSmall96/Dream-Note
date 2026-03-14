@@ -1,9 +1,9 @@
 import { useDreamView } from "@/contexts/DreamViewContext"
 import { faFeatherPointed as faEdit, faTrashCan as faDelete, faMagnifyingGlass as faAnalyse, faTags as faTheme } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "next/navigation"
-import IconWithTooltip from "../ui/IconWithTooltip";
-import StickyNote from "./StickyNote";
-import DreamThemeList from "./DreamThemeList";
+import IconWithTooltip from '@/components/ui/IconWithTooltip';
+import StickyNote from '@/components/dreams/StickyNote';
+import DreamThemeList from '@/components/themes/DreamThemeList';
 
 export default function DreamCard () {
     const { dream, setShowBlankLabel } = useDreamView()

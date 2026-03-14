@@ -1,5 +1,5 @@
 import { getColorForTheme } from "@/lib/utils/getColorForTheme"
-import ThemeLabel from "../themes/ThemeLabel"
+import ThemeLabel from '@/components/themes/ThemeLabel'
 import { useDreamView } from "@/contexts/DreamViewContext"
 import BlankLabel from "@/components/themes/BlankLabel"
 
