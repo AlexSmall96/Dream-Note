@@ -6,7 +6,13 @@ module.exports = {
     "./src/lib/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        playwrite: ['"Playwrite AU VIC"', 'cursive'],
+        quicksand: ['"Quicksand"', 'sans-serif'],
+        caveat: ['"Caveat"', 'cursive']
+        }
+      }
   },
   plugins: [],
 };

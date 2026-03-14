@@ -21,7 +21,7 @@ export default function IconWithTooltip({
 }){
 
     const Icon = 
-        <div className="relative group inline-block">
+        <div className="font-sans relative group inline-block">
             <FontAwesomeIcon 
                 icon={icon} 
                 className={`${extraClass} ${danger ? 'text-orange-500': disabled? 'text-gray-400': 'cursor-pointer'}`} 

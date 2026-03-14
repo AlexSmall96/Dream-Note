@@ -20,7 +20,22 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-		<body className='bg-violet-100 font-sans'>
+		<head>
+			<link
+			rel="preconnect"
+			href="https://fonts.googleapis.com"
+			/>
+			<link
+			rel="preconnect"
+			href="https://fonts.gstatic.com"
+			crossOrigin=""
+			/>
+			<link 
+				href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Playwrite+AU+VIC:wght@100..400&family=Quicksand:wght@300..700&display=swap" 
+				rel="stylesheet" 
+			/>
+		</head>
+		<body className='bg-violet-100 font-quicksand'>
 			<RootClientWrapper>
 				<Navbar />
 				{children}

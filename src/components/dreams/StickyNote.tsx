@@ -67,7 +67,7 @@ export default function StickyNote () {
                         <textarea 
                             value={newNote || ''}
                             onChange={handleNoteChange}
-                            className="w-44 h-32 px-2 bg-yellow-200 focus:outline-none text-gray-800 text-sm resize-none overflow-y-hidden"
+                            className="w-44 h-32 px-2 bg-yellow-200 focus:outline-none text-lg text-gray-800 resize-none overflow-y-hidden"
                         />
                     </form>
                 </div>

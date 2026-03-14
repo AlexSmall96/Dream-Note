@@ -9,13 +9,15 @@ import { useDreamNavigation } from "@/app/hooks/useDreamNavigation";
 import { faChevronRight as faNext } from "@fortawesome/free-solid-svg-icons";
 import { faChevronLeft as faPrev } from "@fortawesome/free-solid-svg-icons";
 import IconWithTooltip from "../ui/IconWithTooltip";
+import Button from "../forms/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export default function DreamView ({dreamId}:{dreamId:string}){
     const { setDream, setThemes } = useDreamView()
     const params = useParams()
     const [loading, setLoading] = useState(true)
-    const { index, goToNextDream, goToPrevDream, maxIndex } = useDreamNavigation(dreamId)
+    const { goToNextDream, goToPrevDream, isFirst, isLast } = useDreamNavigation(dreamId)
     const id = params.id as string
 
     useEffect(() => {
@@ -37,14 +39,14 @@ export default function DreamView ({dreamId}:{dreamId:string}){
     return (
         <div className="grid grid-cols-6">
             <div className='col-span-1 flex flex-col justify-center items-center'>
-                {chronView && 
-                    <IconWithTooltip 
+                {chronView && !isFirst &&
+                    <span 
+                        className="text-3xl mr-20 text-gray-400 hover:text-gray-700 transition hover:-translate-x-1 cursor-pointer"
                         onClick={goToPrevDream}
-                        icon={faPrev}
-                        tooltipText="Previous Dream"
-                        extraClass={`text-2xl`}
-                        disabled={index === 0}
-                    />}
+                    >
+                        <FontAwesomeIcon icon={faPrev}/>
+                    </span>
+                }
             </div>
             <div className="col-span-4 flex flex-col items-center">
                 <LinkWithMessage 
@@ -61,14 +63,13 @@ export default function DreamView ({dreamId}:{dreamId:string}){
                 }
             </div>
             <div className='col-span-1 flex flex-col justify-center items-center'>
-                {chronView && 
-                <IconWithTooltip
-                    onClick={goToNextDream}
-                    icon={faNext}
-                    extraClass="text-2xl"
-                    tooltipText="Next Dream"
-                    disabled={index === maxIndex}
-                />}
+                {chronView && !isLast &&
+                    <span 
+                        className="text-3xl ml-20 text-gray-400 hover:text-gray-700 transition hover:-translate-x-1 cursor-pointer"
+                        onClick={goToNextDream}
+                    >
+                        <FontAwesomeIcon icon={faNext}/>
+                    </span>}
             </div>
         </div>
     )
