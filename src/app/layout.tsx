@@ -30,10 +30,12 @@ export default function RootLayout({
 			href="https://fonts.gstatic.com"
 			crossOrigin=""
 			/>
-			<link href="https://fonts.googleapis.com/css2?family=Playwrite+AU+VIC:wght@400&display=swap" rel="stylesheet" />		
-			<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap" rel="stylesheet"></link>	
+			<link 
+				href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Playwrite+AU+VIC:wght@100..400&family=Quicksand:wght@300..700&display=swap" 
+				rel="stylesheet" 
+			/>
 		</head>
-		<body className='bg-violet-100 font-sans'>
+		<body className='bg-violet-100 font-quicksand'>
 			<RootClientWrapper>
 				<Navbar />
 				{children}

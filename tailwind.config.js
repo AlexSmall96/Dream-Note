@@ -9,6 +9,7 @@ module.exports = {
     extend: {
       fontFamily: {
         playwrite: ['"Playwrite AU VIC"', 'cursive'],
+        quicksand: ['"Quicksand"', 'sans-serif'],
         caveat: ['"Caveat"', 'cursive']
         }
       }
