@@ -1,12 +1,14 @@
 import { useState } from "react";
 import IconWithTooltip from "../ui/IconWithTooltip";
 import { faNoteSticky as faNote, faX, faCheck,faArrowRotateLeft as faUndo } from "@fortawesome/free-solid-svg-icons";
+import { useDreamView } from "@/contexts/DreamViewContext";
 
-export default function StickyNote ({notes, submitNewNote}:{notes: string | null, submitNewNote: (notes: string | null) => Promise<void>}) {
-
+export default function StickyNote () {
+    const {dream, submitNewNote} = useDreamView()
+    const notes = dream.notes || ''
     const [showUndo, setShowUndo] = useState(false)
-    const [newNote, setNewNote] = useState<string | null>(() => notes ?? null)
-    const [showNote, setShowNote] = useState(notes !== null)
+    const [newNote, setNewNote] = useState<string>(() => notes)
+    const [showNote, setShowNote] = useState(notes !== '')
     const [saved, setSaved] = useState(false)
 
     const handleNoteChange = (e:React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -15,7 +17,7 @@ export default function StickyNote ({notes, submitNewNote}:{notes: string | null
     }
 
     const handleUndoEditNote = () => {
-        setNewNote(notes || null)
+        setNewNote(notes || '')
         setShowUndo(false)
     }
 
