@@ -28,7 +28,7 @@ export default function BlankLabel ({
 
     return (
         <span
-            className={`group flex items-center gap-1 ${newTheme.color || defaultColor} text-xs px-1 py-1 shadow-md border-l-4 border-black/20
+            className={`group flex items-center gap-1 ${newTheme.color || defaultColor} px-1 py-1 shadow-md border-l-4 border-black/20
                     transition-all duration-200`}
                 style={{ transform: `translateY(${themes.length * 2}px)` }}
                 >
@@ -41,13 +41,13 @@ export default function BlankLabel ({
                         />
                     </form>
                 <button 
-                    className="text-xs text-gray-700 rounded-full w-2 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-1 group-hover:translate-x-0 transition"
+                    className="text-lg text-gray-700 rounded-full w-2 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-1 group-hover:translate-x-0 transition"
                     onClick={handleCloseBlankLabel}
                 >    
                     x
                 </button>
                 <button 
-                    className="text-xs text-gray-700 rounded-full w-2 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-1 group-hover:translate-x-0 transition"
+                    className="text-lg text-gray-700 rounded-full w-2 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-1 group-hover:translate-x-0 transition"
                     onClick={handleAddTheme}
                 >    
                     ✓
