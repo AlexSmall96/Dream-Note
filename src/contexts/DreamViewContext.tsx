@@ -97,8 +97,8 @@ export function DreamViewProvider({ children }:{ children: React.ReactNode}){
     }
 
     const addTheme = async (newTheme: string) => {
-        await updateThemes([...themes, newTheme])
         setShowBlankLabel(false)  
+        await updateThemes([...themes, newTheme])
     }
 
     const submitNewNote = async (newNote: string) => {
