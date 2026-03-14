@@ -24,6 +24,10 @@ export function useDreamNavigation(id: string) {
             router.push(`/dreams/${dreams[index - 1]._id}`)
         }
     }
+    
+    const maxIndex = dreams.length - 1
+    const isFirst = index === 0
+    const isLast = index === dreams.length - 1
 
-    return { index, maxIndex: dreams.length - 1, goToNextDream, goToPrevDream }
+    return { index, maxIndex, goToNextDream, goToPrevDream, isFirst, isLast }
 }
