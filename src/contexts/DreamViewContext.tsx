@@ -1,7 +1,9 @@
 "use client";
-import { createContext, Dispatch, SetStateAction, useState, useContext, useEffect } from "react"
-import { DreamFullView } from "@/types/dreams"
+import { createContext, useState, useContext, useEffect } from "react"
+import { DreamBodyType, DreamFullView, DreamUpdateType } from "@/types/dreams"
 import { fetchAiOptions } from "@/lib/api/aiAnalysis";
+import { setterFunction } from "@/types/setterFunctions";
+import { updateDream } from "@/lib/api/dreams";
 
 type optionsType = {
     tone: string[],
@@ -11,20 +13,27 @@ type optionsType = {
 
 type DreamViewContextType = {
     dream: DreamFullView,
-    setDream: Dispatch<SetStateAction<DreamFullView>>
+    setDream: setterFunction<DreamFullView>,
     themes: string[]
-    setThemes: Dispatch<SetStateAction<string[]>>
+    setThemes: setterFunction<string[]>,
     analysis: string
-    setAnalysis: Dispatch<SetStateAction<string>>
+    setAnalysis: setterFunction<string>,
     tone: string,
-    setTone: Dispatch<SetStateAction<string>>,
+    setTone: setterFunction<string>,
     style: string,
-    setStyle: Dispatch<SetStateAction<string>>,
+    setStyle: setterFunction<string>,
     length: string,
-    setLength: Dispatch<SetStateAction<string>>,
+    setLength: setterFunction<string>,
     showSettings: boolean
-    setShowSettings: Dispatch<SetStateAction<boolean>>,
-    options: optionsType
+    setShowSettings: setterFunction<boolean>,
+    options: optionsType,
+    peelingTheme: string | null,
+    setPeelingTheme: setterFunction<string | null>,
+    showBlankLabel: boolean,
+    setShowBlankLabel: setterFunction<boolean>,
+    removeTheme: (themeToRemove: string) => Promise<void>,
+    addTheme: (newTheme: string) => Promise<void>,
+    submitNewNote: (notes: string) => Promise<void>
 }
 
 
@@ -44,6 +53,8 @@ export function DreamViewProvider({ children }:{ children: React.ReactNode}){
     const [style, setStyle] = useState<string>('')
     const [length, setLength] = useState<string>('')
     const [showSettings, setShowSettings] = useState(false)
+    const [peelingTheme, setPeelingTheme] = useState<string | null>(null)
+    const [showBlankLabel, setShowBlankLabel] = useState(false)
 
     useEffect(() => {
         const getAiOptions = async () => {
@@ -57,6 +68,43 @@ export function DreamViewProvider({ children }:{ children: React.ReactNode}){
         getAiOptions()
     }, [])
 
+    // Function to save dream by coercing description and notes into type string | null
+    // Allows DreamFullView type to be assigned to DreamUpdateType
+    const saveDream = async (dream: DreamFullView, themes: string[]) => {
+        await updateDream(dream._id, {
+            dream: {
+                ...dream,
+                description: dream.description || null, 
+                notes: dream.notes || null
+            },
+            themes
+        })
+    }
+
+    // Helper function to update themes - used for both adding and removing themes
+    const updateThemes = async (newThemes: string[]) => {
+        await saveDream(dream, newThemes)
+        setDream({...dream})
+        setThemes(newThemes)
+    }
+
+    const removeTheme = async (themeToRemove: string) => {
+        const themesToKeep = themes.filter(theme => theme !== themeToRemove)
+        setPeelingTheme(themeToRemove) 
+        await new Promise(res => setTimeout(res, 250))
+        await updateThemes(themesToKeep)
+        setPeelingTheme(null)
+    }
+
+    const addTheme = async (newTheme: string) => {
+        setShowBlankLabel(false)  
+        await updateThemes([...themes, newTheme])
+    }
+
+    const submitNewNote = async (newNote: string) => {
+        await saveDream({...dream, notes: newNote}, themes)
+        setDream({...dream, notes: newNote || undefined})
+    }
 
     return (
         <DreamViewContext.Provider value={{
@@ -74,7 +122,14 @@ export function DreamViewProvider({ children }:{ children: React.ReactNode}){
             setLength,
             showSettings, 
             setShowSettings,
-            options
+            options,
+            peelingTheme,
+            setPeelingTheme,
+            showBlankLabel,
+            setShowBlankLabel,
+            removeTheme,
+            addTheme,
+            submitNewNote
         }}>
             {children}
         </DreamViewContext.Provider>

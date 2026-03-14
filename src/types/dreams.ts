@@ -64,6 +64,16 @@ export type DreamBodyType = {
     themes: string[]
 }
 
+export type DreamUpdateType = {
+    dream:{
+        title: string,
+        description: string | null,
+        notes: string | null,
+        date: Date
+    },
+    themes: string[]   
+}
+
 // Response from API for dream full view
 export type DreamResponseType = {
     dream: DreamFullView,
