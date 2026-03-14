@@ -1,5 +1,5 @@
 import { apiFetch } from "@/lib/api/client";
-import { ChartStats, DreamFullView } from "@/types/dreams";
+import { ChartStats, DreamFullView, DreamUpdateType } from "@/types/dreams";
 import { 
     DreamBodyType, 
     DreamResponseType, 
@@ -41,8 +41,8 @@ export async function fetchFullDream(id: string){
     }
 }
 
-export async function updateDream(id: string, body: DreamBodyType) {
-    return apiFetch<DreamResponseType | ErrorResponse, DreamBodyType>(`/dreams/update/${id}`, {method: 'PATCH', body}
+export async function updateDream(id: string, body: DreamUpdateType) {
+    return apiFetch<DreamResponseType | ErrorResponse, DreamUpdateType>(`/dreams/update/${id}`, {method: 'PATCH', body}
     )
 }
 
