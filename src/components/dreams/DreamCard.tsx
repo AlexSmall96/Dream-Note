@@ -1,48 +1,14 @@
 import { useDreamView } from "@/contexts/DreamViewContext"
-import { faFeatherPointed as faEdit, faTrashCan as faDelete, faMagnifyingGlass as faAnalyse } from "@fortawesome/free-solid-svg-icons";
+import { faFeatherPointed as faEdit, faTrashCan as faDelete, faMagnifyingGlass as faAnalyse, faTags as faTheme } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "next/navigation"
 import IconWithTooltip from "../ui/IconWithTooltip";
 import StickyNote from "./StickyNote";
 import DreamThemeList from "./DreamThemeList";
-import { useDreamSubmit } from "@/app/hooks/useDreamSubmit";
-import { useState } from "react";
 
 export default function DreamCard () {
-    const { dream, setDream, themes } = useDreamView()
+    const { dream, setShowBlankLabel } = useDreamView()
     const params = useParams()
     const id = params.id as string
-    const [peelingTheme, setPeelingTheme] = useState<string | null>(null)
-    // Submit new note function requires all dream data - define here and pass into StickyNote as props
-    // This avoids importing unused dream data into StickyNote 
-    const { submitDream } = useDreamSubmit()
-    
-    const submitNewNote = async (notes: string | null) => {
-        await submitDream({
-            id,
-            title: dream.title,
-            description: dream.description,
-            notes,
-            date: new Date(dream.date),
-            themes          
-        })
-        setDream({...dream, notes: notes || undefined})
-    }
-
-    const removeTheme = async (themeToRemove: string) => {
-        const themesToKeep = themes.filter(theme => theme !== themeToRemove)
-        setPeelingTheme(themeToRemove) 
-        await new Promise(res => setTimeout(res, 250))
-        await submitDream({
-            id,
-            title: dream.title,
-            description: dream.description,
-            notes: dream.notes || null,
-            date: new Date(dream.date),
-            themes: themesToKeep             
-        })
-        setPeelingTheme(null)
-    }
-
 
     return (
         <div className="relative mt-8 mb-8 p-8 pb-20 bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg shadow-lg border border-purple-100 w-full max-w-xl h-110">
@@ -75,13 +41,19 @@ export default function DreamCard () {
                         extraClass="hover:animate-pulse text-xl"
                         danger
                     />
+                    <IconWithTooltip
+                        icon={faTheme}
+                        onClick={() => setShowBlankLabel(true)}
+                        tooltipText="New Theme"
+                        extraClass="hover:animate-pulse text-xl text-indigo-400"
+                    />
                 </div>
             </div>
             <p className="text-md text-gray-700 leading-relaxed font-light italic overflow-y-auto max-h-60 pr-5 text-justify">
                 {dream.description}
             </p>
-            <DreamThemeList themes={themes} removeTheme={removeTheme} peelingTheme={peelingTheme}  />
-            <StickyNote notes={dream.notes || null} submitNewNote={submitNewNote} />
+            <DreamThemeList />
+            <StickyNote  />
         </div>
     )
 }
