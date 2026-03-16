@@ -45,21 +45,21 @@ export default function StickyNote () {
                         <IconWithTooltip 
                             tooltipText='Close' 
                             icon={faX} 
-                            extraClass="text-xs hover:animate-pulse hover:cursor-pointer" 
+                            extraClass="text-xs hover:cursor-pointer" 
                             onClick={handleClose}
                         />
                         {showUndo && 
                         <IconWithTooltip 
                             tooltipText='Keep Changes' 
                             icon={faCheck} 
-                            extraClass={`hover:animate-pulse text-xs hover:cursor-pointer ${saved ? 'text-green-500 animate-pulse' :''}`}
+                            extraClass={`text-xs hover:cursor-pointer ${saved ? 'text-green-500 animate-pulse' :''}`}
                             onClick={handleUpdate}
                         />}
                         {showUndo && 
                         <IconWithTooltip 
                             tooltipText='Undo Changes' 
                             icon={faUndo} 
-                            extraClass="text-xs hover:animate-pulse hover:cursor-pointer" 
+                            extraClass="text-xs hover:cursor-pointer" 
                             onClick={handleUndoEditNote}
                         />}                        
                     </div>

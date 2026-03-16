@@ -26,26 +26,26 @@ export default function DreamCard () {
                         href={`/dreams/${id}/analysis`}
                         icon={faAnalyse}
                         tooltipText="Analyse"
-                        extraClass="hover:animate-pulse text-xl text-gray-500"
+                        extraClass="text-xl text-gray-500"
                     />
                     <IconWithTooltip
                         href={`/dreams/${id}/edit`}
                         icon={faEdit}
                         tooltipText="Edit"
-                        extraClass="hover:animate-pulse text-xl text-gray-500"
+                        extraClass="text-xl text-gray-500"
                     />
                     <IconWithTooltip
                         href={`/dreams/${id}/delete`}
                         icon={faDelete}
                         tooltipText="Delete"
-                        extraClass="hover:animate-pulse text-xl"
+                        extraClass="text-xl"
                         danger
                     />
                     <IconWithTooltip
                         icon={faTheme}
                         onClick={() => setShowBlankLabel(true)}
                         tooltipText="New Theme"
-                        extraClass="hover:animate-pulse text-xl text-indigo-400"
+                        extraClass="text-xl text-indigo-400"
                     />
                 </div>
             </div>
