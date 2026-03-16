@@ -1,20 +1,36 @@
 import { useDreamView } from '@/contexts/DreamViewContext'
 import { fetchAnalysis, saveNewAnalysis } from '@/lib/api/aiAnalysis'
+import { fetchFullDream } from '@/lib/api/dreams'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { useEffect, useState } from 'react'
 import Button from '@/components/forms/Button'
 import { setterFunction } from '@/types/setterFunctions'
+import { useParams } from 'next/navigation'
 
 export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: setterFunction<boolean>}) {
 
     const [isOpen, setIsOpen] = useState(false)
-    const {dream, tone, style, length} = useDreamView()
-    const description = dream.description || ''
+    const { tone, style, length } = useDreamView()
     const [analysis, setAnalysis] = useState('')
     const [thinking, setThinking] = useState(true)
     const [saving, setSaving] = useState(false)
     const [saved, setSaved] = useState(false)
     const [thinkingText, setThinkingText] = useState('')
+    const [description, setDescription] = useState('')
+    const params = useParams()
+    const dreamId = params.id as string
+
+    useEffect(() => {
+        const getDreamDescription = async () => {
+            try {
+                const response = await fetchFullDream(dreamId)
+                setDescription(response.dream.description || '') 
+            } catch (err){
+                console.log(err)
+            }
+        }
+        getDreamDescription()
+    }, [dreamId])
 
     const getAnalysis = async () => {
         setThinking(true)
@@ -40,7 +56,7 @@ export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: 
         if (!analysis) return
         try {
             setSaving(true)
-            await saveNewAnalysis(dream._id, {text: analysis, tone, style, length})
+            await saveNewAnalysis(dreamId, {text: analysis, tone, style, length})
         } catch (err){
             console.log(err)
         } finally {
@@ -77,6 +93,12 @@ export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: 
         }
     }, [isOpen])
 
+
+    if (!description){
+        return (
+            <p>Please add a description to your dream to generate AI analysis.</p>
+        )
+    }
 
     return (
 
