@@ -8,7 +8,7 @@ import { UserDocument } from "./user.interfaces.js";
 
 export const options = {
     tone: ['neutral', 'curious', 'caring', 'excited'],
-    style: ['poetic', 'clinical', 'spiritual'],
+    style: ['clinical','poetic', 'spiritual'],
     length: ['brief', 'concise']
 } as const
 
