@@ -1,29 +1,26 @@
 import IconWithTooltip from "../ui/IconWithTooltip"
 import { faGear as faSettings } from "@fortawesome/free-solid-svg-icons";
-import Dropdown from "@/components/ui/Dropdown";
 import { useDreamView } from "@/contexts/DreamViewContext";
-import { useState } from "react";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
+import SettingsRadioGroup from "./SettingsRadioGroup";
 
 export default function Settings(){
     const { options, tone, setTone, style, setStyle, length, setLength } = useDreamView()
-    const [showSettings, setShowSettings] = useState(false)
     return (
-        <>
+        <Popover className="relative">
+            <PopoverButton className='focus:outline-none'>
             <IconWithTooltip
-                onClick={() => setShowSettings(prev => !prev)} 
                 icon={faSettings}
-                tooltipText={`${!showSettings? 'Show': 'Hide'} settings`}
-                extraClass="mx-2 text-xl text-gray-500"
+                tooltipText='Settings'
+                extraClass="mx-2 text-2xl text-gray-500"
             />
-            {showSettings &&
-                <>
-                    <Dropdown<string> parameter={tone} setParameter={setTone} options={options.tone} parameterName="tone"/>
-                    <Dropdown<string> parameter={style} setParameter={setStyle} options={options.style} parameterName="style" />                        
-                    <Dropdown<string> parameter={length} setParameter={setLength} options={options.length} parameterName="length" />                        
-                </>
-            }    
-        </>
-
+            </PopoverButton>
+            <PopoverPanel anchor="bottom end" className="flex flex-col bg-white border p-4 rounded shadow text-sm">
+            <SettingsRadioGroup setSetting={setTone} setting={tone} options={options.tone} settingName='Tone' />
+            <SettingsRadioGroup setSetting={setStyle} setting={style} options={options.style} settingName='Style'/>
+            <SettingsRadioGroup setSetting={setLength} setting={length} options={options.length} settingName='Length'/>
+            </PopoverPanel>
+            </Popover>
     )
 }
 

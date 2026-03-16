@@ -4,17 +4,21 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { useEffect, useState } from 'react'
 import Button from '@/components/forms/Button'
 import { setterFunction } from '@/types/setterFunctions'
+import { useParams } from 'next/navigation'
+import IconWithTooltip from '../ui/IconWithTooltip'
+import { faWandMagicSparkles as faGetAnalysis } from '@fortawesome/free-solid-svg-icons'
 
-export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: setterFunction<boolean>}) {
+export default function GenerateModal({description, setRefetchAnalyses}:{description: string, setRefetchAnalyses: setterFunction<boolean>}) {
 
     const [isOpen, setIsOpen] = useState(false)
-    const {dream, tone, style, length} = useDreamView()
-    const description = dream.description || ''
+    const { tone, style, length } = useDreamView()
     const [analysis, setAnalysis] = useState('')
     const [thinking, setThinking] = useState(true)
     const [saving, setSaving] = useState(false)
     const [saved, setSaved] = useState(false)
     const [thinkingText, setThinkingText] = useState('')
+    const params = useParams()
+    const dreamId = params.id as string
 
     const getAnalysis = async () => {
         setThinking(true)
@@ -40,7 +44,7 @@ export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: 
         if (!analysis) return
         try {
             setSaving(true)
-            await saveNewAnalysis(dream._id, {text: analysis, tone, style, length})
+            await saveNewAnalysis(dreamId, {text: analysis, tone, style, length})
         } catch (err){
             console.log(err)
         } finally {
@@ -78,13 +82,20 @@ export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: 
     }, [isOpen])
 
 
+    if (!description){
+        return (
+            <p>Please add a description to your dream to generate AI analysis.</p>
+        )
+    }
+
     return (
 
         <>
-            <Button 
-                type='button'
+            <IconWithTooltip 
                 onClick={openModalAndGetAnalysis}
-                text='Generate New AI Analysis'
+                tooltipText='Generate New AI Analysis'
+                icon={faGetAnalysis}
+                extraClass='text-violet-600 text-2xl'
             />
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 text-justify">
@@ -106,7 +117,7 @@ export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: 
                                 <p className='italic'>{analysis}</p>
                             </>}
                         <p className='font-semibold'>Dream:</p>
-                        <p className="text-gray-500 text-lg flex gap-4 mt-1 font-caveat">{description}</p>
+                        <p className="text-gray-500 text-lg flex gap-4 mt-1 font-caveat max-h-[30vh] overflow-y-auto">{description}</p>
                         
                             <div className="flex gap-4 items-center justify-center">
                                 {!saved?
@@ -131,9 +142,6 @@ export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: 
                                 </>
                                     }
                             </div>
-                        
-                            
-                        
                     </DialogPanel>
                 </div>
             </Dialog>
