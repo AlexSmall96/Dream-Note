@@ -16,8 +16,8 @@ export async function fetchAnalysis(body: DreamAnalysisBody){
     return apiFetch<DreamAnalysisResponse, DreamAnalysisBody>(`/dreams/analysis`, {method: 'POST', body})
 }
 
-export async function fetchSavedAnalyses(dreamId: string){
-    return apiFetch<SavedAnalysesResponse>(`/dreams/${dreamId}/analyses`)
+export async function fetchSavedAnalyses(dreamId: string, filter: 'all' | 'favorites'){
+    return apiFetch<SavedAnalysesResponse>(`/dreams/${dreamId}/analyses?filter=${filter}`)
 }
 
 export async function saveNewAnalysis(dreamId: string, body: SaveAnalysisBody){

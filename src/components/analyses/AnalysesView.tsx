@@ -18,11 +18,12 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
     const [refetchAnalyses, setRefetchAnalyses] = useState(false)
     const [description, setDescription] = useState('')
     const [title, setTitle] = useState('')
+    const [filter, setFilter] = useState<'all' | 'favorites'>('all')
 
     useEffect(() => {
         const getSavedAnalyses = async () => {
             try {
-                const response = await fetchSavedAnalyses(dreamId)
+                const response = await fetchSavedAnalyses(dreamId, filter)
                 setAnalyses(response.analyses)
                 setMainAnalysis(response.analyses[0])
             } catch (err){
@@ -30,7 +31,7 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
             }
         }
         getSavedAnalyses()
-    }, [dreamId, refetchAnalyses])
+    }, [dreamId, refetchAnalyses, filter])
 
     
     const toggleFavorite = async (analysisId: string) => {
@@ -93,10 +94,14 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
                             <h1 className="text-lg font-semibold">Saved Analyses</h1>
                             <TabGroup>
                                 <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
-                                    <Tab className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
+                                    <Tab 
+                                        onClick={() => setFilter('all')}
+                                        className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
                                     All
                                     </Tab>
-                                    <Tab className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
+                                    <Tab 
+                                        onClick={() => setFilter('favorites')}
+                                        className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
                                     Favourites
                                     </Tab>
                                 </TabList>
