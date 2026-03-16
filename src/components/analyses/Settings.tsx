@@ -9,16 +9,16 @@ export default function Settings(){
     return (
         <Popover className="relative">
             <PopoverButton className='focus:outline-none'>
-                <IconWithTooltip
-                    icon={faSettings}
-                    tooltipText='Settings'
-                    extraClass="mx-2 text-2xl text-gray-500"
-                />
+            <IconWithTooltip
+                icon={faSettings}
+                tooltipText='Settings'
+                extraClass="mx-2 text-2xl text-gray-500"
+            />
             </PopoverButton>
-            <PopoverPanel anchor="bottom" className="flex flex-col bg-white border p-4 rounded shadow text-xs">
-                <SettingsRadioGroup setSetting={setTone} setting={tone} options={options.tone} />
-                <SettingsRadioGroup setSetting={setStyle} setting={style} options={options.style} />
-                <SettingsRadioGroup setSetting={setLength} setting={length} options={options.length} />
+            <PopoverPanel anchor="bottom end" className="flex flex-col bg-white border p-4 rounded shadow text-sm">
+            <SettingsRadioGroup setSetting={setTone} setting={tone} options={options.tone} settingName='Tone' />
+            <SettingsRadioGroup setSetting={setStyle} setting={style} options={options.style} settingName='Style'/>
+            <SettingsRadioGroup setSetting={setLength} setting={length} options={options.length} settingName='Length'/>
             </PopoverPanel>
             </Popover>
     )
