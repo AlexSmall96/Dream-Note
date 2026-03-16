@@ -24,7 +24,7 @@ export default function IconWithTooltip({
         <div className="font-sans relative group inline-block">
             <FontAwesomeIcon 
                 icon={icon} 
-                className={`${extraClass} ${danger ? 'text-orange-500': disabled? 'text-gray-400': 'cursor-pointer'}`} 
+                className={`${extraClass} ${danger ? 'text-orange-500': disabled? 'text-gray-400': 'cursor-pointer'} hover:animate-pulse`} 
                 onClick={disabled ? () => {} : onClick}
             />
             {!disabled && <span 
