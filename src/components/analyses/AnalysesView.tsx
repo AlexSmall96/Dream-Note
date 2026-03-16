@@ -9,6 +9,7 @@ import GenerateModal from "@/components/analyses/GenerateModal";
 import { Card } from "@/components/ui/Card";
 import { fetchFullDream } from '@/lib/api/dreams'
 import MainAnalysis from "@/components/analyses/MainAnalysis";
+import { Tab, TabGroup, TabList } from '@headlessui/react'
 
 export default function AnalysesView ({dreamId}: {dreamId: string}) {
 
@@ -71,13 +72,15 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
 
     return (
         <>          
+
+            <div className='flex items-center justify-between gap-4 my-4'>
             <LinkWithMessage
                 href={`/dreams/${dreamId}`}
                 linkText="Back to Dream"
+                extraClass="ml-6"
             />
-            <div className='flex items-center justify-between gap-4 my-4'>
                 <h1 className='text-2xl font-bold flex-1 text-center'>{title}</h1>
-                <div className='flex items-center gap-4'>
+                <div className='flex items-center gap-4 mr-6'>
                     <GenerateModal setRefetchAnalyses={setRefetchAnalyses} description={description} />
                     <Settings />
                 </div>
@@ -86,19 +89,30 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
                 <div className='col-span-2'>
                     {analyses.length > 0 &&
                     <Card>
-                        <h1 className='text-center mb-2'>Saved Analyses</h1>
+                        <div className="flex items-center justify-between mb-3">
+                            <h1 className="text-lg font-semibold">Saved Analyses</h1>
+                            <TabGroup>
+                                <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
+                                    <Tab className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
+                                    All
+                                    </Tab>
+                                    <Tab className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
+                                    Favourites
+                                    </Tab>
+                                </TabList>
+                            </TabGroup>
+                        </div>
                         <div className="max-h-[70vh] overflow-y-auto pr-2">
-                            {analyses.map(
-                                analysis => 
-                                    <Analysis
-                                        key={analysis._id}
-                                        analysisData={analysis}
-                                        onClickHeart={() => toggleFavorite(analysis._id)}
-                                        onClickText={() => viewFullAnalysis(analysis._id)}
-                                        onDelete={() => handleDelete(analysis._id)} 
-                                        selected={mainAnalysis?._id === analysis._id}
-                                        
-                                    />
+                            {analyses.map(analysis => 
+                                <Analysis
+                                    key={analysis._id}
+                                    analysisData={analysis}
+                                    onClickHeart={() => toggleFavorite(analysis._id)}
+                                    onClickText={() => viewFullAnalysis(analysis._id)}
+                                    onDelete={() => handleDelete(analysis._id)} 
+                                    selected={mainAnalysis?._id === analysis._id}
+                                    
+                                />
                             )}
                         </div>
                     </Card>}
