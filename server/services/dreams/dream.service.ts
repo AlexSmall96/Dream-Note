@@ -92,14 +92,13 @@ export class DreamService {
         const dream = await Dream.findById(dreamId).select('analyses')
 
         if (!dream) return []
-        
-        let analyses = dream.analyses.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
-        if (filter) {
-            analyses.filter(a => a.isFavorite)
-        }
+        const analyses = [...dream.analyses]
 
         return analyses
+            .filter(a => !filter || a.isFavorite)
+            .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+
     }
 
     public async saveAnalysis(dreamId: string, text: string, tone: Tone, style: Style, length: Length){
