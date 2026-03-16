@@ -78,3 +78,10 @@ test('Get analyses should succeed if user is owner of dream, and correct data is
         descriptionSnapshot: newDreamData.description
     })
 })
+
+test('Filtering by favourite should return the correct dream.', async () => {
+    const response = await request(server).get(`${url}/${newDreamId}/analyses?filter=favorites`).set(...userOneAuth)
+    const analyses = response.body.analyses
+    expect(analyses).toHaveLength(1)
+    expect(analyses[0]).toHaveProperty('isFavorite', true)
+})
