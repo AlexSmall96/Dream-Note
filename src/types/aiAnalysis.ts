@@ -39,6 +39,11 @@ export type SavedAnalysis = {
     modelUsed: string
 }
 
+export type NewAnalysis = {
+    text: string,
+    descriptionSnapshot: string,
+}
+
 export type SavedAnalysesResponse = {
     analyses: SavedAnalysis[]
 }
