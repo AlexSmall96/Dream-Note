@@ -11,7 +11,8 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
 
     const [analyses, setAnalyses] = useState<SavedAnalysis[]>([])
     const [mainAnalysis, setMainAnalysis] = useState<SavedAnalysis | null>(null)
-    
+    const [refetchAnalyses, setRefetchAnalyses] = useState(false)
+
     useEffect(() => {
         const getSavedAnalyses = async () => {
             try {
@@ -23,7 +24,7 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
             }
         }
         getSavedAnalyses()
-    }, [dreamId])
+    }, [dreamId, refetchAnalyses])
 
     
     const toggleFavorite = async (analysisId: string) => {
@@ -52,7 +53,7 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
 
     return (
         <>
-        <GenerateModal  />
+        <GenerateModal setRefetchAnalyses={setRefetchAnalyses} />
         <div className='grid grid-cols-3 gap-4'>
             <div className='col-span-1'>
                     {analyses.length > 0 &&
