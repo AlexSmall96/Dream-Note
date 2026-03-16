@@ -92,11 +92,11 @@ export class DreamService {
         const dream = await Dream.findById(dreamId).select('analyses')
 
         if (!dream) return []
-
-        let analyses = dream.analyses
+        
+        let analyses = dream.analyses.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
 
         if (filter) {
-            return analyses.filter(a => a.isFavorite)
+            analyses.filter(a => a.isFavorite)
         }
 
         return analyses
