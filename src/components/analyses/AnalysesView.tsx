@@ -52,40 +52,39 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
     }
 
     return (
-        <>
-        <GenerateModal setRefetchAnalyses={setRefetchAnalyses} />
-        <div className='grid grid-cols-3 gap-4'>
-            <div className='col-span-1'>
-                    {analyses.length > 0 &&
-                    <> 
-                    <h1>Your saved Analysis</h1>
-                    {analyses.map(
-                        analysis => 
-                            <Analysis
-                                analysisData={analysis}
-                                onClickHeart={() => toggleFavorite(analysis._id)}
-                                onClickText={() => viewFullAnalysis(analysis._id)}
-                                onDelete={() => handleDelete(analysis._id)} 
-                                selected={mainAnalysis?._id === analysis._id}
-                            />
-                    )}
-                    </>}
-            </div>
-            <div className='col-span-2'>
-                
+        <>          
+            <LinkWithMessage
+                href={`/dreams/${dreamId}`}
+                linkText="Back to Dream"
+            />
+            <div className='flex items-center justify-center gap-4 my-4'>
+                <GenerateModal setRefetchAnalyses={setRefetchAnalyses} />
                 <Settings />
-
-                <p className='font-bold'>Analysis:</p>
-                <p className='italic'>{mainAnalysis?.text}</p>
-                <p className='font-semibold'>Description used:</p>
-                <p className="text-gray-500 text-sm flex gap-4 mt-1">{mainAnalysis?.descriptionSnapshot}</p>
             </div>
-
+            <div className='grid grid-cols-3 gap-4'>
+                <div className='col-span-1'>
+                        {analyses.length > 0 &&
+                        <> 
+                        <h1>Your saved Analysis</h1>
+                        {analyses.map(
+                            analysis => 
+                                <Analysis
+                                    analysisData={analysis}
+                                    onClickHeart={() => toggleFavorite(analysis._id)}
+                                    onClickText={() => viewFullAnalysis(analysis._id)}
+                                    onDelete={() => handleDelete(analysis._id)} 
+                                    selected={mainAnalysis?._id === analysis._id}
+                                />
+                        )}
+                        </>}
+                </div>
+                <div className='col-span-2'>
+                    <p className='font-bold'>Analysis:</p>
+                    <p className='italic'>{mainAnalysis?.text}</p>
+                    <p className='font-semibold'>Description used:</p>
+                    <p className="text-gray-500 flex gap-4 mt-1 text-lg font-caveat">{mainAnalysis?.descriptionSnapshot}</p>
+                </div>
             </div>
-                <LinkWithMessage
-                    href={`/dreams/${dreamId}`}
-                    linkText="Back to Dream"
-                />
         </>
     )
 }
