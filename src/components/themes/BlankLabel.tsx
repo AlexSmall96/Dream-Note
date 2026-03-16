@@ -16,7 +16,8 @@ export default function BlankLabel ({
         setNewTheme({color, text})
     }
 
-    const handleAddTheme = () => {
+    const handleAddTheme = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
         addTheme(newTheme.text)
         setNewTheme({text: '', color: ''})
     }
@@ -32,26 +33,28 @@ export default function BlankLabel ({
                     transition-all duration-200`}
                 style={{ transform: `translateY(${themes.length * 2}px)` }}
                 >
-                    <form>
+                    <form onSubmit={handleAddTheme}>
                         <input
                             type='text'
                             className={`${newTheme.color || defaultColor} focus:outline-none w-10`}
                             value={newTheme.text}
                             onChange={handleChangeBlankLabel}
                         />
-                    </form>
+                    
                 <button 
+                    type='button'
                     className="text-lg text-gray-700 rounded-full w-2 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-1 group-hover:translate-x-0 transition"
                     onClick={handleCloseBlankLabel}
                 >    
                     x
                 </button>
                 {newTheme.text !== '' &&<button 
+                    type='submit'   
                     className="text-lg text-gray-700 rounded-full w-2 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-1 group-hover:translate-x-0 transition"
-                    onClick={handleAddTheme}
                 >    
                     ✓
                 </button>}
+                </form>
                 </span>
     )
 }
