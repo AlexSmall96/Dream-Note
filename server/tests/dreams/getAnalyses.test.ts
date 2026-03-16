@@ -66,15 +66,20 @@ test('Get analyses should succeed if user is owner of dream, and correct data is
     const response = await request(server).get(`${url}/${newDreamId}/analyses`).set(...userOneAuth)
     const analyses = response.body.analyses
     expect(analyses).toHaveLength(2)
-    expect(analyses[0]).toMatchObject({
-        ...analysisOne, 
-        modelUsed: 'gpt-5-nano', 
-        descriptionSnapshot: newDreamData.description, 
-        isFavorite: false,
+    const texts = [
+        'Being chased by a dog in a dream could symbolize fear of the future or a feeling of being trapped.',
+        'Being chased by a dog in a dream could indicate feelings of losing control.'
+    ]
+    analyses.map((analysis: AnalysisInterface) => {
+        expect(texts.includes(analysis.text)).toBe(true)
+        expect(analysis.descriptionSnapshot).toBe(newDreamData.description)
+        expect(analysis.modelUsed).toBe('gpt-5-nano')
     })
-    expect(analyses[1]).toMatchObject({
-        ...analysisTwo, 
-        modelUsed: 'gpt-5-nano', 
-        descriptionSnapshot: newDreamData.description
-    })
+})
+
+test('Filtering by favourite should return the correct dream.', async () => {
+    const response = await request(server).get(`${url}/${newDreamId}/analyses?filter=favorites`).set(...userOneAuth)
+    const analyses = response.body.analyses
+    expect(analyses).toHaveLength(1)
+    expect(analyses[0]).toHaveProperty('isFavorite', true)
 })

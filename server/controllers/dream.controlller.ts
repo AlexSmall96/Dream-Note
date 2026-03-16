@@ -117,9 +117,10 @@ export class DreamController {
 
     public getAnalyses = async (req: Request, res: Response, next: NextFunction) => {
         const dreamId = req.params.id
+        const filter = req.query.filter === 'favorites'
         try {
-            const analyses = await this.dreamService.getAnalyses(dreamId)
-            res.json(analyses)
+            const analyses = await this.dreamService.getAnalyses(dreamId, filter)
+            res.json({analyses})
         } catch (err){
             next(err)
         }
