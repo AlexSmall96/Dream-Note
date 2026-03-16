@@ -88,8 +88,17 @@ export class DreamService {
         return {dream, themes}
     }
 
-    public async getAnalyses(dreamId: string){
-        const analyses = await Dream.findById(dreamId).select('analyses')
+    public async getAnalyses(dreamId: string, filter: boolean){
+        const dream = await Dream.findById(dreamId).select('analyses')
+
+        if (!dream) return []
+
+        let analyses = dream.analyses
+
+        if (filter) {
+            return analyses.filter(a => a.isFavorite)
+        }
+
         return analyses
     }
 
