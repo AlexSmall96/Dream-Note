@@ -97,9 +97,11 @@ export class DreamService {
 
         return analyses
             .filter(a => !filter || a.isFavorite)
-            .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-
-    }
+            .sort((a, b) => (b.createdAt?.getTime() ?? 0) - (a.createdAt?.getTime() ?? 0))
+            // createdAt is a timestamp so will always be defined
+            // Adding a fallback of 0 allows createdAt to be kept optional for tests
+            // 0 is used so if any data exists with missing createdAt, it will be sorted to the end
+    }   
 
     public async saveAnalysis(dreamId: string, text: string, tone: Tone, style: Style, length: Length){
         const dream = await Dream.findById(dreamId)

@@ -22,7 +22,7 @@ export interface AnalysisInterface {
     style: Style,
     length: Length,
     descriptionSnapshot: string,
-    createdAt: Date,
+    createdAt?: Date,
     isFavorite?: boolean,
     modelUsed?: string
 }
