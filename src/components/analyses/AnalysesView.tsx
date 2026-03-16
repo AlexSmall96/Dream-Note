@@ -3,15 +3,20 @@ import { useEffect, useState } from "react";
 import { SavedAnalysis } from "@/types/aiAnalysis";
 import { deleteAnalysis, fetchSavedAnalyses, toggleFavoriteAnalysis } from "@/lib/api/aiAnalysis";
 import Analysis from "@/components/analyses/Analysis";
-import LinkWithMessage from "../forms/LinkWithMessage";
-import Settings from "./Settings";
-import GenerateModal from "./GenerateModal";
+import LinkWithMessage from "@/components/forms/LinkWithMessage";
+import Settings from "@/components/analyses/Settings";
+import GenerateModal from "@/components/analyses/GenerateModal";
+import { Card } from "@/components/ui/Card";
+import { fetchFullDream } from '@/lib/api/dreams'
+import MainAnalysis from "@/components/analyses/MainAnalysis";
 
 export default function AnalysesView ({dreamId}: {dreamId: string}) {
 
     const [analyses, setAnalyses] = useState<SavedAnalysis[]>([])
     const [mainAnalysis, setMainAnalysis] = useState<SavedAnalysis | null>(null)
     const [refetchAnalyses, setRefetchAnalyses] = useState(false)
+    const [description, setDescription] = useState('')
+    const [title, setTitle] = useState('')
 
     useEffect(() => {
         const getSavedAnalyses = async () => {
@@ -51,38 +56,55 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
         setMainAnalysis(analyses.filter(a => a._id === _id)[0])
     }
 
+    useEffect(() => {
+        const getDreamData = async () => {
+            try {
+                const response = await fetchFullDream(dreamId)
+                setDescription(response.dream.description || '')
+                setTitle(response.dream.title || '') 
+            } catch (err){
+                console.log(err)
+            }
+        }
+        getDreamData()
+    }, [dreamId])
+
     return (
         <>          
             <LinkWithMessage
                 href={`/dreams/${dreamId}`}
                 linkText="Back to Dream"
             />
-            <div className='flex items-center justify-center gap-4 my-4'>
-                <GenerateModal setRefetchAnalyses={setRefetchAnalyses} />
-                <Settings />
-            </div>
-            <div className='grid grid-cols-3 gap-4'>
-                <div className='col-span-1'>
-                        {analyses.length > 0 &&
-                        <> 
-                        <h1>Your saved Analysis</h1>
-                        {analyses.map(
-                            analysis => 
-                                <Analysis
-                                    analysisData={analysis}
-                                    onClickHeart={() => toggleFavorite(analysis._id)}
-                                    onClickText={() => viewFullAnalysis(analysis._id)}
-                                    onDelete={() => handleDelete(analysis._id)} 
-                                    selected={mainAnalysis?._id === analysis._id}
-                                />
-                        )}
-                        </>}
+            <div className='flex items-center justify-between gap-4 my-4'>
+                <h1 className='text-2xl font-bold flex-1 text-center'>{title}</h1>
+                <div className='flex items-center gap-4'>
+                    <GenerateModal setRefetchAnalyses={setRefetchAnalyses} description={description} />
+                    <Settings />
                 </div>
+            </div>
+            <div className='grid grid-cols-5 gap-4'>
                 <div className='col-span-2'>
-                    <p className='font-bold'>Analysis:</p>
-                    <p className='italic'>{mainAnalysis?.text}</p>
-                    <p className='font-semibold'>Description used:</p>
-                    <p className="text-gray-500 flex gap-4 mt-1 text-lg font-caveat">{mainAnalysis?.descriptionSnapshot}</p>
+                    {analyses.length > 0 &&
+                    <Card>
+                        <h1 className='text-center mb-2'>Saved Analyses</h1>
+                        <div className="max-h-[70vh] overflow-y-auto pr-2">
+                            {analyses.map(
+                                analysis => 
+                                    <Analysis
+                                        key={analysis._id}
+                                        analysisData={analysis}
+                                        onClickHeart={() => toggleFavorite(analysis._id)}
+                                        onClickText={() => viewFullAnalysis(analysis._id)}
+                                        onDelete={() => handleDelete(analysis._id)} 
+                                        selected={mainAnalysis?._id === analysis._id}
+                                        
+                                    />
+                            )}
+                        </div>
+                    </Card>}
+                </div>
+                <div className='col-span-3'>
+                    <MainAnalysis mainAnalysis={mainAnalysis} />
                 </div>
             </div>
         </>
