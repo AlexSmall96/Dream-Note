@@ -55,14 +55,6 @@ export function AsideContent() {
                     </div>
                 }
             </form>
-
-            <button 
-                onClick={() => router.replace(`/dreams/create`)} 
-                className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 w-full mt-2'
-            >
-                Log New Dream
-            </button>
-
             <button 
                 onClick={handleChangeView}
                 className='bg-gray-500 hover:bg-blue-700 text-white font-bold p-2 w-full mt-2'

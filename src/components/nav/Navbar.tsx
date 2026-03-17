@@ -30,8 +30,9 @@ function LogoutButton() {
 
 function LoggedInNav() {
   	return (
-    	<>
-			<Link href="/dreams" className="text-sm hover:underline">Dreams</Link>
+    	<>	
+			<Link href="/dreams/create" className="text-sm hover:underline">Log New Dream</Link>
+			<Link href="/dreams" className="text-sm hover:underline">Saved Dreams</Link>
 			<Link href="/account" className="text-sm hover:underline">Account</Link>
 			<LogoutButton />
     	</>
