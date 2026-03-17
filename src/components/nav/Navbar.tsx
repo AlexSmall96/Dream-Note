@@ -5,6 +5,11 @@ import { useCurrentUser } from "@/contexts/CurrentUserContext"
 import Image from "next/image"
 import { useState } from "react"
 import { AsideContent } from "@/components/nav/AsideContent"
+import SearchBar from "./SearchBar"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { faCircleUser } from "@fortawesome/free-regular-svg-icons"
+import IconWithTooltip from "../ui/IconWithTooltip"
+import { useRouter } from "next/navigation";
 
 function LoggedOutNav() {
   	return (
@@ -25,17 +30,20 @@ function LogoutButton() {
     	window.location.href = "/auth/login"
 }
 
-  	return <button onClick={handleLogout} className="text-sm hover:underline">Logout</button>
+  	return <button onClick={handleLogout} className="text-sm hover:underline text-left w-full block">Logout</button>
 }
 
 function LoggedInNav() {
   	return (
-    	<>	
-			<Link href="/dreams/create" className="text-sm hover:underline">Log New Dream</Link>
-			<Link href="/dreams" className="text-sm hover:underline">Saved Dreams</Link>
-			<Link href="/account" className="text-sm hover:underline">Account</Link>
+		<div className="flex flex-col gap-4 md:flex-row md:items-center">
+		  	<div className="flex-1">
+    			<SearchBar />
+  			</div>
+			<Link href="/dreams/create" className="text-sm hover:underline w-full block">Log Dream</Link>
+			<Link href="/dreams" className="text-sm hover:underline w-full block">View Dreams</Link>
+			<Link href="/account" className="text-sm hover:underline w-full block">Account</Link>
 			<LogoutButton />
-    	</>
+		</div>
   	)
 }
 
@@ -43,7 +51,7 @@ function LoggedInNav() {
 export default function Navbar() {
   	const {currentUser, loading } = useCurrentUser()
 	const [isOpen, setIsOpen] = useState(false)
-
+	const router = useRouter ()
   	return (
 		<nav className="w-full border-b bg-purple-200">
 			<div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
@@ -80,7 +88,10 @@ export default function Navbar() {
 					<button onClick={() => setIsOpen(false)} className="mb-4 text-xl">
 						✕
 					</button>
-
+					<p>
+						{currentUser && <span><IconWithTooltip icon={faCircleUser} tooltipText="Account" onClick={() => router.replace('/account')}/> {currentUser.email} </span> }
+					</p>
+					{/* <FontAwesomeIcon  className="text-2xl" /> */}
 					{/* Nav items */}
 					<div className="flex flex-col gap-4">
 						{loading ? null : currentUser ? <LoggedInNav /> : <LoggedOutNav />}
