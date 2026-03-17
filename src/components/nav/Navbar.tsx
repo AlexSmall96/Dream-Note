@@ -4,12 +4,9 @@ import Link from "next/link"
 import { useCurrentUser } from "@/contexts/CurrentUserContext"
 import Image from "next/image"
 import { useState } from "react"
-import { AsideContent } from "@/components/nav/AsideContent"
 import SearchBar from "./SearchBar"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { faCircleUser } from "@fortawesome/free-regular-svg-icons"
-import IconWithTooltip from "../ui/IconWithTooltip"
-import { useRouter } from "next/navigation";
+import AccountDropdown from "./AccountDropdown"
+import OffCanvas from "./OffCanvas"
 
 function LoggedOutNav() {
   	return (
@@ -20,19 +17,6 @@ function LoggedOutNav() {
   		)
 }
 
-function LogoutButton() {
-  	const handleLogout = async () => {
-    await fetch("/api/auth/logout", {
-      	method: "POST",
-      	credentials: "include",
-    })
-
-    	window.location.href = "/auth/login"
-}
-
-  	return <button onClick={handleLogout} className="text-sm hover:underline text-left w-full block">Logout</button>
-}
-
 function LoggedInNav() {
   	return (
 		<div className="flex flex-col gap-4 md:flex-row md:items-center">
@@ -41,8 +25,7 @@ function LoggedInNav() {
   			</div>
 			<Link href="/dreams/create" className="text-sm hover:underline w-full block">Log Dream</Link>
 			<Link href="/dreams" className="text-sm hover:underline w-full block">View Dreams</Link>
-			<Link href="/account" className="text-sm hover:underline w-full block">Account</Link>
-			<LogoutButton />
+			<AccountDropdown />
 		</div>
   	)
 }
@@ -51,7 +34,7 @@ function LoggedInNav() {
 export default function Navbar() {
   	const {currentUser, loading } = useCurrentUser()
 	const [isOpen, setIsOpen] = useState(false)
-	const router = useRouter ()
+
   	return (
 		<nav className="w-full border-b bg-purple-200">
 			<div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
@@ -76,29 +59,7 @@ export default function Navbar() {
         		</button>
 			</div>
 			{isOpen && (
-			<div className="fixed inset-0 z-50">
-				
-				{/* Backdrop */}
-				<div className="absolute inset-0 bg-black/50" onClick={() => setIsOpen(false)} />
-
-				{/* Drawer */}
-				<div className="absolute right-0 top-0 h-full w-[80%] max-w-sm bg-white p-4 shadow-lg overflow-y-auto">
-					
-					{/* Close button */}
-					<button onClick={() => setIsOpen(false)} className="mb-4 text-xl">
-						✕
-					</button>
-					<p>
-						{currentUser && <span><IconWithTooltip icon={faCircleUser} tooltipText="Account" onClick={() => router.replace('/account')}/> {currentUser.email} </span> }
-					</p>
-					{/* <FontAwesomeIcon  className="text-2xl" /> */}
-					{/* Nav items */}
-					<div className="flex flex-col gap-4">
-						{loading ? null : currentUser ? <LoggedInNav /> : <LoggedOutNav />}
-					</div>
-					<AsideContent />
-				</div>
-		</div>
+				<OffCanvas setIsOpen={setIsOpen}/>
 			)}
 		</nav>
   	)
