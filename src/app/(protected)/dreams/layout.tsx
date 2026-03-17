@@ -6,6 +6,7 @@ import { ThemesProvider } from '@/contexts/ThemesContext';
 import { ThemeChartProvider } from '@/contexts/ThemeChartContext'
 import React from 'react';
 import { DreamCountsProvider } from '@/contexts/DreamCountsContext';
+import Navbar from '@/components/nav/Navbar';
 
 export default function DreamsLayout({
 	children,
@@ -15,21 +16,24 @@ export default function DreamsLayout({
 	aside: React.ReactNode
 }) {
 	return (
-		<ThemesProvider>
-			<div className="flex h-screen">
+		<ThemesProvider> 
+			<div className="flex flex-col h-screen">
 				<ThemesAsideProvider>
 					<DreamsProvider>
 						<DreamCountsProvider>
-						<ThemeChartProvider>
-							<DreamChartProvider>
-								<aside>
-									{aside}
-								</aside>
-								<main className="flex-1 p-6">
-									{children}
-								</main>
-							</DreamChartProvider>
-						</ThemeChartProvider>
+							<ThemeChartProvider>
+								<DreamChartProvider>
+									<Navbar />
+									<div className="flex flex-1">
+										<aside className="hidden md:block w-80">
+											{aside}
+										</aside>
+										<main className="flex-1 p-6">
+											{children}
+										</main>
+									</div>
+								</DreamChartProvider>
+							</ThemeChartProvider>
 						</DreamCountsProvider>
 					</DreamsProvider>
 				</ThemesAsideProvider>
