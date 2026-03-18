@@ -20,11 +20,11 @@ function LoggedOutNav() {
 function LoggedInNav() {
   	return (
 		<div className="flex flex-col gap-4 md:flex-row md:items-center">
+			<Link href="/dreams" className="text-sm hover:underline w-full block">Dashboard</Link>
 		  	<div className="flex-1">
     			<SearchBar />
   			</div>
 			<Link href="/dreams/create" className="text-sm hover:underline w-full block">Log Dream</Link>
-			<Link href="/dreams" className="text-sm hover:underline w-full block">View Dreams</Link>
 			<AccountDropdown />
 		</div>
   	)

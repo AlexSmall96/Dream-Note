@@ -59,14 +59,15 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                                     {currentUser?.email}
                                     {currentUser?.isVerified && <><span className="text-xs"> Verified </span> <span className='text-green-500'>✓</span></>}
                                 </h1>
+                                <Link href="/dreams/create" className="text-sm hover:underline w-full block">Log Dream</Link>
+
+                                <SearchBar />
+
+                                <Link href="/dreams" className="text-sm hover:underline w-full block">Dashboard</Link>
                                 <Link href="/account" className='text-left block w-full text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
                                     Account
                                 </Link>
-
-                                <LogoutButton />
-
-                                <SearchBar />
-                            
+                                
                                 <ViewToggle />
 
                                 {selectedTheme && 
@@ -85,6 +86,8 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                                 {view === 'themes' && !selectedTheme && <ThemesList />}
                                 {(view === 'themes' && selectedTheme) || (view === 'dreams' && monthString) ? 
                                 <DreamsList /> : null}
+
+                                <LogoutButton />
                             </>
                         : 
                             <>
