@@ -1,28 +1,13 @@
 "use client"
 
-import Link from "next/link"
 import { useCurrentUser } from "@/contexts/CurrentUserContext"
-import Image from "next/image"
 import { useState } from "react"
 import SearchBar from "./SearchBar"
 import AccountDropdown from "./AccountDropdown"
 import OffCanvas from "./OffCanvas"
+import Logo from "./Logo"
 import LinkWithIcon from "../ui/LinkWithIcon"
-import { 
-	faFeatherPointed as faLog, 
-	faChartBar as faDashboard, 
-	faUserPlus as faSignup, 
-	faRightToBracket as faLogin 
-} from "@fortawesome/free-solid-svg-icons";
-
-function LoggedOutNav() {
-  	return (
-		<>
-			<LinkWithIcon href="/auth/login" icon={faLogin} text="Login" />
-			<LinkWithIcon href="/auth/signup" icon={faSignup} text="Signup" />
-		</>
-  		)
-}
+import { faFeatherPointed as faLog, faChartBar as faDashboard } from "@fortawesome/free-solid-svg-icons";
 
 function LoggedInNav() {
   	return (
@@ -45,18 +30,9 @@ export default function Navbar() {
   	return (
 		<nav className="w-full border-b bg-purple-200">
 			<div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-				<Link href="/" className="font-playwrite flex items-center text-lg font-semibold">
-					DreamN
-					<Image
-						alt="sleepy emoji"
-						width={25}
-						height={25}
-						src="/images/sleepy.png"
-					/>
-					te
-				</Link>
+				<Logo />
 				<div className="hidden md:flex gap-4">
-					{loading? null : currentUser ? <LoggedInNav /> : <LoggedOutNav />}
+					{loading || !currentUser ? null : <LoggedInNav />}
 				</div>
 				<button 
           			onClick={() => setIsOpen(prev => !prev)} 
