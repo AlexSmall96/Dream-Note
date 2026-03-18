@@ -15,6 +15,8 @@ import { getColorForTheme } from "@/lib/utils/getColorForTheme";
 import { Tab, TabGroup, TabList } from '@headlessui/react'
 import YearSelect from "@/components/nav/YearSelect";
 import LogoutButton from "@/components/nav/LogoutButton"
+import ViewChange from "./ViewToggle";
+import ViewToggle from "./ViewToggle";
 
 export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boolean> }) {
 
@@ -36,10 +38,7 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
             options.push(m + ` (${monthlyTotals[m]})`)
         }
     })
-    const handleChangeView = (view: 'dreams' | 'themes') => {
-        setView(view)
-        setSelectedTheme(null)
-    }
+
 
     const { currentUser, loading } = useCurrentUser()
     return (
@@ -67,21 +66,8 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                                 <LogoutButton />
 
                                 <SearchBar />
-
-                                <TabGroup>
-                                    <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
-                                        <Tab 
-                                            onClick={() => handleChangeView('dreams')}
-                                            className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
-                                        View By Date
-                                        </Tab>
-                                        <Tab 
-                                            onClick={() => handleChangeView('themes')}
-                                            className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
-                                        View By Theme
-                                        </Tab>
-                                    </TabList>
-                                </TabGroup>
+                            
+                                <ViewToggle />
 
                                 {selectedTheme && 
                                 <span className="flex items-center gap-1">
