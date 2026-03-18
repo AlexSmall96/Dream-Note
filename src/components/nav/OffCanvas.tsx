@@ -75,22 +75,26 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
 
                                 <ViewToggle />
 
-                                {selectedTheme && 
-                                <span className="flex items-center gap-1">
-                                    <span className={`font-caveat ${getColorForTheme(selectedTheme)} px-3 py-1 shadow-md border-l-4 border-black/20`}>{selectedTheme}</span>
-                                    <button className='bg-gray-500 hover:bg-blue-700 text-white font-bold px-3 py-1 w-full' onClick={() => setSelectedTheme('')}>
-                                        Back to all themes
-                                    </button>
-                                </span>}
+                                {selectedTheme && view === 'themes' &&
+                                    <div className="flex items-center gap-2">
+                                        <button className='mr-1' onClick={() => setSelectedTheme('')}>
+                                            ←
+                                        </button>
+                                        <span className={`${getColorForTheme(selectedTheme, true)} text-sm w-auto px-2 py-1 shadow-sm border-l-2 border-black/20`}>{selectedTheme}</span>
+                                    </div>
+}
                                 {view === 'dreams' &&
                                 <div className="flex items-center gap-2">
-                                    <Dropdown<string> parameter={year.toString()} setParameter={setYear} options={uniqueYears} placeholder={'Select Year'} />
-                                    <Dropdown<string> parameter={monthString} setParameter={setMonthString} options={monthOptions} placeholder={'Select Month'} />
+                                    <Dropdown<string> parameter={year} setParameter={setYear} options={uniqueYears} placeholder={'Select Year'} />
+                                    <Dropdown<string> parameter={monthString} setParameter={setMonthString} options={monthOptions} placeholder={'Month'} />
                                 </div>
                                 }
                                 {view === 'themes' && !selectedTheme && <ThemesList />}
                                 {(view === 'themes' && selectedTheme) || (view === 'dreams' && monthString) ? 
-                                <DreamsList /> : null}
+                                    <DreamsList /> 
+                                : 
+                                    <span className='text-gray-500 text-sm'>{view === 'themes' ? 'Select a theme to view dreams.' : 'Select a month to view dreams.'}</span>
+                                }
 
                                 <LogoutButton />
                             </>
