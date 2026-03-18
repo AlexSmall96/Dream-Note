@@ -4,7 +4,6 @@ import { useThemesAside } from "@/contexts/ThemesAsideContext"
 import { MONTH_KEYS, MonthLabel } from "@/lib/filters/dateRanges"
 import DreamsList from "./DreamsList"
 import { useDreamCounts } from "@/contexts/DreamCountsContext"
-import YearSelect from "./YearSelect"
 
 export default function MonthsWithDreams(){
 
@@ -24,7 +23,6 @@ export default function MonthsWithDreams(){
 
     return (
         <div>
-            <YearSelect />
             <div>
                 {Object.keys(monthlyTotals).length !==0 ? MONTH_KEYS.map(m => 
                     monthlyTotals[m] > 0 &&
