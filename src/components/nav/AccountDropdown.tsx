@@ -3,18 +3,12 @@ import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import Link from "next/link"
+import LogoutButton from "@/components/nav/LogoutButton"
 
 export default function AccountDropdown() {
     
-    const handleLogout = async () => {
-        await fetch("/api/auth/logout", {
-            method: "POST",
-            credentials: "include",
-        })
-    	window.location.href = "/auth/login"
-    }
-
     const { currentUser } = useCurrentUser()
+    
     return (
         <Menu as="div" className="relative inline-block rounded-sm text-left">
             <MenuButton className="inline-flex w-full justify-center gap-x-1.5">
@@ -35,12 +29,7 @@ export default function AccountDropdown() {
                         </Link>
                     </MenuItem>
                     <MenuItem>
-                        <button
-                            onClick={handleLogout}
-                            className='text-left block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                        >
-                            Logout
-                        </button>
+                        <LogoutButton />
                     </MenuItem>
                 </div>
             </MenuItems>

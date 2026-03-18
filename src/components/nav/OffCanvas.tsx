@@ -13,17 +13,11 @@ import DreamsList from "./DreamsList";
 import ThemesList from "./ThemesList";
 import { getColorForTheme } from "@/lib/utils/getColorForTheme";
 import { Tab, TabGroup, TabList } from '@headlessui/react'
-import YearSelect from "./YearSelect";
+import YearSelect from "@/components/nav/YearSelect";
+import LogoutButton from "@/components/nav/LogoutButton"
 
 export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boolean> }) {
 
-    const handleLogout = async () => {
-        await fetch("/api/auth/logout", {
-            method: "POST",
-            credentials: "include",
-        })
-    	window.location.href = "/auth/login"
-    }
     const [monthString, setMonthString] = useState('')
 
     useEffect(() => {
@@ -69,13 +63,11 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                                 <Link href="/account" className='text-left block w-full text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
                                     Account
                                 </Link>
-                                <button
-                                    onClick={handleLogout}
-                                    className='text-left block w-full text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                                >
-                                    Logout
-                                </button>
+
+                                <LogoutButton />
+
                                 <SearchBar />
+
                                 <TabGroup>
                                     <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
                                         <Tab 
@@ -90,6 +82,7 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                                         </Tab>
                                     </TabList>
                                 </TabGroup>
+
                                 {selectedTheme && 
                                 <span className="flex items-center gap-1">
                                     <span className={`font-caveat ${getColorForTheme(selectedTheme)} px-3 py-1 shadow-md border-l-4 border-black/20`}>{selectedTheme}</span>
