@@ -37,9 +37,9 @@ export default function SearchBar() {
                             <div 
                                 key={dream._id} 
                                 onClick={() => handleClick(dream._id)} 
-                                className="grid grid-cols-3 hover:bg-gray-100 cursor-pointer px-2 justify-between items-center"
+                                className="grid grid-cols-3 hover:bg-gray-100  cursor-pointer px-2 py-0.5 justify-between items-center"
                             >
-                                <span className="col-span-2">{dream.title}</span> <span className="col-span-1 text-xs text-gray-500">{formatDate(dream.date, true, true)}</span>
+                                <span className="col-span-2 text-md">{dream.title}</span> <span className="col-span-1 text-xs text-gray-500">{formatDate(dream.date, true, true)}</span>
                             </div>
                         )}      
                     </div>
