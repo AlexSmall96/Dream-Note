@@ -78,6 +78,12 @@ export class DreamStatsService {
         return results
     }
 
+    public async getUniqueYears(owner: string): Promise<string[]>{
+        const dreams = await Dream.find({owner})
+        const years = dreams.map(dream => dream.date.getFullYear().toString())
+        const uniqueYears = [...new Set(years)]
+        return uniqueYears
+    }
 
     public async normalizeMonthCount(owner: string) {
         const monthNames = [
