@@ -3,18 +3,18 @@ import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 export default function Dropdown<parameterType extends string>({
-    parameter, setParameter, options, parameterName
+    parameter, setParameter, options, placeholder
 }:{
     parameter: parameterType,
     setParameter: setterFunction<parameterType>,
     options: parameterType[],
-    parameterName: string
+    placeholder: string
 }) {
 
     return (
         <Menu as="div" className="relative inline-block">
             <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm shadow-xs inset-ring-1 inset-ring-gray-300 hover:bg-gray-50">
-                {parameterName}: {parameter.split(' ')[0]}
+                {parameter ? parameter.split(' ')[0] : placeholder}
                 <ChevronDownIcon aria-hidden="true" className="-mr-1 size-5 text-gray-400" />
             </MenuButton>
             <MenuItems

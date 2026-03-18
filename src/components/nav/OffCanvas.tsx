@@ -30,7 +30,7 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
         const month = monthString.split(' ')[0] as MonthLabel
         setMonth(month)
     }, [monthString])
-    
+
     const { selectedTheme, setSelectedTheme, view, setMonth, year, setYear } = useThemesAside()
 
     const { stats } = useDreamCounts()
@@ -44,7 +44,6 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
             monthOptions.push(m + ` (${monthlyTotals[m]})`)
         }
     })
-
 
     const { currentUser, loading } = useCurrentUser()
     return (
@@ -85,8 +84,8 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                                 </span>}
                                 {view === 'dreams' &&
                                 <div className="flex items-center gap-2">
-                                    <Dropdown<string> parameter={year.toString()} setParameter={setYear} options={uniqueYears} parameterName="Year" />
-                                    <Dropdown<string> parameter={monthString} setParameter={setMonthString} options={monthOptions} parameterName="Month" />
+                                    <Dropdown<string> parameter={year.toString()} setParameter={setYear} options={uniqueYears} placeholder={'Select Year'} />
+                                    <Dropdown<string> parameter={monthString} setParameter={setMonthString} options={monthOptions} placeholder={'Select Month'} />
                                 </div>
                                 }
                                 {view === 'themes' && !selectedTheme && <ThemesList />}
