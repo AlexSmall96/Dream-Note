@@ -72,7 +72,7 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                                 <LinkWithIcon href='/dreams' icon={faDashboard} text='Dashboard' />
                             
                                 <LinkWithIcon href='/account' icon={faAccount} text='Account' />
-
+                                <hr className="border-t border-gray-300" />
                                 <ViewToggle />
 
                                 {selectedTheme && view === 'themes' &&
@@ -95,7 +95,7 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                                 : 
                                     <span className='text-gray-500 text-sm'>{view === 'themes' ? 'Select a theme to view dreams.' : 'Select a month to view dreams.'}</span>
                                 }
-
+                                <hr className="border-t border-gray-300" />
                                 <LogoutButton />
                             </>
                         : 
