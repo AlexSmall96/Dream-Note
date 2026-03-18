@@ -2,13 +2,14 @@ import { useCurrentUser } from '@/contexts/CurrentUserContext'
 import { faCircleUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import Link from "next/link"
 import LogoutButton from "@/components/nav/LogoutButton"
+import LinkWithIcon from '../ui/LinkWithIcon'
+import { faUser as faAccount } from "@fortawesome/free-solid-svg-icons"
 
 export default function AccountDropdown() {
     
     const { currentUser } = useCurrentUser()
-    
+
     return (
         <Menu as="div" className="relative inline-block rounded-sm text-left">
             <MenuButton className="inline-flex w-full justify-center gap-x-1.5">
@@ -24,9 +25,7 @@ export default function AccountDropdown() {
             </div>
                 <div>
                     <MenuItem>
-                        <Link href="/account" className='text-left block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
-                            Account
-                        </Link>
+                        <LinkWithIcon href="/account" icon={faAccount} text="Account" />
                     </MenuItem>
                     <MenuItem>
                         <LogoutButton />

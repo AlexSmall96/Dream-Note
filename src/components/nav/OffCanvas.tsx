@@ -1,8 +1,14 @@
 import { setterFunction } from "@/types/setterFunctions";
 import { useCurrentUser } from "@/contexts/CurrentUserContext";
-import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
+import { 
+    faFeatherPointed as faLog, 
+    faChartBar as faDashboard, 
+    faUser as faAccount, 
+    faUserPlus as faSignup, 
+    faRightToBracket as faLogin  
+} from "@fortawesome/free-solid-svg-icons";
 import SearchBar from "./SearchBar";
 import Dropdown from "../ui/Dropdown";
 import { MONTH_KEYS, MonthLabel } from "@/lib/filters/dateRanges"
@@ -12,11 +18,10 @@ import { useThemesAside } from "@/contexts/ThemesAsideContext";
 import DreamsList from "./DreamsList";
 import ThemesList from "./ThemesList";
 import { getColorForTheme } from "@/lib/utils/getColorForTheme";
-import { Tab, TabGroup, TabList } from '@headlessui/react'
 import YearSelect from "@/components/nav/YearSelect";
 import LogoutButton from "@/components/nav/LogoutButton"
-import ViewChange from "./ViewToggle";
 import ViewToggle from "./ViewToggle";
+import LinkWithIcon from "../ui/LinkWithIcon";
 
 export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boolean> }) {
 
@@ -27,7 +32,7 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
         setMonth(month)
     }, [monthString])
     
-    const { selectedTheme, setSelectedTheme, view, setView, year, setYear, setMonth } = useThemesAside()
+    const { selectedTheme, setSelectedTheme, view, setMonth } = useThemesAside()
 
     const { stats } = useDreamCounts()
     const monthlyTotals = stats.monthlyTotals
@@ -53,21 +58,21 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
 					</button>
 					<div className="flex flex-col gap-4">
 						{loading ? null : currentUser ? 
-                            <>
-                                <h1>
+                            <>  
+                                <div className="flex justify-center-safe items-center gap-2">
                                     <FontAwesomeIcon icon={faCircleUser} className='text-gray-500 text-3xl' />
-                                    {currentUser?.email}
-                                    {currentUser?.isVerified && <><span className="text-xs"> Verified </span> <span className='text-green-500'>✓</span></>}
-                                </h1>
-                                <Link href="/dreams/create" className="text-sm hover:underline w-full block">Log Dream</Link>
+                                    <span>{currentUser?.email}</span>
+                                    {currentUser?.isVerified && <><span className="text-xs mt-1"> Verified </span> <span className='text-green-500'>✓</span></>}
+                                </div>
+                                
+                                <LinkWithIcon href="/dreams/create" icon={faLog} text="Log Dream" />    
 
                                 <SearchBar />
 
-                                <Link href="/dreams" className="text-sm hover:underline w-full block">Dashboard</Link>
-                                <Link href="/account" className='text-left block w-full text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
-                                    Account
-                                </Link>
-                                
+                                <LinkWithIcon href='/dreams' icon={faDashboard} text='Dashboard' />
+                            
+                                <LinkWithIcon href='/account' icon={faAccount} text='Account' />
+
                                 <ViewToggle />
 
                                 {selectedTheme && 
@@ -91,8 +96,8 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                             </>
                         : 
                             <>
-                                <Link href="/auth/login" className="text-sm hover:underline">Login</Link>
-                                <Link href="/auth/signup" className="text-sm hover:underline">Signup</Link>
+                                <LinkWithIcon href="/auth/login" icon={faLogin} text="Login" />
+                                <LinkWithIcon href="/auth/signup" icon={faSignup} text="Signup" />
     	                    </>}
 					</div>
 					

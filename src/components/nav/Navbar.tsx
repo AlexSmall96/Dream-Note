@@ -7,24 +7,31 @@ import { useState } from "react"
 import SearchBar from "./SearchBar"
 import AccountDropdown from "./AccountDropdown"
 import OffCanvas from "./OffCanvas"
+import LinkWithIcon from "../ui/LinkWithIcon"
+import { 
+	faFeatherPointed as faLog, 
+	faChartBar as faDashboard, 
+	faUserPlus as faSignup, 
+	faRightToBracket as faLogin 
+} from "@fortawesome/free-solid-svg-icons";
 
 function LoggedOutNav() {
   	return (
-    	<>
-      		<Link href="/auth/login" className="text-sm hover:underline">Login</Link>
-      		<Link href="/auth/signup" className="text-sm hover:underline">Signup</Link>
-    	</>
+		<>
+			<LinkWithIcon href="/auth/login" icon={faLogin} text="Login" />
+			<LinkWithIcon href="/auth/signup" icon={faSignup} text="Signup" />
+		</>
   		)
 }
 
 function LoggedInNav() {
   	return (
 		<div className="flex flex-col gap-4 md:flex-row md:items-center">
-			<Link href="/dreams" className="text-sm hover:underline w-full block">Dashboard</Link>
+			<LinkWithIcon href='/dreams' icon={faDashboard} text='Dashboard' />
 		  	<div className="flex-1">
     			<SearchBar />
   			</div>
-			<Link href="/dreams/create" className="text-sm hover:underline w-full block">Log Dream</Link>
+			<LinkWithIcon href="/dreams/create" icon={faLog} text="Log Dream" />    
 			<AccountDropdown />
 		</div>
   	)
