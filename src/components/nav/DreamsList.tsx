@@ -14,7 +14,6 @@ export default function DreamsList(){
     const { themes } = useThemes()
     const { selectedTheme, setChronView, view, sort, setSort} = useThemesAside()
 
-
     const dreamsList = selectedTheme ? 
         themes.filter(
             theme => 
@@ -33,29 +32,35 @@ export default function DreamsList(){
 
     return (
         <>
-            {dreams.length > 0 && (
-            <div className="grid grid-cols-3 gap-1 bg-[url('/images/paper.jpg')] bg-repeat p-2 rounded rounded-lg shadow-lg border border-purple-100">
-                <div className="col-span-1 flex justify-start mb-2 pr-2">
-                    {dreams.length} {dreams.length === 1 ? 'dream' : 'dreams'}
+            {dreams.length > 0 ? (
+            <div className="grid grid-cols-5 gap-1 p-2 rounded bg-white/60 hover:bg-white border border-gray-200">
+                <div className="col-span-3 flex justify-start mb-2 pr-2 text-sm text-gray-500">
+                    Dreams ({dreams.length}):
                 </div>
-                <div className="col-span-2 flex justify-start mb-2 pl-2">
+                <div className="col-span-1">
+                    <span className="text-sm text-gray-500">
+                        Date:
+                    </span>
+                </div>
+                <div className="col-span-1 flex justify-start mb-2 pl-2">
                     {dreams.length > 1 &&
                         <IconWithTooltip icon={faSort} tooltipText={`${!sort ? 'Oldest first' : 'Newest first'}`} onClick={() => setSort(prev => !prev)} extraClass="text-gray-500" />
                     }
                 </div>
                 {dreamsList.map(dream => (
-                    <div key={dream._id} className="contents font-playwrite">
-                        {view === 'dreams' && <div>{formatDate(dream.date)}</div>}
+                    <div key={dream._id} className="contents row-span-full">
                         <div
                             onClick={() => handleClick(dream._id)}
-                            className="col-span-2 hover:underline cursor-pointer"
+                            className="col-span-3 hover:underline cursor-pointer"
                         >
                             {dream.title}
                         </div>
+                        {view === 'dreams' && 
+                        <div className="col-span-1">{formatDate(dream.date)}</div>}
                     </div>
                 ))}
             </div>
-            )}
+            ): ('')}
         </>
     )
 }
