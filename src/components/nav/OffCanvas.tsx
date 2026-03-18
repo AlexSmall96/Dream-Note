@@ -18,7 +18,6 @@ import { useThemesAside } from "@/contexts/ThemesAsideContext";
 import DreamsList from "./DreamsList";
 import ThemesList from "./ThemesList";
 import { getColorForTheme } from "@/lib/utils/getColorForTheme";
-import YearSelect from "@/components/nav/YearSelect";
 import LogoutButton from "@/components/nav/LogoutButton"
 import ViewToggle from "./ViewToggle";
 import LinkWithIcon from "../ui/LinkWithIcon";
@@ -32,15 +31,17 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
         setMonth(month)
     }, [monthString])
     
-    const { selectedTheme, setSelectedTheme, view, setMonth } = useThemesAside()
+    const { selectedTheme, setSelectedTheme, view, setMonth, year, setYear } = useThemesAside()
 
     const { stats } = useDreamCounts()
     const monthlyTotals = stats.monthlyTotals
-    const options: string[] = []
+    const uniqueYears = stats.uniqueYears
+
+    const monthOptions: string[] = []
 
     MONTH_KEYS.forEach(m => {
         if (monthlyTotals[m]){
-            options.push(m + ` (${monthlyTotals[m]})`)
+            monthOptions.push(m + ` (${monthlyTotals[m]})`)
         }
     })
 
@@ -62,7 +63,7 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                                 <div className="flex justify-center-safe items-center gap-2">
                                     <FontAwesomeIcon icon={faCircleUser} className='text-gray-500 text-3xl' />
                                     <span>{currentUser?.email}</span>
-                                    {currentUser?.isVerified && <><span className="text-xs mt-1"> Verified </span> <span className='text-green-500'>✓</span></>}
+                                    {currentUser?.isVerified && <><span className="text-xs text-gray-500 mt-1"> Verified </span> <span className='text-green-500'>✓</span></>}
                                 </div>
                                 
                                 <LinkWithIcon href="/dreams/create" icon={faLog} text="Log Dream" />    
@@ -84,8 +85,8 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                                 </span>}
                                 {view === 'dreams' &&
                                 <div className="flex items-center gap-2">
-                                    <YearSelect />
-                                    <Dropdown<string> parameter={monthString} setParameter={setMonthString} options={options} parameterName="Month" />
+                                    <Dropdown<string> parameter={year.toString()} setParameter={setYear} options={uniqueYears} parameterName="Year" />
+                                    <Dropdown<string> parameter={monthString} setParameter={setMonthString} options={monthOptions} parameterName="Month" />
                                 </div>
                                 }
                                 {view === 'themes' && !selectedTheme && <ThemesList />}
