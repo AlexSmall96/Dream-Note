@@ -35,10 +35,14 @@ export default function DreamsList(){
         <>
             {dreams.length > 0 && (
             <div className="grid grid-cols-3 gap-1 bg-[url('/images/paper.jpg')] bg-repeat p-2 rounded rounded-lg shadow-lg border border-purple-100">
-                {dreams.length > 1 &&
-                <div className="col-span-3 flex justify-start mb-2 pl-2">
-                    <IconWithTooltip icon={faSort} tooltipText={`${sort ? 'Oldest first' : 'Newest first'}`} onClick={() => setSort(prev => !prev)} extraClass="text-gray-500" />
-                </div>}
+                <div className="col-span-1 flex justify-start mb-2 pr-2">
+                    {dreams.length} {dreams.length === 1 ? 'dream' : 'dreams'}
+                </div>
+                <div className="col-span-2 flex justify-start mb-2 pl-2">
+                    {dreams.length > 1 &&
+                        <IconWithTooltip icon={faSort} tooltipText={`${!sort ? 'Oldest first' : 'Newest first'}`} onClick={() => setSort(prev => !prev)} extraClass="text-gray-500" />
+                    }
+                </div>
                 {dreamsList.map(dream => (
                     <div key={dream._id} className="contents font-playwrite">
                         {view === 'dreams' && <div>{formatDate(dream.date)}</div>}
