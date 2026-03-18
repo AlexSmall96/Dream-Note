@@ -21,12 +21,12 @@ export default function ViewToggle() {
             <TabList className="flex gap-0 bg-gray-100 p-1 rounded-lg text-sm flex-1">
                 <Tab 
                 onClick={() => handleChangeView('dreams')}
-                className="flex-1 px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white flex items-center justify-center">
+                className="flex-1 px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white flex items-center justify-center">
                 By Date
                 </Tab>
                 <Tab 
                 onClick={() => handleChangeView('themes')}
-                className="flex-1 px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white flex items-center justify-center">
+                className="flex-1 px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white flex items-center justify-center">
                 By Theme
                 </Tab>
             </TabList>
