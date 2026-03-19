@@ -8,7 +8,7 @@ export default function ViewToggle() {
     const { setView } = useThemesAside()
 
     return (
-        <TabGroup className='flex flex-col gap-2 w-full'>
+        <TabGroup className='flex flex-col gap-2 w-full pl-2'>
             <div className="flex items-center gap-2 w-full">
                 <span className='text-sm pr-2'>
                     <FontAwesomeIcon icon={faBrowse} className="text-gray-500" /> Browse:

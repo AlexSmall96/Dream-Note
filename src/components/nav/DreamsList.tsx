@@ -7,12 +7,14 @@ import { useThemesAside } from "@/contexts/ThemesAsideContext"
 import { formatDate } from "@/lib/utils/formatDate"
 import IconWithTooltip from "../ui/IconWithTooltip"
 import { faSort } from "@fortawesome/free-solid-svg-icons"
+import { useScreenSize } from "@/app/hooks/useScreenSize"
 
 export default function DreamsList(){
 
     const { dreams } = useDreams()
     const { themes } = useThemes()
     const { selectedTheme, setChronView, view, sort, setSort} = useThemesAside()
+    const { isMedium } = useScreenSize()
 
     const dreamsList = view === 'themes' ? 
         themes.filter(
@@ -34,7 +36,7 @@ export default function DreamsList(){
         <>
             {dreamsList.length > 0 ? (
             <div className=" gap-1 p-2 rounded bg-white/60 hover:bg-white border border-gray-200">
-                <div className="grid grid-cols-5">
+                {isMedium && <div className="grid grid-cols-5">
                     <div className="col-span-3 flex justify-start pr-2 text-sm text-gray-500">
                         Dreams ({dreamsList.length}):
                     </div>
@@ -48,7 +50,7 @@ export default function DreamsList(){
                             <IconWithTooltip icon={faSort} tooltipText={`${!sort ? 'Oldest first' : 'Newest first'}`} onClick={() => setSort(prev => !prev)} extraClass="text-gray-500" />
                         }
                     </div>
-                </div>
+                </div>}
                 <div className="grid grid-cols-5 gap-1 p-1 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-400 scrollbar-track-gray-100">
                     {dreamsList.map(dream => (
                         <div key={dream._id} className="contents row-span-full">
@@ -56,11 +58,11 @@ export default function DreamsList(){
                                 {dream.title}
                             </div> 
                             {view === 'themes' ? 
-                                <div className='col-span-2 text-gray-500 text-sm'>
+                                <div className='col-span-2 pt-1 text-gray-500 text-xs'>
                                     {formatDate(dream.date, true, true)} 
                                 </div>                            
-                            :   <div className='col-span-1'>
-                                    {formatDate(dream.date)}
+                            :   <div className='col-span-2 pt-1 justify-self-end text-xs'>
+                                    {formatDate(dream.date, true)}
                                 </div> 
                             }
                         </div>

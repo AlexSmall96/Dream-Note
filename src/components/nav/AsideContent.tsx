@@ -14,11 +14,13 @@ export function AsideContent() {
     if (loading || !currentUser) return null
 
     return (
-        <div className="p-3 w-full">
+        <div className="p-3 w-full flex flex-col gap-2">
             <ViewToggle />
-            {view === 'themes' && <ThemesList />}
-            {view === 'themes' && selectedTheme && <DreamsList />}
-            {view === 'dreams' && <MonthsWithDreams />}
+            <div className='bg-white p-2 rounded border border-gray-200 shadow-sm'>
+                {view === 'themes' && <ThemesList />}
+                {view === 'themes' && selectedTheme && <DreamsList />}
+                {view === 'dreams' && <MonthsWithDreams />}
+            </div>
         </div>
     )
 }
