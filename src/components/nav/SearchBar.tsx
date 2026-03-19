@@ -22,14 +22,14 @@ export default function SearchBar() {
     }
 
     return (
-        <div className="relative flex-1">
+        <div className="relative flex-1 max-w-lg">
             <form className="flex flex-col gap-2 border-2 rounded border-gray-300">
                 <input 
                     type='text'
                     value={search}
                     onChange={handleSearch}
                     placeholder='🔍︎ Search all dreams'
-                    className="p-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className="px-2 py-1 rounded focus:outline-none focus:ring-2 focus:ring-purple-400"
                 />
                 {searchResults.length > 0 && 
                     <div className="absolute top-full left-0 w-full bg-white border border-gray-300 z-10 rounded">

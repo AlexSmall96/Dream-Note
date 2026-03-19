@@ -4,7 +4,7 @@ import Image from "next/image"
 
 export default function Logo () {
     return (
-        <Link href="/" className="font-playwrite flex items-center text-lg font-semibold">
+        <Link href="/" className="font-playwrite flex items-center text-lg font-semibold mr-20">
             DreamN
             <Image
                 alt="sleepy emoji"
