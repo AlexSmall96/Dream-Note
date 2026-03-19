@@ -33,7 +33,7 @@ export default function MonthsWithDreams(){
                         className='bg-purple-200 p-0.5 my-0.5 rounded shadow-sm border-l-2 border-black/20 w-full text-left' 
                         onClick={() => handleMonthSelect(m)}
                     >
-                        {m} {`(${monthlyTotals[m]})`}
+                        {m} <span className="text-gray-500 text-sm">({monthlyTotals[m]})</span>
                     </button>
                     {m === month && showDreams && <DreamsList key={`${year}-${month}`} /> }
                 </div>
