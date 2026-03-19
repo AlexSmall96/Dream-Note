@@ -99,5 +99,18 @@ describe('formatDate should return:', () => {
         dates.forEach((date, index) => 
             expect(formatDate(date, true)).toBe(strings[index])
         )
+    })
+    test('Correct strings if include year and month are true.', () => {
+        const dates = [
+            new Date('2025-02-12'),
+            new Date('2025-12-07'),
+            new Date('2026-08-01'),
+        ] 
+        const strings = [
+            '12th Feb 2025', '7th Dec 2025', '1st Aug 2026'
+        ] 
+        dates.forEach((date, index) => 
+            expect(formatDate(date, true, true)).toBe(strings[index])
+        )      
     })   
 })

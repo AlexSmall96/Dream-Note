@@ -1,55 +1,52 @@
 "use client"
 
-import Link from "next/link"
 import { useCurrentUser } from "@/contexts/CurrentUserContext"
-import Image from "next/image"
 import { useState } from "react"
 import SearchBar from "./SearchBar"
 import AccountDropdown from "./AccountDropdown"
 import OffCanvas from "./OffCanvas"
-
-function LoggedOutNav() {
-  	return (
-    	<>
-      		<Link href="/auth/login" className="text-sm hover:underline">Login</Link>
-      		<Link href="/auth/signup" className="text-sm hover:underline">Signup</Link>
-    	</>
-  		)
-}
-
-function LoggedInNav() {
-  	return (
-		<div className="flex flex-col gap-4 md:flex-row md:items-center">
-		  	<div className="flex-1">
-    			<SearchBar />
-  			</div>
-			<Link href="/dreams/create" className="text-sm hover:underline w-full block">Log Dream</Link>
-			<Link href="/dreams" className="text-sm hover:underline w-full block">View Dreams</Link>
-			<AccountDropdown />
-		</div>
-  	)
-}
-
+import Logo from "./Logo"
+import LinkWithIcon from "../ui/LinkWithIcon"
+import { faFeatherPointed as faLog, faChartBar as faDashboard } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useIsLargeScreen } from '@/app/hooks/useIsLargeScreen'
 
 export default function Navbar() {
   	const {currentUser, loading } = useCurrentUser()
 	const [isOpen, setIsOpen] = useState(false)
+	const [hovered, setHovered] = useState(false)
+
+
+	const isLarge = useIsLargeScreen()
+
+	if (loading || !currentUser) return null
 
   	return (
-		<nav className="w-full border-b bg-purple-200">
-			<div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-				<Link href="/" className="font-playwrite flex items-center text-lg font-semibold">
-					DreamN
-					<Image
-						alt="sleepy emoji"
-						width={25}
-						height={25}
-						src="/images/sleepy.png"
-					/>
-					te
-				</Link>
-				<div className="hidden md:flex gap-4">
-					{loading? null : currentUser ? <LoggedInNav /> : <LoggedOutNav />}
+		<nav className="border-b bg-purple-200">
+			<div className="mx-auto flex items-center justify-between px-4 py-3">
+
+				<Logo />
+				
+				<div className="hidden md:flex flex-1 gap-4 md:items-center justify-end">
+
+					<LinkWithIcon href='/dreams' icon={faDashboard} text='Dashboard' />
+					<SearchBar />
+					<button 
+						onClick={() => window.location.href = '/dreams/create'} 
+						onMouseEnter={() => setHovered(true)}
+						onMouseLeave={() => setHovered(false)}
+						className="bg-purple-500 text-white px-3 py-1.5 rounded hover:bg-purple-600 transition-colors text-sm"
+					>
+						<FontAwesomeIcon icon={faLog} className="mr-1" />
+						<span className="hidden lg:inline">Log Dream</span>
+							{hovered && !isLarge && (
+							<div className="absolute right-2 top-16 transform -translate-x-1/2 -translate-y-1/2 mr-2 px-2 py-1 bg-yellow-200 text-gray-800 text-xs whitespace-nowrap">
+								Log Dream
+							</div>
+						)}
+					</button>
+					<AccountDropdown />
+					
 				</div>
 				<button 
           			onClick={() => setIsOpen(prev => !prev)} 
@@ -57,10 +54,8 @@ export default function Navbar() {
         		>
           			☰
         		</button>
-			</div>
-			{isOpen && (
-				<OffCanvas setIsOpen={setIsOpen}/>
-			)}
+		</div>
+		{isOpen && <OffCanvas setIsOpen={setIsOpen}/>}
 		</nav>
   	)
 }

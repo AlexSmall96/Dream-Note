@@ -23,7 +23,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     useEffect(() => {
         const getDreams = async () => {
             try {
-                const response = await fetchDreams({year, month, sort})
+                const response = await fetchDreams({year: Number(year), month, sort})
                 setDreams(response.dreams)
             } catch (err) {
                 console.log(err)

@@ -17,7 +17,7 @@ export default function ThemesList () {
                         className={`${getColorForTheme(theme, true)} w-24 px-2 py-0.5 shadow-sm border-l-2 border-black/20`} 
                         onClick={() => setSelectedTheme(theme)}
                     >
-                        <span className="text-sm font-caveat">{theme}</span> <span className="text-sm text-gray-500">({counts[theme]})</span></button>
+                        <span className="text-sm">{theme}</span> <span className="text-sm text-gray-500">({counts[theme]})</span></button>
                 </div> 
             )}
         </div>

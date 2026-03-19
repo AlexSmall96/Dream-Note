@@ -5,13 +5,14 @@ import { useDreams } from "@/contexts/DreamsContext"
 import { useThemes } from "@/contexts/ThemesContext"
 import { useThemesAside } from "@/contexts/ThemesAsideContext"
 import { formatDate } from "@/lib/utils/formatDate"
+import IconWithTooltip from "../ui/IconWithTooltip"
+import { faSort } from "@fortawesome/free-solid-svg-icons"
 
 export default function DreamsList(){
 
     const { dreams } = useDreams()
     const { themes } = useThemes()
-    const { selectedTheme, setChronView, view } = useThemesAside()
-
+    const { selectedTheme, setChronView, view, sort, setSort} = useThemesAside()
 
     const dreamsList = selectedTheme ? 
         themes.filter(
@@ -31,21 +32,35 @@ export default function DreamsList(){
 
     return (
         <>
-            {dreams.length > 0 && (
-            <div className="grid grid-cols-3 gap-1">
-                {dreamsList.map(dream => (
-                    <div key={dream._id} className="contents font-playwrite">
-                        {view === 'dreams' && <div>{formatDate(dream.date)}</div>}
-                        <div
-                            onClick={() => handleClick(dream._id)}
-                            className="col-span-2 hover:underline cursor-pointer"
-                        >
-                            {dream.title}
-                        </div>
+            {dreamsList.length > 0 ? (
+            <div className=" gap-1 p-2 rounded bg-white/60 hover:bg-white border border-gray-200">
+                <div className="grid grid-cols-5">
+                    <div className="col-span-3 flex justify-start pr-2 text-sm text-gray-500">
+                        Dreams ({dreamsList.length}):
                     </div>
-                ))}
+                    <div className="col-span-1">
+                        <span className="text-sm text-gray-500">
+                            Date:
+                        </span>
+                    </div>
+                    <div className="col-span-1 flex justify-start pl-2">
+                        {dreamsList.length > 1 &&
+                            <IconWithTooltip icon={faSort} tooltipText={`${!sort ? 'Oldest first' : 'Newest first'}`} onClick={() => setSort(prev => !prev)} extraClass="text-gray-500" />
+                        }
+                    </div>
+                </div>
+                <div className="grid grid-cols-5 gap-1 p-1 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-400 scrollbar-track-gray-100">
+                    {dreamsList.map(dream => (
+                        <div key={dream._id} className="contents row-span-full">
+                            <div onClick={() => handleClick(dream._id)} className="col-span-3 hover:underline cursor-pointer">
+                                {dream.title}
+                            </div> 
+                            <div className={`col-span-1 ${view === 'themes' ? 'text-gray-500 text-sm' : ''}`}>{formatDate(dream.date)}</div>
+                        </div>
+                    ))}
+                </div>
             </div>
-            )}
+            ): ('No dreams found.')}
         </>
     )
 }

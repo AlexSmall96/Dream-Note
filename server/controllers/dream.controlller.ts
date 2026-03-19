@@ -87,8 +87,8 @@ export class DreamController {
         const NOW = new Date()
         const year = Number(req.query.year) ?? NOW.getFullYear() 
         try {
-            const { monthlyTotals, total, thisMonthTotal } = await this.dreamService.getAllStats(userId, year)
-            res.json({ monthlyTotals, total, thisMonthTotal })
+            const { monthlyTotals, total, thisMonthTotal, uniqueYears} = await this.dreamService.getAllStats(userId, year)
+            res.json({ monthlyTotals, total, thisMonthTotal, uniqueYears })
         } catch (err){
             next(err)
         }

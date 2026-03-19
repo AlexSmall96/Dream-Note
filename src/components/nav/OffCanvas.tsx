@@ -1,8 +1,14 @@
 import { setterFunction } from "@/types/setterFunctions";
 import { useCurrentUser } from "@/contexts/CurrentUserContext";
-import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
+import { 
+    faFeatherPointed as faLog, 
+    faChartBar as faDashboard, 
+    faUser as faAccount, 
+    faUserPlus as faSignup, 
+    faRightToBracket as faLogin  
+} from "@fortawesome/free-solid-svg-icons";
 import SearchBar from "./SearchBar";
 import Dropdown from "../ui/Dropdown";
 import { MONTH_KEYS, MonthLabel } from "@/lib/filters/dateRanges"
@@ -12,40 +18,32 @@ import { useThemesAside } from "@/contexts/ThemesAsideContext";
 import DreamsList from "./DreamsList";
 import ThemesList from "./ThemesList";
 import { getColorForTheme } from "@/lib/utils/getColorForTheme";
-import { Tab, TabGroup, TabList } from '@headlessui/react'
-import YearSelect from "./YearSelect";
+import LogoutButton from "@/components/nav/LogoutButton"
+import ViewToggle from "./ViewToggle";
+import LinkWithIcon from "../ui/LinkWithIcon";
 
 export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boolean> }) {
 
-    const handleLogout = async () => {
-        await fetch("/api/auth/logout", {
-            method: "POST",
-            credentials: "include",
-        })
-    	window.location.href = "/auth/login"
-    }
     const [monthString, setMonthString] = useState('')
 
     useEffect(() => {
         const month = monthString.split(' ')[0] as MonthLabel
         setMonth(month)
     }, [monthString])
-    
-    const { selectedTheme, setSelectedTheme, view, setView, year, setYear, setMonth } = useThemesAside()
+
+    const { selectedTheme, setSelectedTheme, view, setMonth, year, setYear } = useThemesAside()
 
     const { stats } = useDreamCounts()
     const monthlyTotals = stats.monthlyTotals
-    const options: string[] = []
+    const uniqueYears = stats.uniqueYears
+
+    const monthOptions: string[] = []
 
     MONTH_KEYS.forEach(m => {
         if (monthlyTotals[m]){
-            options.push(m + ` (${monthlyTotals[m]})`)
+            monthOptions.push(m + ` (${monthlyTotals[m]})`)
         }
     })
-    const handleChangeView = (view: 'dreams' | 'themes') => {
-        setView(view)
-        setSelectedTheme(null)
-    }
 
     const { currentUser, loading } = useCurrentUser()
     return (
@@ -60,57 +58,52 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
 					</button>
 					<div className="flex flex-col gap-4">
 						{loading ? null : currentUser ? 
-                            <>
-                                <h1>
+                            <>  
+                                <div className="flex justify-center-safe items-center gap-2">
                                     <FontAwesomeIcon icon={faCircleUser} className='text-gray-500 text-3xl' />
-                                    {currentUser?.email}
-                                    {currentUser?.isVerified && <><span className="text-xs"> Verified </span> <span className='text-green-500'>✓</span></>}
-                                </h1>
-                                <Link href="/account" className='text-left block w-full text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'>
-                                    Account
-                                </Link>
-                                <button
-                                    onClick={handleLogout}
-                                    className='text-left block w-full text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                                >
-                                    Logout
-                                </button>
+                                    <span>{currentUser?.email}</span>
+                                    {currentUser?.isVerified && <><span className="text-xs text-gray-500 mt-1"> Verified </span> <span className='text-green-500'>✓</span></>}
+                                </div>
+                                
+                            <button onClick={() => window.location.href = '/dreams/create'} className="bg-purple-500 text-white px-3 py-1.5 rounded hover:bg-purple-600 transition-colors text-sm">
+				                <FontAwesomeIcon icon={faLog} className="mr-1" /> Log Dream
+			                </button>  
+
                                 <SearchBar />
-                                <TabGroup>
-                                    <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
-                                        <Tab 
-                                            onClick={() => handleChangeView('dreams')}
-                                            className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
-                                        View By Date
-                                        </Tab>
-                                        <Tab 
-                                            onClick={() => handleChangeView('themes')}
-                                            className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
-                                        View By Theme
-                                        </Tab>
-                                    </TabList>
-                                </TabGroup>
-                                {selectedTheme && 
-                                <span className="flex items-center gap-1">
-                                    <span className={`font-caveat ${getColorForTheme(selectedTheme)} px-3 py-1 shadow-md border-l-4 border-black/20`}>{selectedTheme}</span>
-                                    <button className='bg-gray-500 hover:bg-blue-700 text-white font-bold px-3 py-1 w-full' onClick={() => setSelectedTheme('')}>
-                                        Back to all themes
-                                    </button>
-                                </span>}
+
+                                <LinkWithIcon href='/dreams' icon={faDashboard} text='Dashboard' />
+                            
+                                <LinkWithIcon href='/account' icon={faAccount} text='Account' />
+                                <hr className="border-t border-gray-300" />
+                                <ViewToggle />
+
+                                {selectedTheme && view === 'themes' &&
+                                    <div className="flex items-center gap-2">
+                                        <button className='mr-1' onClick={() => setSelectedTheme('')}>
+                                            ←
+                                        </button>
+                                        <span className={`${getColorForTheme(selectedTheme, true)} text-sm w-auto px-2 py-1 shadow-sm border-l-2 border-black/20`}>{selectedTheme}</span>
+                                    </div>
+}
                                 {view === 'dreams' &&
                                 <div className="flex items-center gap-2">
-                                    <YearSelect />
-                                    <Dropdown<string> parameter={monthString} setParameter={setMonthString} options={options} parameterName="Month" />
+                                    <Dropdown<string> parameter={year} setParameter={setYear} options={uniqueYears} placeholder={'Select Year'} />
+                                    <Dropdown<string> parameter={monthString} setParameter={setMonthString} options={monthOptions} placeholder={'Month'} />
                                 </div>
                                 }
                                 {view === 'themes' && !selectedTheme && <ThemesList />}
                                 {(view === 'themes' && selectedTheme) || (view === 'dreams' && monthString) ? 
-                                <DreamsList /> : null}
+                                    <DreamsList /> 
+                                : 
+                                    <span className='text-gray-500 text-sm'>{view === 'themes' ? 'Select a theme to view dreams.' : 'Select a month to view dreams.'}</span>
+                                }
+                                <hr className="border-t border-gray-300" />
+                                <LogoutButton />
                             </>
                         : 
                             <>
-                                <Link href="/auth/login" className="text-sm hover:underline">Login</Link>
-                                <Link href="/auth/signup" className="text-sm hover:underline">Signup</Link>
+                                <LinkWithIcon href="/auth/login" icon={faLogin} text="Login" />
+                                <LinkWithIcon href="/auth/signup" icon={faSignup} text="Signup" />
     	                    </>}
 					</div>
 					

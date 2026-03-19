@@ -27,7 +27,8 @@ export type DreamList = {
 export type DreamStats = {
     total: number,
     monthlyTotals: monthlyTotalType,
-    thisMonthTotal: number
+    thisMonthTotal: number,
+    uniqueYears: string[]
 }
 
 export type DreamCounts = {

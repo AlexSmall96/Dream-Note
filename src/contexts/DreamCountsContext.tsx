@@ -15,7 +15,7 @@ type DreamCountsContextType = {
 const DreamCountsContext = createContext<DreamCountsContextType | null>(null)
 
 export function DreamCountsProvider({ children }:{ children: React.ReactNode }) {
-    const [stats, setStats] = useState<DreamStats>({monthlyTotals: {}, total: 0, thisMonthTotal: 0})
+    const [stats, setStats] = useState<DreamStats>({monthlyTotals: {}, total: 0, thisMonthTotal: 0, uniqueYears: []})
     const { refetch } = useDreams()
     const { year } = useThemesAside()
 
@@ -23,7 +23,7 @@ export function DreamCountsProvider({ children }:{ children: React.ReactNode }) 
 
         const getCounts = async () => {
             try {
-                const response = await fetchDreamCounts(year)
+                const response = await fetchDreamCounts(Number(year))
                 const monthlyCounts: {[month: string] : number} = {}
                 MONTH_KEYS.map(m => {
                     monthlyCounts[m] = response.monthlyTotals[MONTH_OPTIONS[m]] ?? 0

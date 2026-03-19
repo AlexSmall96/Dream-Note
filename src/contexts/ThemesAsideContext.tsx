@@ -9,8 +9,8 @@ type ThemesAsideContextType = {
     setView:  setterFunction<'themes' | 'dreams'>
     month: MonthLabel
     setMonth: setterFunction<MonthLabel>
-    year: number,
-    setYear: setterFunction<number>,
+    year: string,
+    setYear: setterFunction<string>,
     showDreams: boolean, 
     setShowDreams: setterFunction<boolean>,
     sort: boolean,
@@ -30,7 +30,7 @@ export function ThemesAsideProvider ({ children }:{ children: React.ReactNode })
     const [month, setMonth] = useState<MonthLabel>(
         now.toLocaleString('default', { month: 'short' }) as MonthLabel
     )
-    const [year, setYear] = useState(now.getFullYear())
+    const [year, setYear] = useState<string>(now.getFullYear().toString())
     const [showDreams, setShowDreams] = useState(true)
     const [sort, setSort] = useState(false)
     const [search, setSearch] = useState('')

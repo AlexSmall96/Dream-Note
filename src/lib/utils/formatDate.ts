@@ -1,8 +1,9 @@
-export const formatDate = (date: string | Date, includeMonth: boolean = false) => {
+export const formatDate = (date: string | Date, includeMonth: boolean = false, includeYear: boolean = false) => {
     const d = new Date(date)
 
     const day = d.getDate()
     const month = d.toLocaleString('en-GB', { month: 'short' })
+    const year = d.getFullYear()
 
     const suffix =
         day % 10 === 1 && day !== 11 ? 'st' :
@@ -10,5 +11,9 @@ export const formatDate = (date: string | Date, includeMonth: boolean = false) =
         day % 10 === 3 && day !== 13 ? 'rd' :
         'th';
 
-    return includeMonth? `${day}${suffix} ${month}` : `${day}${suffix}`
+    if (!includeMonth){
+        return `${day}${suffix}`
+    }
+
+    return `${day}${suffix} ${month}${includeYear ? ` ${year}` : ''}` 
 };
