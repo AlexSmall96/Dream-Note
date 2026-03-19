@@ -65,7 +65,7 @@ export default function OffCanvas({ setIsOpen }: { setIsOpen: setterFunction<boo
                                     {currentUser?.isVerified && <><span className="text-xs text-gray-500 mt-1"> Verified </span> <span className='text-green-500'>✓</span></>}
                                 </div>
                                 
-                            <button onClick={() => window.location.href = '/dreams/create'} className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors text-sm">
+                            <button onClick={() => window.location.href = '/dreams/create'} className="bg-purple-500 text-white px-3 py-1.5 rounded hover:bg-purple-600 transition-colors text-sm">
 				                <FontAwesomeIcon icon={faLog} className="mr-1" /> Log Dream
 			                </button>  
 

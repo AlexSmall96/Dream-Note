@@ -35,7 +35,7 @@ export default function Navbar() {
 						onClick={() => window.location.href = '/dreams/create'} 
 						onMouseEnter={() => setHovered(true)}
 						onMouseLeave={() => setHovered(false)}
-						className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors text-sm"
+						className="bg-purple-500 text-white px-3 py-1.5 rounded hover:bg-purple-600 transition-colors text-sm"
 					>
 						<FontAwesomeIcon icon={faLog} className="mr-1" />
 						<span className="hidden lg:inline">Log Dream</span>
