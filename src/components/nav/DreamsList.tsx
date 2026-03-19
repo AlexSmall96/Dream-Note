@@ -55,7 +55,14 @@ export default function DreamsList(){
                             <div onClick={() => handleClick(dream._id)} className="col-span-3 hover:underline cursor-pointer">
                                 {dream.title}
                             </div> 
-                            <div className={`col-span-1 ${view === 'themes' ? 'text-gray-500 text-sm' : ''}`}>{formatDate(dream.date)}</div>
+                            {view === 'themes' ? 
+                                <div className='col-span-2 text-gray-500 text-sm'>
+                                    {formatDate(dream.date, true, true)} 
+                                </div>                            
+                            :   <div className='col-span-1'>
+                                    {formatDate(dream.date)}
+                                </div> 
+                            }
                         </div>
                     ))}
                 </div>
