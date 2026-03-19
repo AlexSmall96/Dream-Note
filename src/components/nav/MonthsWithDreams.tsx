@@ -4,13 +4,15 @@ import { useThemesAside } from "@/contexts/ThemesAsideContext"
 import { MONTH_KEYS, MonthLabel } from "@/lib/filters/dateRanges"
 import DreamsList from "./DreamsList"
 import { useDreamCounts } from "@/contexts/DreamCountsContext"
+import Dropdown from "../ui/Dropdown"
 
 export default function MonthsWithDreams(){
 
-    const { month, setMonth, year, showDreams, setShowDreams } = useThemesAside()
+    const { month, setMonth, year, setYear, showDreams, setShowDreams } = useThemesAside()
     const { stats } = useDreamCounts()
     const monthlyTotals = stats.monthlyTotals
-
+    const uniqueYears = stats.uniqueYears
+    
     const handleMonthSelect = (m:MonthLabel) => {
         const isSameMonth = month === m
         if (isSameMonth){
@@ -23,9 +25,10 @@ export default function MonthsWithDreams(){
 
     return (
         <div>
+            <Dropdown<string> parameter={year} setParameter={setYear} options={uniqueYears} placeholder={'Select Year'} />
             {Object.keys(monthlyTotals).length !==0 ? MONTH_KEYS.map(m => 
                 monthlyTotals[m] > 0 &&
-                <div key={m}>
+                <div key={m} className="mt-0.5">
                     <button 
                         className='bg-purple-200 p-0.5 my-0.5 rounded shadow-sm border-l-2 border-black/20 w-full text-left' 
                         onClick={() => handleMonthSelect(m)}
