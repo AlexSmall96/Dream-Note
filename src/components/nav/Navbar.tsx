@@ -8,38 +8,54 @@ import OffCanvas from "./OffCanvas"
 import Logo from "./Logo"
 import LinkWithIcon from "../ui/LinkWithIcon"
 import { faFeatherPointed as faLog, faChartBar as faDashboard } from "@fortawesome/free-solid-svg-icons";
-
-function LoggedInNav() {
-  	return (
-		<div className="hidden md:flex flex-1 gap-4 md:items-center justify-end">
-			<LinkWithIcon href='/dreams' icon={faDashboard} text='Dashboard' />
-			<SearchBar />
-			<LinkWithIcon href="/dreams/create" icon={faLog} text="Log Dream" />    
-			<AccountDropdown />
-		</div>
-  	)
-}
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { useIsLargeScreen } from '@/app/hooks/useIsLargeScreen'
 
 export default function Navbar() {
   	const {currentUser, loading } = useCurrentUser()
 	const [isOpen, setIsOpen] = useState(false)
+	const [hovered, setHovered] = useState(false)
+
+
+	const isLarge = useIsLargeScreen()
+
+	if (loading || !currentUser) return null
 
   	return (
 		<nav className="border-b bg-purple-200">
 			<div className="mx-auto flex items-center justify-between px-4 py-3">
+
 				<Logo />
-					{loading || !currentUser ? null : <LoggedInNav />}
+				
+				<div className="hidden md:flex flex-1 gap-4 md:items-center justify-end">
+
+					<LinkWithIcon href='/dreams' icon={faDashboard} text='Dashboard' />
+					<SearchBar />
+					<button 
+						onClick={() => window.location.href = '/dreams/create'} 
+						onMouseEnter={() => setHovered(true)}
+						onMouseLeave={() => setHovered(false)}
+						className="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition-colors text-sm"
+					>
+						<FontAwesomeIcon icon={faLog} className="mr-1" />
+						<span className="hidden lg:inline">Log Dream</span>
+							{hovered && !isLarge && (
+							<div className="absolute right-2 top-16 transform -translate-x-1/2 -translate-y-1/2 mr-2 px-2 py-1 bg-yellow-200 text-gray-800 text-xs whitespace-nowrap">
+								Log Dream
+							</div>
+						)}
+					</button>
+					<AccountDropdown />
+					
+				</div>
 				<button 
           			onClick={() => setIsOpen(prev => !prev)} 
           			className="md:hidden text-xl"
         		>
           			☰
         		</button>
-			</div>
-			{isOpen && (
-				<OffCanvas setIsOpen={setIsOpen}/>
-			)}
+		</div>
+		{isOpen && <OffCanvas setIsOpen={setIsOpen}/>}
 		</nav>
   	)
 }
