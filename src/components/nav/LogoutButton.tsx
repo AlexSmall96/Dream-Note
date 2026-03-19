@@ -13,7 +13,7 @@ export default function LogoutButton() {
     return (
         <button
             onClick={handleLogout}
-            className='text-left block w-full text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+            className='text-left block w-full text-sm text-gray-700 hover:bg-gray-100 hover:underline hover:text-gray-900 pl-1'
         >
             <FontAwesomeIcon icon={faLogout} className="mr-1 text-gray-500" />Logout
         </button>
