@@ -14,7 +14,7 @@ export default function DreamsList(){
     const { themes } = useThemes()
     const { selectedTheme, setChronView, view, sort, setSort} = useThemesAside()
 
-    const dreamsList = selectedTheme ? 
+    const dreamsList = view === 'themes' ? 
         themes.filter(
             theme => 
                 theme.theme === selectedTheme

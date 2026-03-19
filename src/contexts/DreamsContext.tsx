@@ -18,8 +18,8 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     const [dreams, setDreams] = useState<DreamOverview[]>([])
     const [searchResults, setSearchResults] = useState<DreamOverview[]>([])
     const [refetch, setRefetch] = useState<boolean>(false)
-    const { month, year, sort, search } = useThemesAside()
-
+    const { month, year, sort, search, view } = useThemesAside()
+    
     useEffect(() => {
         const getDreams = async () => {
             try {
@@ -30,7 +30,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
             }
         } 
         getDreams()
-    }, [month, year, sort, refetch])  
+    }, [month, year, sort, refetch, view])  
 
     useEffect(() => {
         if (search.trim() === ''){

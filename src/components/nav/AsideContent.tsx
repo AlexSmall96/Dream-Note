@@ -17,7 +17,7 @@ export function AsideContent() {
         <div className="p-3 w-full">
             <ViewToggle />
             {view === 'themes' && <ThemesList />}
-            {selectedTheme && <DreamsList />}
+            {view === 'themes' && selectedTheme && <DreamsList />}
             {view === 'dreams' && <MonthsWithDreams />}
         </div>
     )
