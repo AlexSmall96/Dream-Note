@@ -9,7 +9,7 @@ import Logo from "./Logo"
 import LinkWithIcon from "../ui/LinkWithIcon"
 import { faFeatherPointed as faLog, faChartBar as faDashboard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useIsLargeScreen } from '@/app/hooks/useIsLargeScreen'
+import { useScreenSize } from "@/app/hooks/useScreenSize"
 
 export default function Navbar() {
   	const {currentUser, loading } = useCurrentUser()
@@ -17,7 +17,7 @@ export default function Navbar() {
 	const [hovered, setHovered] = useState(false)
 
 
-	const isLarge = useIsLargeScreen()
+	const { isLarge } = useScreenSize()
 
 	if (loading || !currentUser) return null
 
