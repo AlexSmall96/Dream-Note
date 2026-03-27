@@ -39,7 +39,7 @@ export default function ProtectedLayout({
 								<DreamChartProvider>
 									<Navbar />
 									<div className="flex flex-1">
-										<aside className="hidden md:block w-80 pl-2">
+										<aside className="hidden md:block w-80">
 											<AsideContent />
 										</aside>
 										<main className="flex-1 p-6 pt-2 px-0 sm:px-4 md:px-6">
