@@ -1,7 +1,11 @@
 import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react'
 import { DreamFormType } from "@/types/dreams";
-import { ThemeBadge } from '@/components/ui/ThemeBadge';
+import { ThemeBadge } from '@/components/themes/ThemeBadge';
 import { fetchThemeSuggestions } from '@/lib/api/themes';
+import { Input } from '../forms/Input';
+import Button from '../forms/Button';
+import { TextArea } from '../forms/TextArea';
+import LinkWithMessage from '../forms/LinkWithMessage';
 
 export default function DreamForm({ 
     dream, setDream, themes, setThemes, handleSubmit, msg, setMsg, handleGoBack, backText
@@ -22,7 +26,7 @@ export default function DreamForm({
     const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
 
     const [visible, setVisible] = useState(false)
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setMsg('')
         setDream({
             ...dream, [event.target.name ]: event.target.value
@@ -80,61 +84,69 @@ export default function DreamForm({
     const now = new Date().toISOString().split('T')[0]
 
     return (
-        <form className="flex flex-col gap-2 w-80">
-            <input 
+        <form className="flex flex-col gap-2 max-w-3xl w-full" onSubmit={handleSubmit}>
+            <Input 
                 type='text'
                 value={dream.title}
                 name='title'
                 onChange={handleChange}
                 placeholder="Title"
             />
-            <input 
-                type='text'
+            <TextArea 
+                className='h-40'
                 value={dream.description}
                 name='description'
                 onChange={handleChange}
                 placeholder="Description"
             />
-            <input 
+            <Input 
                 type='date'
                 value={dream.date}
                 name='date'
                 onChange={handleChange}
                 max={now}
             />
-            <input 
-                type='text'
+            <TextArea 
+                className='h-20 flex flex-col placeholder-top'
                 value={dream.notes}
                 name='notes'
                 onChange={handleChange}
                 placeholder="Notes"
             />
-            <input 
-                type='text'
-                value={currentTheme}
-                name='themes'
-                onChange={handleChangeCurrentTheme}
-                placeholder="Themes"
-                disabled={dream.description === ''}
-            />
-            {showSuggestions && suggestions.map((sugg, index) => 
-                <p 
-                    className="text-xs text-gray-500" 
-                    onClick={() => handleClickSuggestion(sugg)} 
-                    key={index}
-                >
-                    {sugg}
-                </p>
-            )}
+            <div className="relative w-full">
+                <Input
+                    type="text"
+                    value={currentTheme}
+                    name="themes"
+                    onChange={handleChangeCurrentTheme}
+                    placeholder="Themes"
+                    disabled={dream.description === ''}
+                    className="pr-20"
+                />
+                {visible && (
+                    <Button
+                        type="button"
+                        onClick={addTheme}
+                        text='Add'
+                        extraClass="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-sm"
+                    />
+                )}
+            <div className={`absolute top-full left-0 w-full bg-white ${showSuggestions ? 'border border-gray-300' : ''} z-10 rounded`}>
+                {showSuggestions && suggestions.map((sugg, index) => 
+                    <p 
+                        className="text-gray-500 px-2" 
+                        onClick={() => handleClickSuggestion(sugg)} 
+                        key={index}
+                    >
+                        {sugg}
+                    </p>
+                )}
+            </div>
+            </div>
+
             {dream.description === '' && <p className="text-xs text-gray-500">
                 Description must be provided to add themes.
             </p>}
-            {!visible ? 
-                null 
-            : 
-                <button className='bg-blue-300' type='button' onClick={addTheme}>
-                    Add Theme
-                </button>}
             {themes.length? 
             <div className='inline'>
                 {themes.map(theme => 
@@ -142,20 +154,15 @@ export default function DreamForm({
                 )}
             </div>:''}
             {msg ?? ''}
-            <button 
+            <Button 
                 type='submit' 
-                onClick={handleSubmit}
-                className='bg-blue-500' 
-            >
-                Save
-            </button>
-            <button 
-                type='button'
-                onClick={handleGoBack}
-                className='bg-gray-500'
-            >
-                {backText}
-            </button>
+                text='Save'
+                color={showSuggestions? 'bg-purple-200': undefined}
+            />
+            <LinkWithMessage 
+                href='/dreams'
+                linkText='Back to Dashboard'
+            />
         </form>
     )
 }

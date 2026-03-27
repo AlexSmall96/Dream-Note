@@ -1,8 +1,8 @@
-type InputProps = React.InputHTMLAttributes<HTMLInputElement>
+type TextAreaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement>
 
-export function Input({ className = "", ...props }: InputProps) {
+export function TextArea({ className = "", ...props }: TextAreaProps) {
     return (
-        <input
+        <textarea
             className={`w-full px-3 py-2
                 bg-slate-50
                 border border-slate-300
