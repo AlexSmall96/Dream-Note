@@ -10,6 +10,7 @@ export default function Button({
     danger = false,
     icon,
     color,
+    extraClass = ''
 }:{
     text?: string,
     disabled?: boolean
@@ -18,12 +19,13 @@ export default function Button({
     danger?: boolean,
     icon?: IconProp,
     color?: string,
+    extraClass?: string
 }) {
     const className = disabled? 'bg-gray-300' : danger ? 'bg-orange-500 hover:bg-orange-700' : color ?? 'bg-purple-400 hover:bg-purple-700'
     return (
         <button 
             type={type}
-            className={`rounded-lg ${className} text-white font-bold p-2`} disabled={disabled}
+            className={`rounded-lg ${className} text-white font-bold p-2 ${extraClass}`} disabled={disabled}
             onClick={onClick}
         >
                 {icon && <FontAwesomeIcon icon={icon} />} { text}

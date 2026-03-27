@@ -1,6 +1,6 @@
 import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react'
 import { DreamFormType } from "@/types/dreams";
-import { ThemeBadge } from '@/components/ui/ThemeBadge';
+import { ThemeBadge } from '@/components/themes/ThemeBadge';
 import { fetchThemeSuggestions } from '@/lib/api/themes';
 import { Input } from '../forms/Input';
 import Button from '../forms/Button';
@@ -113,29 +113,40 @@ export default function DreamForm({
                 onChange={handleChange}
                 placeholder="Notes"
             />
-            <Input 
-                type='text'
-                value={currentTheme}
-                name='themes'
-                onChange={handleChangeCurrentTheme}
-                placeholder="Themes"
-                disabled={dream.description === ''}
-            />
-            {showSuggestions && suggestions.map((sugg, index) => 
-                <p 
-                    className="text-xs text-gray-500" 
-                    onClick={() => handleClickSuggestion(sugg)} 
-                    key={index}
-                >
-                    {sugg}
-                </p>
-            )}
+            <div className="relative w-full">
+                <Input
+                    type="text"
+                    value={currentTheme}
+                    name="themes"
+                    onChange={handleChangeCurrentTheme}
+                    placeholder="Themes"
+                    disabled={dream.description === ''}
+                    className="pr-20"
+                />
+                {visible && (
+                    <Button
+                        type="button"
+                        onClick={addTheme}
+                        text='Add'
+                        extraClass="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-sm"
+                    />
+                )}
+            <div className={`absolute top-full left-0 w-full bg-white ${showSuggestions ? 'border border-gray-300' : ''} z-10 rounded`}>
+                {showSuggestions && suggestions.map((sugg, index) => 
+                    <p 
+                        className="text-gray-500 px-2" 
+                        onClick={() => handleClickSuggestion(sugg)} 
+                        key={index}
+                    >
+                        {sugg}
+                    </p>
+                )}
+            </div>
+            </div>
+
             {dream.description === '' && <p className="text-xs text-gray-500">
                 Description must be provided to add themes.
             </p>}
-            {!visible ? 
-                null 
-            : <Button color='bg-gray-400' text='Add Theme' type='button' onClick={addTheme} />}
             {themes.length? 
             <div className='inline'>
                 {themes.map(theme => 
@@ -146,6 +157,7 @@ export default function DreamForm({
             <Button 
                 type='submit' 
                 text='Save'
+                color={showSuggestions? 'bg-purple-200': undefined}
             />
             <LinkWithMessage 
                 href='/dreams'
