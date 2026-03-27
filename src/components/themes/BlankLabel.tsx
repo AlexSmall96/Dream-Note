@@ -27,11 +27,11 @@ export default function BlankLabel ({
         setNewTheme({text: '', color: ''})
     }
 
-    const { isLarge } = useScreenSize()
+    const { isExtraLarge } = useScreenSize()
 
     return (
         <span
-            style={{ transform: `translateY(${isLarge ? themes.length * 2 : 0}px)` }}
+            style={{ transform: `translateY(${isExtraLarge ? themes.length * 2 : 0}px)` }}
             className={`w-20 font-caveat group flex items-center gap-1 ${newTheme.color || defaultColor} px-1 py-1 shadow-md border-l-4 border-black/20
                     transition-all duration-200
                     hover:-translate-x-1 hover:shadow-lg`}

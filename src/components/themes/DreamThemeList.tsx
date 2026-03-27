@@ -8,18 +8,18 @@ export default function DreamThemeList () {
 
     const { themes, peelingTheme, showBlankLabel } = useDreamView()
 
-    const { isLarge } = useScreenSize()
+    const { isLargeAndAbove } = useScreenSize()
 
     return (
         <div className="
-            absolute bottom-4 flex flex-wrap gap-2 w-1/2 pr-8
-            lg:right-[-55px] lg:top-16 lg:flex-col lg:gap-2 lg:w-20"
+            absolute bottom-4 flex flex-wrap gap-2 md:w-2/5 lg:w-1/2 pr-8
+            xl:right-[-65px] xl:top-16 xl:flex-col xl:w-20 xl:min-w-0"
         >
             {themes.map((theme, index) => {
                 const color = getColorForTheme(theme)
                 const isPeeling = peelingTheme === theme
                 return (
-                    <>{isLarge?
+                    <>{isLargeAndAbove?
                         <ThemeLabel 
                             key={index} 
                             theme={theme} 
@@ -32,7 +32,7 @@ export default function DreamThemeList () {
                     }</>
                 )
             })}
-            {showBlankLabel && isLarge && <BlankLabel />}
+            {showBlankLabel && isLargeAndAbove && <BlankLabel />}
         </div>
     )
 }
