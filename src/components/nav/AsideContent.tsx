@@ -16,7 +16,7 @@ export function AsideContent() {
     return (
         <div className="p-3 w-full flex flex-col gap-2">
             <ViewToggle />
-            <div className='bg-white p-2 rounded border border-gray-200 shadow-sm'>
+            <div className='bg-white p-2 rounded border border-gray-200 shadow-sm mt-0.5'>
                 {view === 'themes' && <ThemesList />}
                 {view === 'themes' && selectedTheme && <DreamsList />}
                 {view === 'dreams' && <MonthsWithDreams />}
