@@ -24,8 +24,9 @@ export default function DreamForm({
     const [currentTheme, setCurrentTheme] = useState<string>('')
     const [suggestions, setSuggestions] = useState<string[]>([])
     const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
-
+    const [themeDots, setThemeDots] = useState<string[]>(Array(6).fill('text-purple-300'))
     const [visible, setVisible] = useState(false)
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setMsg('')
         setDream({
@@ -43,6 +44,11 @@ export default function DreamForm({
 
     const addTheme = () => {
         setThemes(prev => [currentTheme, ...prev])
+        setThemeDots(prev => {
+            const newDots = [...prev]
+            newDots[themes.length] = 'text-purple-700'
+            return newDots
+        })
         setCurrentTheme('')
         setMsg('')
         setVisible(false)
@@ -50,6 +56,11 @@ export default function DreamForm({
 
     const removeTheme = (themeToRemove: string) => {
         setThemes(prev => prev.filter(theme => theme !== themeToRemove))
+        setThemeDots(prev => {
+            const newDots = [...prev]
+            newDots[themes.length - 1] = 'text-purple-300'
+            return newDots
+        })
     }
 
     useEffect(() => {
@@ -120,7 +131,7 @@ export default function DreamForm({
                     name="themes"
                     onChange={handleChangeCurrentTheme}
                     placeholder="Themes"
-                    disabled={dream.description === ''}
+                    disabled={dream.description === '' || themes.length >= 6}
                     className="pr-20"
                 />
                 {visible && (
@@ -147,12 +158,19 @@ export default function DreamForm({
             {dream.description === '' && <p className="text-xs text-gray-500">
                 Description must be provided to add themes.
             </p>}
-            {themes.length? 
-            <div className='inline'>
-                {themes.map(theme => 
-                    <ThemeBadge handleClick={() => removeTheme(theme)} currentTheme={theme} key={theme} />
-                )}
-            </div>:''}
+            {themes.length > 0 && <div className='grid lg:grid-cols-6 md:grid-cols-3 gap-2 pl-2'>
+                <div className='md:col-span-3 lg:col-span-4'>
+                    {themes.map(theme => 
+                        <ThemeBadge handleClick={!showSuggestions ? () => removeTheme(theme) : () => {}} currentTheme={theme} key={theme} />
+                    )}
+                </div>
+                <div className='md:col-span-3 lg:col-span-2 lg:flex lg:justify-end'>
+                    <div className='flex items-center gap-2 ml-auto'>
+                        {themeDots.map((dot, index) => <span className={`text-3xl ${dot}`} key={index}>•</span>)}
+                        <span className='text-xs text-gray-400'>{themes.length} / 6 themes used</span>
+                    </div>
+                </div>
+            </div>}
             {msg ?? ''}
             <Button 
                 type='submit' 
