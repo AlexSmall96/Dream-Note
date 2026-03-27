@@ -10,6 +10,7 @@ import { requireTitleOrDescription } from "../middleware/dreams/requireTitleOrDe
 import { requireDescriptionForThemes } from "../middleware/dreams/requireDescriptionForThemes.js";
 import { forbidNotDreamOwner } from "../middleware/dreams/forbidNotDreamOwner.js";
 import { validateRequest } from "../middleware/validateRequest.js";
+import { limitNumberOfThemes } from "../middleware/themes/limitNumberOfThemes.js";
 
 // Router class for Dream model
 @injectable()
@@ -36,6 +37,7 @@ export class DreamRouter {
             auth,
             requireTitleOrDescription,
             requireDescriptionForThemes,
+            limitNumberOfThemes,
             this.dreamController.logNewDreamWithThemes
         )
         
@@ -136,6 +138,7 @@ export class DreamRouter {
             body('dream.title')
             .notEmpty().withMessage('Dream data must contain title.'),
             validateRequest,
+            limitNumberOfThemes,
             this.dreamController.updateDream
         )
 

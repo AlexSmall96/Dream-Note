@@ -56,18 +56,26 @@ describe('Updating dream should fail if:', () => {
     })
 
     // User cannot update another users dream
-    test('Update dream should fail if user is not owner of dream.', async () => {
+    test('User is not owner of dream.', async () => {
         const response = await request(server).patch(`${url}/${oldDreamId}`).send({
             dream: {title: 'Dream title'}
         }).set(...userOneAuth).expect(403)
         assertSingleError(response.body.errors, 'You are not authorized to edit this dream.')
     })
 
-    test('Update dream should fail if title is null.', async () => {
+    test('Title is null.', async () => {
         const response = await request(server).patch(`${url}/${oldDreamId}`).send({
             dream: {title: null, description: null, date: '2024-11-30T00:00:00.000Z'}
         }).set(...userThreeAuth).expect(400)
         assertSingleError(response.body.errors, "Dream data must contain title.", 'dream.title')
+    })
+
+    test('More than 6 themes are provided.', async () => {
+        const response = await request(server).patch(`${url}/${oldDreamId}`).send({
+            dream: {title: 'Valid title'},
+            themes: ['Freedom', 'Adventure', 'Fun', 'Excitement', 'Flying', 'Sky', 'Extra theme']
+        }).set(...userThreeAuth).expect(400)
+        assertSingleError(response.body.errors, 'A dream can only have up to 6 themes.')
     })
 })
 

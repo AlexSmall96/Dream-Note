@@ -43,6 +43,24 @@ describe('Logging new dream should fail if:', () => {
         // Correct error message is returned
         assertSingleError(response.body.errors, 'At least one of title or description is required.')
     })
+    test('Description is missing for provided themes.', async () => {
+        // Send data with themes but no description
+        const response = await request(server).post(url).send({
+            dream: { title: 'Flying dream'},
+            themes: ['Freedom', 'Adventure']
+        }).set(...userOneAuth).expect(400)
+        // Correct error message is returned
+        assertSingleError(response.body.errors, 'Cannot add themes to dream with no description.')
+    })
+    test('More than 6 themes are provided.', async () => {
+        // Send data with more than 6 themes
+        const response = await request(server).post(url).send({
+            dream: { description: 'I had a dream I was flying.'},
+            themes: ['Freedom', 'Adventure', 'Fun', 'Excitement', 'Flying', 'Sky', 'Extra theme']
+        }).set(...userOneAuth).expect(400)
+        // Correct error message is returned
+        assertSingleError(response.body.errors, 'A dream can only have up to 6 themes.')
+    })
 })
 
 describe('Logging new dream should succeed if:', () => {
@@ -73,7 +91,7 @@ describe('Logging new dream should succeed if:', () => {
         await assertThemesInDB(defaultThemes, response.body.dream._id.toString())
     })
 
-    test('Description, title and themes are provided, with no data from dev version of openAI API.', async () => {
+    test('Description, title and 6 themes or fewer are provided, with no data from dev version of openAI API.', async () => {
         // Define data
         const title = 'Flying dream'
         const description = 'I had a dream I was flying. It was very exciting.'
@@ -88,7 +106,7 @@ describe('Logging new dream should succeed if:', () => {
         // Description, title and themes should be present in response
         expect(response.body.dream).toMatchObject({ title, description, notes, date})
         expect(response.body.themes).toEqual(themes)
-        // Asert that the dream was saved to the database
+        // Assert that the dream was saved to the database
         savedDream = await Dream.findOne({title}) 
         expect(savedDream).not.toBeNull()
         // Assert the themes were added to the database
