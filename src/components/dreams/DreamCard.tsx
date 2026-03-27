@@ -11,7 +11,7 @@ export default function DreamCard () {
     const id = params.id as string
 
     return (
-        <div className="font-caveat relative mt-8 mb-8 p-8 pb-20 bg-[url('/images/paper.jpg')] rounded-lg shadow-lg border border-purple-100 w-full max-w-xl h-110">
+        <div className="font-caveat relative mb-8 pt-8 px-6 pb-20 bg-[url('/images/paper.jpg')] bg-cover bg-center rounded-lg shadow-lg border border-purple-100 w-full max-w-3xl h-110">
             <div className="flex justify-between items-start mb-4">
                 <div>
                     <h2 className="text-lg text-gray-700 italic">
@@ -49,7 +49,7 @@ export default function DreamCard () {
                     />
                 </div>
             </div>
-            <p className="text-md text-xl text-gray-700 leading-relaxed font-light italic overflow-y-auto max-h-60 mb-4 pb-4 pr-5 text-justify">
+            <p className="text-md text-xl text-gray-700 leading-relaxed font-light italic overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 max-h-60 mb-4 pb-4 pr-5 text-justify">
                 {dream.description}
             </p>
             <DreamThemeList />

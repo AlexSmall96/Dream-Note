@@ -2,27 +2,37 @@ import { getColorForTheme } from "@/lib/utils/getColorForTheme"
 import ThemeLabel from '@/components/themes/ThemeLabel'
 import { useDreamView } from "@/contexts/DreamViewContext"
 import BlankLabel from "@/components/themes/BlankLabel"
+import { useScreenSize } from "@/app/hooks/useScreenSize"
 
 export default function DreamThemeList () {
 
     const { themes, peelingTheme, showBlankLabel } = useDreamView()
 
+    const { isLargeAndAbove } = useScreenSize()
+
     return (
-        <div className="absolute right-[-65px] top-16 flex flex-col gap-2">
+        <div className="
+            absolute bottom-4 flex flex-wrap gap-2 md:w-2/5 lg:w-1/2 pr-8
+            xl:right-[-65px] xl:top-16 xl:flex-col xl:w-20 xl:min-w-0"
+        >
             {themes.map((theme, index) => {
                 const color = getColorForTheme(theme)
                 const isPeeling = peelingTheme === theme
                 return (
-                    <ThemeLabel 
-                        key={index} 
-                        theme={theme} 
-                        color={color} 
-                        isPeeling={isPeeling} 
-                        index={index} 
-                    />
+                    <>{isLargeAndAbove?
+                        <ThemeLabel 
+                            key={index} 
+                            theme={theme} 
+                            color={color} 
+                            isPeeling={isPeeling} 
+                            index={index} 
+                        />
+                    :
+                        <span className='text-gray-400'>{theme}</span>
+                    }</>
                 )
             })}
-            {showBlankLabel && <BlankLabel />}
+            {showBlankLabel && isLargeAndAbove && <BlankLabel />}
         </div>
     )
 }
