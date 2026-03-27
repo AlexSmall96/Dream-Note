@@ -38,7 +38,7 @@ export default function DreamView ({dreamId}:{dreamId:string}){
 
     return (
         <>
-            <div className="h-8">
+            <div className="h-12 pt-2">
                     {chronView && !isFirst &&
                         <span 
                             className="mr-20 text-gray-400 hover:text-gray-700 transition hover:-translate-x-1 cursor-pointer"
@@ -49,7 +49,7 @@ export default function DreamView ({dreamId}:{dreamId:string}){
                     }
                                     {chronView && !isLast &&
                         <span 
-                            className="ml-20 text-gray-400 hover:text-gray-700 transition hover:-translate-x-1 cursor-pointer"
+                            className="ml-20 text-gray-400 hover:text-gray-700 transition hover:translate-x-1 cursor-pointer"
                             onClick={goToNextDream}
                         >
                             <FontAwesomeIcon icon={faNext} className="text-md"/> 
