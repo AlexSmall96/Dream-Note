@@ -2,6 +2,10 @@ import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from
 import { DreamFormType } from "@/types/dreams";
 import { ThemeBadge } from '@/components/ui/ThemeBadge';
 import { fetchThemeSuggestions } from '@/lib/api/themes';
+import { Input } from '../forms/Input';
+import Button from '../forms/Button';
+import { TextArea } from '../forms/TextArea';
+import LinkWithMessage from '../forms/LinkWithMessage';
 
 export default function DreamForm({ 
     dream, setDream, themes, setThemes, handleSubmit, msg, setMsg, handleGoBack, backText
@@ -22,7 +26,7 @@ export default function DreamForm({
     const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
 
     const [visible, setVisible] = useState(false)
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setMsg('')
         setDream({
             ...dream, [event.target.name ]: event.target.value
@@ -80,36 +84,36 @@ export default function DreamForm({
     const now = new Date().toISOString().split('T')[0]
 
     return (
-        <form className="flex flex-col gap-2 w-80">
-            <input 
+        <form className="flex flex-col gap-2 max-w-3xl w-full" onSubmit={handleSubmit}>
+            <Input 
                 type='text'
                 value={dream.title}
                 name='title'
                 onChange={handleChange}
                 placeholder="Title"
             />
-            <input 
-                type='text'
+            <TextArea 
+                className='h-40'
                 value={dream.description}
                 name='description'
                 onChange={handleChange}
                 placeholder="Description"
             />
-            <input 
+            <Input 
                 type='date'
                 value={dream.date}
                 name='date'
                 onChange={handleChange}
                 max={now}
             />
-            <input 
-                type='text'
+            <TextArea 
+                className='h-20 flex flex-col placeholder-top'
                 value={dream.notes}
                 name='notes'
                 onChange={handleChange}
                 placeholder="Notes"
             />
-            <input 
+            <Input 
                 type='text'
                 value={currentTheme}
                 name='themes'
@@ -131,10 +135,7 @@ export default function DreamForm({
             </p>}
             {!visible ? 
                 null 
-            : 
-                <button className='bg-blue-300' type='button' onClick={addTheme}>
-                    Add Theme
-                </button>}
+            : <Button color='bg-gray-400' text='Add Theme' type='button' onClick={addTheme} />}
             {themes.length? 
             <div className='inline'>
                 {themes.map(theme => 
@@ -142,20 +143,14 @@ export default function DreamForm({
                 )}
             </div>:''}
             {msg ?? ''}
-            <button 
+            <Button 
                 type='submit' 
-                onClick={handleSubmit}
-                className='bg-blue-500' 
-            >
-                Save
-            </button>
-            <button 
-                type='button'
-                onClick={handleGoBack}
-                className='bg-gray-500'
-            >
-                {backText}
-            </button>
+                text='Save'
+            />
+            <LinkWithMessage 
+                href='/dreams'
+                linkText='Back to Dashboard'
+            />
         </form>
     )
 }
