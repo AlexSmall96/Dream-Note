@@ -24,6 +24,7 @@ export default function LogNewDream() {
 
     return (
         <div className="flex flex-col items-center">
+            <h1 className="text-2xl font-semibold mb-4">Log New Dream</h1>
             <DreamForm 
                 dream={dream} 
                 setDream={setDream} 
