@@ -33,7 +33,7 @@ export default function LogNewDream() {
                 handleSubmit={handleSubmit}
                 msg={msg}
                 setMsg={setMsg}
-                handleGoBack={() => router.replace('/dreams')}
+                backHref='/dreams'
                 backText="Back to Dashboard"
             />
         </div>

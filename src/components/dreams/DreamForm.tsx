@@ -8,7 +8,7 @@ import { TextArea } from '../forms/TextArea';
 import LinkWithMessage from '../forms/LinkWithMessage';
 
 export default function DreamForm({ 
-    dream, setDream, themes, setThemes, handleSubmit, msg, setMsg, handleGoBack, backText
+    dream, setDream, themes, setThemes, handleSubmit, msg, setMsg, backHref, backText
 }:{ 
     dream: DreamFormType, 
     setDream: Dispatch<SetStateAction<DreamFormType>>,
@@ -17,14 +17,16 @@ export default function DreamForm({
     handleSubmit: (event:React.FormEvent) => Promise<any>,
     msg: string,
     setMsg: Dispatch<SetStateAction<string>>,
-    handleGoBack: MouseEventHandler<HTMLButtonElement>
+    backHref: string,
     backText: string
 }){ 
 
     const [currentTheme, setCurrentTheme] = useState<string>('')
     const [suggestions, setSuggestions] = useState<string[]>([])
     const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
-    const [themeDots, setThemeDots] = useState<string[]>(Array(6).fill('text-purple-300'))
+    const [themeDots, setThemeDots] = useState<string[]>(
+        Array(themes.length).fill('text-purple-700').concat(Array(6 - themes.length).fill('text-purple-300'))
+    )
     const [visible, setVisible] = useState(false)
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -167,7 +169,7 @@ export default function DreamForm({
                 <div className='md:col-span-3 lg:col-span-2 lg:flex lg:justify-end'>
                     <div className='flex items-center gap-2 ml-auto'>
                         {themeDots.map((dot, index) => <span className={`text-3xl ${dot}`} key={index}>•</span>)}
-                        <span className='text-xs text-gray-400'>{themes.length} / 6 themes used</span>
+                        <span className='text-xs text-gray-400'>{themes.length} / 6 themes</span>
                     </div>
                 </div>
             </div>}
@@ -178,8 +180,8 @@ export default function DreamForm({
                 color={showSuggestions? 'bg-purple-200': undefined}
             />
             <LinkWithMessage 
-                href='/dreams'
-                linkText='Back to Dashboard'
+                href={backHref}
+                linkText={backText}
             />
         </form>
     )
