@@ -37,18 +37,24 @@ export default function DreamView ({dreamId}:{dreamId:string}){
     const { chronView } = useThemesAside()
 
     return (
-        <div className="grid grid-cols-6">
-            <div className='col-span-1 flex flex-col justify-center items-center'>
-                {chronView && !isFirst &&
-                    <span 
-                        className="text-3xl mr-20 text-gray-400 hover:text-gray-700 transition hover:-translate-x-1 cursor-pointer"
-                        onClick={goToPrevDream}
-                    >
-                        <FontAwesomeIcon icon={faPrev}/>
-                    </span>
-                }
+        <>
+            <div className="h-8">
+                    {chronView && !isFirst &&
+                        <span 
+                            className="mr-20 text-gray-400 hover:text-gray-700 transition hover:-translate-x-1 cursor-pointer"
+                            onClick={goToPrevDream}
+                        >
+                             <FontAwesomeIcon icon={faPrev} className="text-md"/>
+                        </span>
+                    }
+                                    {chronView && !isLast &&
+                        <span 
+                            className="ml-20 text-gray-400 hover:text-gray-700 transition hover:-translate-x-1 cursor-pointer"
+                            onClick={goToNextDream}
+                        >
+                            <FontAwesomeIcon icon={faNext} className="text-md"/> 
+                        </span>}
             </div>
-            <div className="col-span-4 flex flex-col items-center">
                 {loading ? 
                     <div className="flex justify-center items-center py-10">
                         <div className="w-6 h-6 border-2 border-purple-200 border-t-purple-500 rounded-full animate-spin"></div>
@@ -56,16 +62,6 @@ export default function DreamView ({dreamId}:{dreamId:string}){
                 :
                         <DreamCard />
                 }
-            </div>
-            <div className='col-span-1 flex flex-col justify-center items-center'>
-                {chronView && !isLast &&
-                    <span 
-                        className="text-3xl ml-20 text-gray-400 hover:text-gray-700 transition hover:-translate-x-1 cursor-pointer"
-                        onClick={goToNextDream}
-                    >
-                        <FontAwesomeIcon icon={faNext}/>
-                    </span>}
-            </div>
-        </div>
+        </>
     )
 }
