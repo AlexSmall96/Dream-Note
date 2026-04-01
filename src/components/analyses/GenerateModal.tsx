@@ -7,9 +7,11 @@ import { setterFunction } from '@/types/setterFunctions'
 import { useParams } from 'next/navigation'
 import IconWithTooltip from '../ui/IconWithTooltip'
 import { faWandMagicSparkles as faGetAnalysis } from '@fortawesome/free-solid-svg-icons'
+import { useAnalysesContext } from '@/contexts/AnalysesContext'
 
-export default function GenerateModal({description, setRefetchAnalyses}:{description: string, setRefetchAnalyses: setterFunction<boolean>}) {
+export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: setterFunction<boolean>}) {
 
+    const { dreamId, description } = useAnalysesContext()
     const [isOpen, setIsOpen] = useState(false)
     const { tone, style, length } = useDreamView()
     const [analysis, setAnalysis] = useState('')
@@ -17,8 +19,6 @@ export default function GenerateModal({description, setRefetchAnalyses}:{descrip
     const [saving, setSaving] = useState(false)
     const [saved, setSaved] = useState(false)
     const [thinkingText, setThinkingText] = useState('')
-    const params = useParams()
-    const dreamId = params.id as string
 
     const getAnalysis = async () => {
         setThinking(true)

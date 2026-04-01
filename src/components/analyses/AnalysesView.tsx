@@ -3,21 +3,24 @@ import { useEffect, useState } from "react";
 import { SavedAnalysis } from "@/types/aiAnalysis";
 import { deleteAnalysis, fetchSavedAnalyses, toggleFavoriteAnalysis } from "@/lib/api/aiAnalysis";
 import Analysis from "@/components/analyses/Analysis";
-import LinkWithMessage from "@/components/forms/LinkWithMessage";
 import Settings from "@/components/analyses/Settings";
 import GenerateModal from "@/components/analyses/GenerateModal";
 import { Card } from "@/components/ui/Card";
-import { fetchFullDream } from '@/lib/api/dreams'
 import MainAnalysis from "@/components/analyses/MainAnalysis";
 import { Tab, TabGroup, TabList } from '@headlessui/react'
+import DescriptionSnapshot from "./DescriptionSnapshot";
+import { useScreenSize } from '@/app/hooks/useScreenSize';
+import { useAnalysesContext } from "@/contexts/AnalysesContext";
 
-export default function AnalysesView ({dreamId}: {dreamId: string}) {
+export default function AnalysesView () {
+
+    const { dreamId } = useAnalysesContext();
 
     const [analyses, setAnalyses] = useState<SavedAnalysis[]>([])
     const [mainAnalysis, setMainAnalysis] = useState<SavedAnalysis | null>(null)
+    const [showMainAnalysis, setShowMainAnalysis] = useState(false)
     const [refetchAnalyses, setRefetchAnalyses] = useState(false)
-    const [description, setDescription] = useState('')
-    const [title, setTitle] = useState('')
+
     const [filter, setFilter] = useState<'all' | 'favorites'>('all')
 
     useEffect(() => {
@@ -55,40 +58,26 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
     }
 
     const viewFullAnalysis = (_id: string) => {
+        setShowMainAnalysis(true)
         setMainAnalysis(analyses.filter(a => a._id === _id)[0])
     }
 
-    useEffect(() => {
-        const getDreamData = async () => {
-            try {
-                const response = await fetchFullDream(dreamId)
-                setDescription(response.dream.description || '')
-                setTitle(response.dream.title || '') 
-            } catch (err){
-                console.log(err)
-            }
-        }
-        getDreamData()
-    }, [dreamId])
+    const { isExtraLarge } = useScreenSize();
 
     return (
         <>          
-
             <div className='flex items-center justify-between gap-4 my-4'>
-            <LinkWithMessage
-                href={`/dreams/${dreamId}`}
-                linkText="Back to Dream"
-                extraClass="ml-6"
-            />
-                <h1 className='text-2xl font-bold flex-1 text-center'>{title}</h1>
                 <div className='flex items-center gap-4 mr-6'>
-                    <GenerateModal setRefetchAnalyses={setRefetchAnalyses} description={description} />
+                    <h1 className="text-lg font-semibold">
+                        Analyses
+                    </h1>
+                    <GenerateModal setRefetchAnalyses={setRefetchAnalyses} />
                     <Settings />
                 </div>
             </div>
-            <div className='grid grid-cols-5 gap-4'>
-                <div className='col-span-2'>
-                    {analyses.length > 0 &&
+            <div className='grid grid-cols-6 gap-1'>
+                <div className='col-span-6 xl:col-span-3'>
+                    {analyses.length > 0 && (!showMainAnalysis || isExtraLarge) &&
                     <Card>
                         <div className="flex items-center justify-between mb-3">
                             <h1 className="text-lg font-semibold">Saved Analyses</h1>
@@ -96,12 +85,12 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
                                 <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
                                     <Tab 
                                         onClick={() => setFilter('all')}
-                                        className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
+                                        className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
                                     All
                                     </Tab>
                                     <Tab 
                                         onClick={() => setFilter('favorites')}
-                                        className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-blue-500 data-[selected]:text-white">
+                                        className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
                                     Favourites
                                     </Tab>
                                 </TabList>
@@ -116,15 +105,17 @@ export default function AnalysesView ({dreamId}: {dreamId: string}) {
                                     onClickText={() => viewFullAnalysis(analysis._id)}
                                     onDelete={() => handleDelete(analysis._id)} 
                                     selected={mainAnalysis?._id === analysis._id}
-                                    
                                 />
                             )}
                         </div>
                     </Card>}
                 </div>
-                <div className='col-span-3'>
-                    <MainAnalysis mainAnalysis={mainAnalysis} />
-                </div>
+                {showMainAnalysis || isExtraLarge ? (
+                    <div className='col-span-6 xl:col-span-3'>
+                        <MainAnalysis mainAnalysis={mainAnalysis} setShowMainAnalysis={setShowMainAnalysis}/>
+                        <DescriptionSnapshot />
+                    </div>
+                ) : null}
             </div>
         </>
     )
