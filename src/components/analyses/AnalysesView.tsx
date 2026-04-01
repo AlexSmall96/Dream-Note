@@ -66,35 +66,33 @@ export default function AnalysesView () {
 
     return (
         <>          
-            <div className='flex items-center justify-between gap-4 my-4'>
-                <div className='flex items-center gap-4 mr-6'>
-                    <h1 className="text-lg font-semibold">
-                        Analyses
-                    </h1>
-                    <GenerateModal setRefetchAnalyses={setRefetchAnalyses} />
-                    <Settings />
-                </div>
-            </div>
             <div className='grid grid-cols-6 gap-1'>
                 <div className='col-span-6 xl:col-span-3'>
                     {analyses.length > 0 && (!showMainAnalysis || isExtraLarge) &&
                     <Card>
                         <div className="flex items-center justify-between mb-3">
                             <h1 className="text-lg font-semibold">Saved Analyses</h1>
-                            <TabGroup>
-                                <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
-                                    <Tab 
-                                        onClick={() => setFilter('all')}
-                                        className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
-                                    All
-                                    </Tab>
-                                    <Tab 
-                                        onClick={() => setFilter('favorites')}
-                                        className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
-                                    Favourites
-                                    </Tab>
-                                </TabList>
-                            </TabGroup>
+                                <TabGroup>
+                                    <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
+                                        <Tab 
+                                            onClick={() => setFilter('all')}
+                                            className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
+                                        All
+                                        </Tab>
+                                        <Tab 
+                                            onClick={() => setFilter('favorites')}
+                                            className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
+                                        Favourites
+                                        </Tab>
+                                    </TabList>
+                                </TabGroup>
+                            <div className="flex items-center gap-2" >
+                                <span className="flex items-center border border-gray-300 p-2 rounded-full gap-2">
+                                    <GenerateModal setRefetchAnalyses={setRefetchAnalyses} />
+                                    <Settings />
+                                </span>
+
+                            </div>
                         </div>
                         <div className="max-h-[70vh] overflow-y-auto pr-2">
                             {analyses.map(analysis => 
