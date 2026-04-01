@@ -77,8 +77,8 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
             </div>
             
             {/* Wrap component in a provider to avoid props drilling to sub components */}
-            <AnalysesProvider dreamId={params.id} title={title} description={description} >
-                <AnalysesView showMainAnalysis={showMainAnalysis} setShowMainAnalysis={setShowMainAnalysis}/>
+            <AnalysesProvider dreamId={params.id} title={title} description={description} showMainAnalysis={showMainAnalysis} setShowMainAnalysis={setShowMainAnalysis} >
+                <AnalysesView  />
             </AnalysesProvider>
         </div>
     )

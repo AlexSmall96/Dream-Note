@@ -10,11 +10,10 @@ import { Tab, TabGroup, TabList } from '@headlessui/react'
 import DescriptionSnapshot from "./DescriptionSnapshot";
 import { useScreenSize } from '@/app/hooks/useScreenSize';
 import { useAnalysesContext } from "@/contexts/AnalysesContext";
-import { setterFunction } from "@/types/setterFunctions";
 
-export default function AnalysesView ({showMainAnalysis, setShowMainAnalysis}: {showMainAnalysis: boolean, setShowMainAnalysis: setterFunction<boolean>}) {
+export default function AnalysesView () {
 
-    const { dreamId } = useAnalysesContext();
+    const { dreamId, showMainAnalysis, setShowMainAnalysis } = useAnalysesContext();
 
     const [analyses, setAnalyses] = useState<SavedAnalysis[]>([])
     const [mainAnalysis, setMainAnalysis] = useState<SavedAnalysis | null>(null)

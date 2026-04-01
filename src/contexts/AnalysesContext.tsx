@@ -1,16 +1,19 @@
+import { setterFunction } from "@/types/setterFunctions";
 import React, { createContext, useContext } from "react";
 
 type AnalysesContextType = {
     dreamId: string
     title: string
     description: string
+    showMainAnalysis: boolean,
+    setShowMainAnalysis: setterFunction<boolean>
 }
 
 export const AnalysesContext = createContext<AnalysesContextType | null>(null)
 
-export const AnalysesProvider = ({ dreamId,title, description, children }: { dreamId: string, title: string, description: string, children: React.ReactNode }) => {
+export const AnalysesProvider = ({ dreamId,title, description, showMainAnalysis, setShowMainAnalysis, children }: { dreamId: string, title: string, description: string, showMainAnalysis: boolean, setShowMainAnalysis: setterFunction<boolean>, children: React.ReactNode }) => {
     return (
-        <AnalysesContext.Provider value={{ dreamId, title, description }}>
+        <AnalysesContext.Provider value={{ dreamId, title, description, showMainAnalysis, setShowMainAnalysis }}>
             {children}
         </AnalysesContext.Provider>
     )
