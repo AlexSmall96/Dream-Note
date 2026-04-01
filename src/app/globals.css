@@ -26,3 +26,11 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.scrollbar-custom {
+  @apply scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-gray-100;
+}
+
+.bg-paper {
+  @apply bg-[url('/images/paper.jpg')] bg-cover bg-center
+}

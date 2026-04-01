@@ -12,7 +12,7 @@ export default function Settings(){
             <IconWithTooltip
                 icon={faSettings}
                 tooltipText='Settings'
-                extraClass="mx-2 text-2xl text-gray-500"
+                extraClass="text-xl text-gray-500"
             />
             </PopoverButton>
             <PopoverPanel anchor="bottom end" className="flex flex-col bg-white border p-4 rounded shadow text-sm">
