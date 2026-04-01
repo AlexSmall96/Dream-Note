@@ -10,7 +10,8 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
     const [loading, setLoading] = useState(true)
     const [description, setDescription] = useState('')
     const [title, setTitle] = useState('')
-
+    const [showMainAnalysis, setShowMainAnalysis] = useState(false)
+    
     const router = useRouter()
 
     useEffect(() => {
@@ -36,23 +37,35 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
 
     return (
         <div className="flex flex-col mt-0">
-            <div className="flex items-center justify-between w-full px-6 h-10 pt-2">
-            <button 
-                onClick={() => router.back()} 
-                className="flex items-center gap-2 text-md text-gray-600 hover:underline"
+            <div className="flex items-center gap-2 w-full px-6 h-14">
+            <button
+                onClick={() => {
+                    if (showMainAnalysis) {
+                        setShowMainAnalysis(false) 
+                    } else {
+                        router.push(`/dreams/${params.id}`) 
+                    }
+                }}
+                className="text-gray-600 hover:underline flex items-center gap-1"
             >
-                ← <span className="truncate max-w-[200px]">{title}</span>
-            </button> 
+                ←
+            </button>
 
-            <h1 className="text-lg font-semibold text-center flex-1">
-                Analyses
-            </h1>
-
-            <div className="w-[200px]">{/* empty div to balance back button */}</div>
+            <div className="flex items-center gap-1 text-gray-700 truncate">
+                <button 
+                    className="truncate max-w-[120px] hover:underline"
+                    onClick={() => router.push(`/dreams/${params.id}`)}
+                    
+                    >{title}</button>
+                <span>/</span>
+                <button onClick={() => setShowMainAnalysis(false)} className={!showMainAnalysis ? "font-semibold" : "hover:underline"}>Analyses</button>
+                {showMainAnalysis &&<span>/</span>}
+                {showMainAnalysis &&<span className="font-semibold">Selected Analysis</span>}
+            </div>
             </div>
             {/* Wrap component in a provider to avoid props drilling to sub components */}
-            <AnalysesProvider dreamId={params.id} title={title} description={description}>
-                <AnalysesView />
+            <AnalysesProvider dreamId={params.id} title={title} description={description} >
+                <AnalysesView showMainAnalysis={showMainAnalysis} setShowMainAnalysis={setShowMainAnalysis}/>
             </AnalysesProvider>
         </div>
     )
