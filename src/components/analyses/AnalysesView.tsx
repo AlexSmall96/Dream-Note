@@ -38,6 +38,7 @@ export default function AnalysesView ({showMainAnalysis, setShowMainAnalysis}: {
     
     const toggleFavorite = async (analysisId: string) => {
         setAnalyses(prev =>  prev.map(a => a._id === analysisId ? {...a, isFavorite: !a.isFavorite} : a))
+        setMainAnalysis(prev => ({...prev, isFavorite: !prev?.isFavorite || false} as SavedAnalysis))
         try {
             await toggleFavoriteAnalysis(dreamId, analysisId)
         } catch(err){
