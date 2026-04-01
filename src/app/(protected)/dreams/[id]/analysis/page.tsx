@@ -35,13 +35,21 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
     }
 
     return (
-        <div className="flex flex-col gap-2 items-center">
+        <div className="flex flex-col mt-0">
+            <div className="flex items-center justify-between w-full px-6 h-10 pt-2">
             <button 
                 onClick={() => router.back()} 
                 className="flex items-center gap-2 text-md text-gray-600 hover:underline"
             >
                 ← <span className="truncate max-w-[200px]">{title}</span>
             </button> 
+
+            <h1 className="text-lg font-semibold text-center flex-1">
+                Analyses
+            </h1>
+
+            <div className="w-[200px]">{/* empty div to balance back button */}</div>
+            </div>
             {/* Wrap component in a provider to avoid props drilling to sub components */}
             <AnalysesProvider dreamId={params.id} title={title} description={description}>
                 <AnalysesView />
