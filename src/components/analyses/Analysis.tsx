@@ -22,22 +22,26 @@ export default function Analysis ({
             <div className="flex-1 ml-2">
                 <div 
                     onClick={onClickText} 
-                    className={`text-gray-800 font-medium ${!selected && 'hover:underline cursor-pointer'} truncate max-w-xs`}
+                    className={`text-gray-800 font-medium line-clamp-3 ${!selected && 'hover:underline cursor-pointer'}`}
                 >
                     {text}
                 </div>
-                <div className="text-gray-500 text-sm flex gap-4 mt-1">
-                <span>{formattedDate}</span>
-                <span>{`${tone} | ${style}`}</span>
-                <FontAwesomeIcon
-                    icon={isFavorite ? solidHeart : regularHeart}
-                    onClick={onClickHeart}
-                    className='cursor-pointer transition'
-                />
-                <DeleteModal 
-                    handleDelete={onDelete}
-                    message='Are you sure you want to delete this analysis?'
-                />
+                <div className="text-gray-500 text-sm flex gap-4 mt-1 items-center justify-between">
+                <div className="flex gap-2">
+                    <span>{formattedDate}</span>
+                    <span>{`${tone} | ${style}`}</span>
+                </div>
+                <div className="flex gap-4 items-center">
+                    <FontAwesomeIcon 
+                        icon={isFavorite ? solidHeart : regularHeart}
+                        onClick={onClickHeart}
+                        className='cursor-pointer transition'
+                    />
+                    <DeleteModal 
+                        handleDelete={onDelete}
+                        message='Are you sure you want to delete this analysis?'
+                    />
+                </div>
                 </div>
             </div>
         </div>        
