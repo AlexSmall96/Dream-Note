@@ -95,7 +95,7 @@ export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: 
                 onClick={openModalAndGetAnalysis}
                 tooltipText='Generate New AI Analysis'
                 icon={faGetAnalysis}
-                extraClass='text-violet-600 text-2xl'
+                extraClass='text-violet-600 text-xl'
             />
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
                 <div className="fixed inset-0 flex w-screen items-center justify-center p-4 text-justify">
