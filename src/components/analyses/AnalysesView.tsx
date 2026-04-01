@@ -6,19 +6,18 @@ import Analysis from "@/components/analyses/Analysis";
 import Settings from "@/components/analyses/Settings";
 import GenerateModal from "@/components/analyses/GenerateModal";
 import { Card } from "@/components/ui/Card";
-import MainAnalysis from "@/components/analyses/MainAnalysis";
 import { Tab, TabGroup, TabList } from '@headlessui/react'
 import DescriptionSnapshot from "./DescriptionSnapshot";
 import { useScreenSize } from '@/app/hooks/useScreenSize';
 import { useAnalysesContext } from "@/contexts/AnalysesContext";
+import { setterFunction } from "@/types/setterFunctions";
 
-export default function AnalysesView () {
+export default function AnalysesView ({showMainAnalysis, setShowMainAnalysis}: {showMainAnalysis: boolean, setShowMainAnalysis: setterFunction<boolean>}) {
 
     const { dreamId } = useAnalysesContext();
 
     const [analyses, setAnalyses] = useState<SavedAnalysis[]>([])
     const [mainAnalysis, setMainAnalysis] = useState<SavedAnalysis | null>(null)
-    const [showMainAnalysis, setShowMainAnalysis] = useState(false)
     const [refetchAnalyses, setRefetchAnalyses] = useState(false)
 
     const [filter, setFilter] = useState<'all' | 'favorites'>('all')
@@ -55,6 +54,7 @@ export default function AnalysesView () {
         const remaining = analyses.filter(a => a._id !== analysisId)
         setAnalyses(remaining)
         setMainAnalysis(remaining[0])
+        setShowMainAnalysis(false)
     }
 
     const viewFullAnalysis = (_id: string) => {
@@ -71,7 +71,6 @@ export default function AnalysesView () {
                     {analyses.length > 0 && (!showMainAnalysis || isExtraLarge) &&
                     <Card>
                         <div className="flex items-center justify-between mb-3">
-                            <h1 className="text-lg font-semibold">Saved Analyses</h1>
                                 <TabGroup>
                                     <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
                                         <Tab 
@@ -87,7 +86,7 @@ export default function AnalysesView () {
                                     </TabList>
                                 </TabGroup>
                             <div className="flex items-center gap-2" >
-                                <span className="flex items-center border border-gray-300 p-2 rounded-full gap-2">
+                                <span className="flex items-center border border-gray-300 bg-gray-100 px-3 py-1 rounded-full gap-2">
                                     <GenerateModal setRefetchAnalyses={setRefetchAnalyses} />
                                     <Settings />
                                 </span>
@@ -108,9 +107,15 @@ export default function AnalysesView () {
                         </div>
                     </Card>}
                 </div>
-                {showMainAnalysis || isExtraLarge ? (
-                    <div className='col-span-6 xl:col-span-3'>
-                        <MainAnalysis mainAnalysis={mainAnalysis} setShowMainAnalysis={setShowMainAnalysis}/>
+                {mainAnalysis && (showMainAnalysis || isExtraLarge) ? (
+                    <div className='col-span-6 xl:col-span-3 flex flex-col gap-4'>
+                        <Analysis 
+                            analysisData={mainAnalysis} 
+                            onClickHeart={() => toggleFavorite(mainAnalysis._id)} 
+                            onDelete={() => handleDelete(mainAnalysis._id)} 
+                            selected={false} 
+                            clamp={false}
+                        />
                         <DescriptionSnapshot />
                     </div>
                 ) : null}
