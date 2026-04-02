@@ -39,8 +39,8 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
 
     return (
         <div className="flex flex-col mt-0">
-            <div className="flex justify-between gap-2 w-full px-2 text-sm py-4 md:h-14 md:text-md lg:text-lg w-auto">
-                <div className="flex flex-wrap items-center gap-1 text-gray-700">
+            <div className="flex justify-between gap-2 w-full px-2 text-sm py-4 md:h-14 md:mb-1 md:text-md lg:text-lg w-auto xl:grid xl:grid-cols-6 xl:gap-6">
+                <div className="flex flex-wrap items-center gap-1 text-gray-700 xl:col-span-3">
                     <button
                         onClick={() => {
                             if (showMainAnalysis) {
@@ -72,7 +72,7 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
                     </div>
                 </div>
                 {isExtraLarge && 
-                    <div className="flex items-center font-semibold">Selected Analysis</div>
+                    <div className="flex items-center font-semibold xl:col-span-3">Selected Analysis</div>
                 }
             </div>
             
