@@ -44,6 +44,9 @@ export default function AnalysesView () {
             await toggleFavoriteAnalysis(dreamId, analysisId)
         } catch(err){
             setAnalyses(prev =>  prev.map(a => a._id === analysisId ? {...a, isFavorite: !a.isFavorite} : a))
+            if (analysisId === mainAnalysis?._id) {
+                setMainAnalysis(prev => ({...prev, isFavorite: !prev?.isFavorite || false} as SavedAnalysis))
+            }
         }
     }
 
@@ -68,7 +71,7 @@ export default function AnalysesView () {
 
     return (
         <>          
-            <div className='grid grid-cols-6 gap-4'>
+            <div className='grid grid-cols-6 xl:gap-4'>
                 <div className='col-span-6 xl:col-span-3'>
                     {analyses.length > 0 && (!showMainAnalysis || isExtraLarge) &&
                     <Card>
@@ -95,19 +98,18 @@ export default function AnalysesView () {
 
                             </div>
                         </div>
-                        <div className="max-h-[70vh] overflow-y-auto pr-2">
+                        <div className="max-h-[70vh] overflow-y-auto pr-2 scrollbar-custom">
                             {analyses.map(analysis => 
-                            <>
-                                    <Analysis
-                                        key={analysis._id}
-                                        analysisData={analysis}
-                                        onClickHeart={() => toggleFavorite(analysis._id)}
-                                        onClickText={() => viewFullAnalysis(analysis._id)}
-                                        onDelete={() => handleDelete(analysis._id)} 
-                                        selected={mainAnalysis?._id === analysis._id}
-                                    />
-                                    <div className="border-b border-gray-300 mx-1 last:border-b-0" />
-                                </>
+                                <Analysis
+                                    key={analysis._id}
+                                    analysisData={analysis}
+                                    onClickHeart={() => toggleFavorite(analysis._id)}
+                                    onClickText={() => viewFullAnalysis(analysis._id)}
+                                    onDelete={() => handleDelete(analysis._id)} 
+                                    selected={mainAnalysis?._id === analysis._id}
+                                    border
+                                />
+                                    
                             )}
                         </div>
                     </Card>}
@@ -121,7 +123,7 @@ export default function AnalysesView () {
                                 onDelete={() => handleDelete(mainAnalysis._id)} 
                                 selected={false} 
                                 clamp={false}
-                                textSize="text-lg"
+                                textSize="text-md"
                             />
                         </Card>
                         <DescriptionSnapshot />
