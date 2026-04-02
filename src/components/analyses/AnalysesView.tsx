@@ -26,7 +26,7 @@ export default function AnalysesView () {
             try {
                 const response = await fetchSavedAnalyses(dreamId, filter)
                 setAnalyses(response.analyses)
-                setMainAnalysis(response.analyses[0])
+                setMainAnalysis(prev => prev || response.analyses[0] || null)
             } catch (err){
                 console.log(err)
             }
@@ -37,11 +37,16 @@ export default function AnalysesView () {
     
     const toggleFavorite = async (analysisId: string) => {
         setAnalyses(prev =>  prev.map(a => a._id === analysisId ? {...a, isFavorite: !a.isFavorite} : a))
-        setMainAnalysis(prev => ({...prev, isFavorite: !prev?.isFavorite || false} as SavedAnalysis))
+        if (analysisId === mainAnalysis?._id) {
+            setMainAnalysis(prev => ({...prev, isFavorite: !prev?.isFavorite || false} as SavedAnalysis))
+        }
         try {
             await toggleFavoriteAnalysis(dreamId, analysisId)
         } catch(err){
             setAnalyses(prev =>  prev.map(a => a._id === analysisId ? {...a, isFavorite: !a.isFavorite} : a))
+            if (analysisId === mainAnalysis?._id) {
+                setMainAnalysis(prev => ({...prev, isFavorite: !prev?.isFavorite || false} as SavedAnalysis))
+            }
         }
     }
 
@@ -66,7 +71,7 @@ export default function AnalysesView () {
 
     return (
         <>          
-            <div className='grid grid-cols-6 gap-1'>
+            <div className='grid grid-cols-6 xl:gap-4'>
                 <div className='col-span-6 xl:col-span-3'>
                     {analyses.length > 0 && (!showMainAnalysis || isExtraLarge) &&
                     <Card>
@@ -93,7 +98,7 @@ export default function AnalysesView () {
 
                             </div>
                         </div>
-                        <div className="max-h-[70vh] overflow-y-auto pr-2">
+                        <div className="max-h-[70vh] overflow-y-auto pr-2 scrollbar-custom">
                             {analyses.map(analysis => 
                                 <Analysis
                                     key={analysis._id}
@@ -102,20 +107,25 @@ export default function AnalysesView () {
                                     onClickText={() => viewFullAnalysis(analysis._id)}
                                     onDelete={() => handleDelete(analysis._id)} 
                                     selected={mainAnalysis?._id === analysis._id}
+                                    border
                                 />
+                                    
                             )}
                         </div>
                     </Card>}
                 </div>
                 {mainAnalysis && (showMainAnalysis || isExtraLarge) ? (
                     <div className='col-span-6 xl:col-span-3 flex flex-col gap-4'>
-                        <Analysis 
-                            analysisData={mainAnalysis} 
-                            onClickHeart={() => toggleFavorite(mainAnalysis._id)} 
-                            onDelete={() => handleDelete(mainAnalysis._id)} 
-                            selected={false} 
-                            clamp={false}
-                        />
+                        <Card>
+                            <Analysis 
+                                analysisData={mainAnalysis} 
+                                onClickHeart={() => toggleFavorite(mainAnalysis._id)} 
+                                onDelete={() => handleDelete(mainAnalysis._id)} 
+                                selected={false} 
+                                clamp={false}
+                                textSize="text-md"
+                            />
+                        </Card>
                         <DescriptionSnapshot />
                     </div>
                 ) : null}

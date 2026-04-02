@@ -34,3 +34,15 @@ body {
 .bg-paper {
   @apply bg-[url('/images/paper.jpg')] bg-cover bg-center
 }
+
+.icon {
+  @apply hover:animate-pulse
+}
+
+.icon-danger {
+  @apply text-orange-500
+}
+
+.transition {
+    transition: transform 0.2s ease;
+}
