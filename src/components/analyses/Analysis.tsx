@@ -8,7 +8,7 @@ import { formatDate } from "@/lib/utils/formatDate";
 import { useState } from "react";
 
 export default function Analysis ({
-    analysisData, onClickHeart, onClickText, onDelete, selected, clamp = true, textSize = 'text-sm'
+    analysisData, onClickHeart, onClickText, onDelete, selected, clamp = true, textSize = 'text-sm', border = false
 }:{
     analysisData: SavedAnalysis,
     onClickHeart: () => Promise<void>,
@@ -16,7 +16,8 @@ export default function Analysis ({
     onDelete: () => Promise<void>
     selected: boolean
     clamp?: boolean
-    textSize?: string
+    textSize?: string,
+    border?: boolean
 }) {
     const {tone, style, text, isFavorite, createdAt } = analysisData
     const formattedDate = formatDate(new Date(createdAt), true, true)
@@ -33,7 +34,7 @@ export default function Analysis ({
     }
 
     return (
-        <div className={`flex items-center p-2 ${selected && isExtraLarge? 'bg-gray-200': 'bg-white'} border-gray-200`}>
+        <div className={`flex items-center pb-1 pr-1 pt-1 ${selected && isExtraLarge? 'bg-gray-200': 'bg-white'} ${border ? 'border-b border-gray-200' : ''}`}>
             <div className="flex-1 ml-2">
                 <div className="text-gray-500 text-sm flex gap-4 mt-1 items-center justify-between">
                     <div className={`flex gap-2 ${textSize}`}>
@@ -55,8 +56,8 @@ export default function Analysis ({
                 <div 
                     onClick={onClickText || undefined} 
                     className={`
-                        text-gray-800 font-medium pr-2 text-justify italic
-                        ${clamp ? 'line-clamp-3':'max-h-[300px] overflow-y-auto scrollbar-custom'} 
+                        text-gray-800 ${textSize} font-medium pr-2 text-justify italic
+                        ${clamp ? 'line-clamp-2':'max-h-[300px] overflow-y-auto scrollbar-custom'} 
                         ${(!selected || !isExtraLarge) && onClickText ? 'hover:underline cursor-pointer' : ''}
                     `}
                 >
