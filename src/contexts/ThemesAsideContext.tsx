@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from "react";
+import { createContext, useState, useContext, useEffect } from "react";
 import { setterFunction } from "@/types/setterFunctions";
 import { MonthLabel } from "@/lib/filters/dateRanges";
 
@@ -8,7 +8,9 @@ type ThemesAsideContextType = {
     view: 'themes' | 'dreams'
     setView:  setterFunction<'themes' | 'dreams'>
     month: MonthLabel
-    setMonth: setterFunction<MonthLabel>
+    setMonth: setterFunction<MonthLabel>,
+    monthString: string,
+    setMonthString: setterFunction<string>,
     year: string,
     setYear: setterFunction<string>,
     showDreams: boolean, 
@@ -18,7 +20,9 @@ type ThemesAsideContextType = {
     search: string,
     setSearch: setterFunction<string>,
     chronView: boolean ,
-    setChronView: setterFunction<boolean>
+    setChronView: setterFunction<boolean>,
+    isOpen: boolean,
+    setIsOpen: setterFunction<boolean>
 }
 
 const ThemesAsideContext = createContext<ThemesAsideContextType | null>(null)
@@ -30,11 +34,19 @@ export function ThemesAsideProvider ({ children }:{ children: React.ReactNode })
     const [month, setMonth] = useState<MonthLabel>(
         now.toLocaleString('default', { month: 'short' }) as MonthLabel
     )
+    const [monthString, setMonthString] = useState<string>('')
+
+    useEffect(() => {
+        const month = monthString.split(' ')[0] as MonthLabel
+        setMonth(month)
+    }, [monthString])
+    
     const [year, setYear] = useState<string>(now.getFullYear().toString())
     const [showDreams, setShowDreams] = useState(true)
     const [sort, setSort] = useState(false)
     const [search, setSearch] = useState('')
     const [chronView, setChronView] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
 
     return (
         <ThemesAsideContext.Provider value={{
@@ -44,6 +56,8 @@ export function ThemesAsideProvider ({ children }:{ children: React.ReactNode })
             setView, 
             month, 
             setMonth, 
+            monthString,
+            setMonthString,
             year, 
             setYear, 
             showDreams, 
@@ -53,7 +67,9 @@ export function ThemesAsideProvider ({ children }:{ children: React.ReactNode })
             search,
             setSearch,
             chronView,
-            setChronView
+            setChronView,
+            isOpen,
+            setIsOpen
         }}>
             {children}
         </ThemesAsideContext.Provider>
