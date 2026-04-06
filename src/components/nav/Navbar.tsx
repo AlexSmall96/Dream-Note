@@ -23,7 +23,7 @@ export default function Navbar() {
 	if (loading || !currentUser) return null
 
     useEffect(() => {
-        if (isMedium) {
+        if (!isMedium) {
             setIsOpen(false)
         }
     }, [isMedium])
@@ -59,7 +59,7 @@ export default function Navbar() {
           			☰
         		</button>
 		</div>
-		{<OffCanvas />}
+		<OffCanvas />
 		</nav>
   	)
 }
