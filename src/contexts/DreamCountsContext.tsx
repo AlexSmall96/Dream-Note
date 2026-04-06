@@ -10,6 +10,8 @@ type DreamCountsContextType = {
     refetch: boolean,
     stats: DreamStats,
     setStats: setterFunction<DreamStats>,
+    loadingCounts: boolean,
+    setLoadingCounts: setterFunction<boolean>
 }
 
 const DreamCountsContext = createContext<DreamCountsContextType | null>(null)
@@ -17,28 +19,36 @@ const DreamCountsContext = createContext<DreamCountsContextType | null>(null)
 export function DreamCountsProvider({ children }:{ children: React.ReactNode }) {
     const [stats, setStats] = useState<DreamStats>({monthlyTotals: {}, total: 0, thisMonthTotal: 0, uniqueYears: []})
     const { refetch } = useDreams()
-    const { year } = useThemesAside()
+    const { year, setMonthString, setMonth} = useThemesAside()
+    const [loadingCounts, setLoadingCounts] = useState(false)
 
     useEffect(() => {
 
         const getCounts = async () => {
             try {
+                setLoadingCounts(true)
                 const response = await fetchDreamCounts(Number(year))
                 const monthlyCounts: {[month: string] : number} = {}
                 MONTH_KEYS.map(m => {
                     monthlyCounts[m] = response.monthlyTotals[MONTH_OPTIONS[m]] ?? 0
                 })
                 setStats({...response, monthlyTotals : monthlyCounts})
+                const firstMonth = MONTH_KEYS.find(m => monthlyCounts[m] > 0)
+                if (firstMonth) {
+                   setMonthString(firstMonth) 
+                   setMonth(firstMonth)
+                }
             } catch (err){
                 console.log(err)
-
+            } finally {
+                setLoadingCounts(false)
             }
         }
         getCounts()
     }, [year, refetch])  
 
     return (
-        <DreamCountsContext.Provider value={{refetch, stats, setStats}}>
+        <DreamCountsContext.Provider value={{refetch, stats, setStats, loadingCounts, setLoadingCounts}}>
             {children}
         </DreamCountsContext.Provider>
     )

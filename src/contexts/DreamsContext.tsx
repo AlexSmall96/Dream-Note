@@ -1,4 +1,4 @@
-import { DreamOverview, DreamStats } from '@/types/dreams'
+import { DreamOverview } from '@/types/dreams'
 import { createContext, useState, useEffect, useContext} from 'react'
 import { fetchDreams, fetchSearchResults } from '@/lib/api/dreams'
 import { useThemesAside } from './ThemesAsideContext'
@@ -10,6 +10,8 @@ type DreamsContextType = {
     searchResults: DreamOverview[],
     refetch: boolean,
     setRefetch: setterFunction<boolean>,
+    loadingDreams: boolean,
+    setLoadingDreams: setterFunction<boolean>
 }
 
 const DreamsContext = createContext<DreamsContextType | null>(null)
@@ -19,14 +21,18 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     const [searchResults, setSearchResults] = useState<DreamOverview[]>([])
     const [refetch, setRefetch] = useState<boolean>(false)
     const { month, year, sort, search, view } = useThemesAside()
-    
+    const [loadingDreams, setLoadingDreams] = useState(false)
+
     useEffect(() => {
         const getDreams = async () => {
             try {
+                setLoadingDreams(true)
                 const response = await fetchDreams({year: Number(year), month, sort})
                 setDreams(response.dreams)
             } catch (err) {
                 console.log(err)
+            } finally {
+                setLoadingDreams(false)
             }
         } 
         getDreams()
@@ -51,7 +57,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     }, [search])
 
     return (
-        <DreamsContext.Provider value={{dreams, setDreams, searchResults, refetch, setRefetch}}>
+        <DreamsContext.Provider value={{dreams, setDreams, searchResults, refetch, setRefetch, loadingDreams, setLoadingDreams}}>
             {children}
         </DreamsContext.Provider>
     )

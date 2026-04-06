@@ -5,11 +5,12 @@ import { MONTH_KEYS, MonthLabel } from "@/lib/filters/dateRanges"
 import DreamsList from "./DreamsList"
 import { useDreamCounts } from "@/contexts/DreamCountsContext"
 import Dropdown from "../ui/Dropdown"
+import LoadingSpinner from "../ui/LoadingSpinner"
 
 export default function MonthsWithDreams(){
 
     const { month, setMonth, year, setYear, showDreams, setShowDreams } = useThemesAside()
-    const { stats } = useDreamCounts()
+    const { stats, loadingCounts } = useDreamCounts()
     const monthlyTotals = stats.monthlyTotals
     const uniqueYears = stats.uniqueYears
     
@@ -26,7 +27,10 @@ export default function MonthsWithDreams(){
     return (
         <div>
             <Dropdown<string> parameter={year} setParameter={setYear} options={uniqueYears} placeholder={'Select Year'} />
-            {Object.keys(monthlyTotals).length !==0 ? MONTH_KEYS.map(m => 
+            {loadingCounts ? 
+                <LoadingSpinner />
+            : 
+            Object.keys(monthlyTotals).length !==0 ? MONTH_KEYS.map(m => 
                 monthlyTotals[m] > 0 &&
                 <div key={m} className="mt-0.5">
                     <button 
