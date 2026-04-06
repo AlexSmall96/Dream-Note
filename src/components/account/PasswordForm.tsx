@@ -2,6 +2,8 @@
 import { useCurrentUser } from "@/contexts/CurrentUserContext"
 import { updatePassword } from "@/lib/api/account"
 import { useEffect, useState } from "react"
+import { Input } from "../forms/Input"
+import Button from "../forms/Button"
 
 export default function PasswordForm(){
     const {currentUser} = useCurrentUser()
@@ -68,23 +70,23 @@ export default function PasswordForm(){
 
     return (
         currentUser ? 
-            <form className="flex flex-col gap-2 w-80" onSubmit={handlePasswordSubmit}>  
-                <label htmlFor="email" className='m-2'>Password:</label>
-                <input 
+            <form className="flex flex-col gap-1 mt-2 mb-2" onSubmit={handlePasswordSubmit}>  
+                <label htmlFor="email">Password:</label>
+                <Input 
                     type='password'
                     name='password0'
                     value={formData.password0}
                     placeholder="Enter current password"
                     onChange={handleChangePassword}
                 />
-                <input 
+                <Input 
                     type='password'
                     name='password1'
                     value={formData.password1}
                     placeholder="Enter new password"
                     onChange={handleChangePassword}
                 />
-                <input 
+                <Input 
                     type='password'
                     name='password2'
                     value={formData.password2}
@@ -93,7 +95,7 @@ export default function PasswordForm(){
                 />
                 {error ?? ''}
                 {message ?? ''}
-                <button type='submit' className={`bg-${disabled ? 'gray-400' : 'blue-500 hover:bg-blue-700'} text-white font-bold p-2 m-2`} disabled={disabled}>Change Password</button>
+                <Button type='submit' disabled={disabled} text="Change Password" />
             </form>
         :
             null
