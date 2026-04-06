@@ -15,7 +15,7 @@ export default function DreamsList(){
 
     const { dreams, loadingDreams } = useDreams()
     const { themes } = useThemes()
-    const { selectedTheme, setChronView, view, sort, setSort } = useThemesAside()
+    const { selectedTheme, setChronView, view, sort, setSort, setIsOpen } = useThemesAside()
     const {loadingCounts} = useDreamCounts()
     const { isMedium } = useScreenSize()
     
@@ -33,6 +33,7 @@ export default function DreamsList(){
     const handleClick = (dreamId: string) => {
         router.replace(`/dreams/${dreamId}`)
         setChronView(view === 'dreams')
+        setIsOpen(false)
     }
 
     return (
