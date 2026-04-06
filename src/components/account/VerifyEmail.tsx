@@ -1,6 +1,8 @@
 import { useCurrentUser } from "@/contexts/CurrentUserContext"
 import { requestEmailVerification, verifyEmail } from "@/lib/api/account"
 import { useState } from "react"
+import { Input } from "../forms/Input"
+import Button from "../forms/Button"
 
 export default function VerifyEmail(){
 
@@ -43,10 +45,10 @@ export default function VerifyEmail(){
 
 
     return (
-        <form className="flex flex-col gap-2 w-80" onSubmit={handleVerify}>
-            <p>Email address must be verified to perform password updates and account deletion.</p>
-            <p>Please enter the OTP that was sent to your email address for verification.</p>
-            <input 
+        <form className="flex flex-col gap-2" onSubmit={handleVerify}>
+            <p className="mt-2 text-sm">Email address must be verified to perform password updates and account deletion.</p>
+            <p className="text-sm">Please enter the OTP that was sent to your email address for verification.</p>
+            <Input 
                 type='text'
                 name='otp'
                 value={otp}
@@ -54,10 +56,10 @@ export default function VerifyEmail(){
                 placeholder='Enter OTP'
                 className='bg-blue-100 p-2'
             />
-            {errors.otp ?? ''}
-            <button type='submit' className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 m-2'>Verify OTP</button>
-            <button type='button' onClick={handleResend} className='bg-blue-500 hover:bg-blue-700 text-white font-bold p-2 m-2'>Resend Verification Email</button>
-            {errors.email ?? ''}
+            <p className="text-red-500">{errors.otp ?? ''}</p>
+            <Button type='submit' text='Verify OTP' />
+            <Button type='button' onClick={handleResend} text='Resend Verification Email' />
+            <p className="text-red-500">{errors.email ?? ''}</p>
         </form>
     )
 }
