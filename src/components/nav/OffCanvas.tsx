@@ -54,7 +54,7 @@ export default function OffCanvas() {
                     ✕
                 </button>
                 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                     {loading ? null : currentUser ? 
                         <>  
                             <div className="flex justify-center-safe items-center gap-2">
@@ -81,8 +81,7 @@ export default function OffCanvas() {
                                         ←
                                     </button>
                                     <span className={`${getColorForTheme(selectedTheme, true)} text-sm w-auto px-2 py-1 shadow-sm border-l-2 border-black/20`}>{selectedTheme}</span>
-                                </div>
-}
+                                </div>}
                             {view === 'dreams' &&
                             <div className="flex items-center gap-2">
                                 <Dropdown<string> parameter={year} setParameter={setYear} options={uniqueYears} placeholder={'Select Year'} />
