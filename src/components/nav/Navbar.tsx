@@ -1,7 +1,7 @@
 "use client"
 
 import { useCurrentUser } from "@/contexts/CurrentUserContext"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import SearchBar from "./SearchBar"
 import AccountDropdown from "./AccountDropdown"
 import OffCanvas from "./OffCanvas"
@@ -10,17 +10,24 @@ import LinkWithIcon from "../ui/LinkWithIcon"
 import { faFeatherPointed as faLog, faChartBar as faDashboard } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useScreenSize } from "@/app/hooks/useScreenSize"
+import { useThemesAside } from "@/contexts/ThemesAsideContext"
 
 export default function Navbar() {
   	const {currentUser, loading } = useCurrentUser()
-	const [isOpen, setIsOpen] = useState(false)
+	const { setIsOpen } = useThemesAside()
 	const [hovered, setHovered] = useState(false)
 
 
-	const { isLarge } = useScreenSize()
+	const { isLarge, isMedium } = useScreenSize()
 
 	if (loading || !currentUser) return null
 
+    useEffect(() => {
+        if (isMedium) {
+            setIsOpen(false)
+        }
+    }, [isMedium])
+	
   	return (
 		<nav className="border-b bg-purple-200">
 			<div className="mx-auto flex items-center justify-between px-4 py-3">
@@ -48,15 +55,11 @@ export default function Navbar() {
 					<AccountDropdown />
 					
 				</div>
-				<button 
-          			onClick={() => setIsOpen(prev => !prev)} 
-          			className="md:hidden text-xl"
-        		>
+				<button onClick={() => setIsOpen(true)} className="md:hidden text-xl">
           			☰
         		</button>
 		</div>
-		{isOpen && <OffCanvas setIsOpen={setIsOpen}/>}
+		{<OffCanvas />}
 		</nav>
   	)
 }
-
