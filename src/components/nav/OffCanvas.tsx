@@ -24,7 +24,7 @@ export default function OffCanvas() {
 
     const { selectedTheme, setSelectedTheme, view, year, setYear, monthString, setMonthString, isOpen, setIsOpen } = useThemesAside()
 
-    const { stats } = useDreamCounts()
+    const { stats, loadingCounts } = useDreamCounts()
     const monthlyTotals = stats.monthlyTotals
     const uniqueYears = stats.uniqueYears
 
