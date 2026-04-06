@@ -19,7 +19,7 @@ const DreamCountsContext = createContext<DreamCountsContextType | null>(null)
 export function DreamCountsProvider({ children }:{ children: React.ReactNode }) {
     const [stats, setStats] = useState<DreamStats>({monthlyTotals: {}, total: 0, thisMonthTotal: 0, uniqueYears: []})
     const { refetch } = useDreams()
-    const { year, setMonthString, setMonth} = useThemesAside()
+    const { year, setMonthString } = useThemesAside()
     const [loadingCounts, setLoadingCounts] = useState(false)
 
     useEffect(() => {
@@ -33,11 +33,7 @@ export function DreamCountsProvider({ children }:{ children: React.ReactNode }) 
                     monthlyCounts[m] = response.monthlyTotals[MONTH_OPTIONS[m]] ?? 0
                 })
                 setStats({...response, monthlyTotals : monthlyCounts})
-                const firstMonth = MONTH_KEYS.find(m => monthlyCounts[m] > 0)
-                if (firstMonth) {
-                   setMonthString(firstMonth) 
-                   setMonth(firstMonth)
-                }
+                setMonthString('')
             } catch (err){
                 console.log(err)
             } finally {

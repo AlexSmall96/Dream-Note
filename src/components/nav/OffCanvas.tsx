@@ -23,8 +23,7 @@ import LinkWithIcon from "../ui/LinkWithIcon";
 export default function OffCanvas() {
 
     const { selectedTheme, setSelectedTheme, view, year, setYear, monthString, setMonthString, isOpen, setIsOpen } = useThemesAside()
-
-    const { stats, loadingCounts } = useDreamCounts()
+    const { stats } = useDreamCounts()
     const monthlyTotals = stats.monthlyTotals
     const uniqueYears = stats.uniqueYears
 
@@ -54,7 +53,7 @@ export default function OffCanvas() {
                     ✕
                 </button>
                 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                     {loading ? null : currentUser ? 
                         <>  
                             <div className="flex justify-center-safe items-center gap-2">
@@ -67,33 +66,37 @@ export default function OffCanvas() {
                             <FontAwesomeIcon icon={faLog} className="mr-1" /> Log Dream
                         </button>  
 
-                            <SearchBar />
+                            {uniqueYears.length > 0 && <SearchBar />}
 
                             <LinkWithIcon href='/dreams' icon={faDashboard} text='Dashboard' />
                         
                             <LinkWithIcon href='/account' icon={faAccount} text='Account' />
                             <hr className="border-t border-gray-300" />
-                            <ViewToggle />
-
-                            {selectedTheme && view === 'themes' &&
-                                <div className="flex items-center gap-2">
-                                    <button className='mr-1' onClick={() => setSelectedTheme('')}>
-                                        ←
-                                    </button>
-                                    <span className={`${getColorForTheme(selectedTheme, true)} text-sm w-auto px-2 py-1 shadow-sm border-l-2 border-black/20`}>{selectedTheme}</span>
-                                </div>
-}
-                            {view === 'dreams' &&
-                            <div className="flex items-center gap-2">
-                                <Dropdown<string> parameter={year} setParameter={setYear} options={uniqueYears} placeholder={'Select Year'} />
-                                <Dropdown<string> parameter={monthString} setParameter={setMonthString} options={monthOptions} placeholder={'Month'} />
-                            </div>
-                            }
-                            {view === 'themes' && !selectedTheme && <ThemesList />}
-                            {(view === 'themes' && selectedTheme) || (view === 'dreams' && monthString) ? 
-                                <DreamsList /> 
+                            {uniqueYears.length > 0 ? 
+                                <>
+                                    <ViewToggle />
+                                    {selectedTheme && view === 'themes' &&
+                                        <div className="flex items-center gap-2">
+                                            <button className='mr-1' onClick={() => setSelectedTheme('')}>
+                                                ←
+                                            </button>
+                                            <span className={`${getColorForTheme(selectedTheme, true)} text-sm w-auto px-2 py-1 shadow-sm border-l-2 border-black/20`}>{selectedTheme}</span>
+                                        </div>}
+                                    {view === 'dreams' &&
+                                    <div className="flex items-center gap-2">
+                                        <Dropdown<string> parameter={year} setParameter={setYear} options={uniqueYears} placeholder={'Select Year'} />
+                                        <Dropdown<string> parameter={monthString} setParameter={setMonthString} options={monthOptions} placeholder={'Month'} />
+                                    </div>
+                                    }
+                                    {view === 'themes' && !selectedTheme && <ThemesList />}
+                                    {(view === 'themes' && selectedTheme) || (view === 'dreams' && monthString) ? 
+                                        <DreamsList /> 
+                                    : 
+                                        <span className='text-gray-500 text-sm'>{view === 'themes' ? 'Select a theme to view dreams.' : 'Select a month to view dreams.'}</span>
+                                    }                               
+                                </> 
                             : 
-                                <span className='text-gray-500 text-sm'>{view === 'themes' ? 'Select a theme to view dreams.' : 'Select a month to view dreams.'}</span>
+                                <p className="text-sm">Your dreams will appear here. Click the button above to log your first dream.</p>
                             }
                             <hr className="border-t border-gray-300" />
                             <LogoutButton />
