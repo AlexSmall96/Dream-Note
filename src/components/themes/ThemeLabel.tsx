@@ -18,11 +18,11 @@ export default function ThemeLabel ({
         <span
             key={theme}
             style={{ transform: `translateY(${isExtraLarge ? index * 2 : 0}px)` }}
-            className={`w-20 font-caveat group flex items-center gap-1 ${color} px-1 py-1 shadow-md border-l-4 border-black/20
+            className={`w-20 truncate hover:w-auto hover:min-w-20 hover:max-w-28 font-caveat group flex items-center gap-1 ${color} px-1 py-1 shadow-md border-l-4 border-black/20
                     transition-all duration-200
                     ${isPeeling ? "translate-x-6 -rotate-12 opacity-0 scale-90" : "hover:-translate-x-1 hover:shadow-lg"}`}
         >
-            {theme}
+            <span className='w-full truncate'>{theme}</span>
         <button 
             className="text-lg text-gray-700 rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-1 group-hover:translate-x-0 transition"
             onClick={() => removeTheme(theme)}
