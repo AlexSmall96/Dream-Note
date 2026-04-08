@@ -10,6 +10,7 @@ import { Tab, TabGroup, TabList } from '@headlessui/react'
 import DescriptionSnapshot from "./DescriptionSnapshot";
 import { useScreenSize } from '@/app/hooks/useScreenSize';
 import { useAnalysesContext } from "@/contexts/AnalysesContext";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 export default function AnalysesView () {
 
@@ -19,8 +20,8 @@ export default function AnalysesView () {
     const [containsFav, setContainsFav] = useState(false)
     const [mainAnalysis, setMainAnalysis] = useState<SavedAnalysis | null>(null)
     const [refetchAnalyses, setRefetchAnalyses] = useState(false)
-
     const [filter, setFilter] = useState<'all' | 'favorites'>('all')
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const getSavedAnalyses = async () => {
@@ -31,6 +32,8 @@ export default function AnalysesView () {
                 setContainsFav(response.analyses.some(a => a.isFavorite))
             } catch (err){
                 console.log(err)
+            } finally {
+                setLoading(false)
             }
         }
         getSavedAnalyses()
@@ -74,6 +77,8 @@ export default function AnalysesView () {
 
     const { isExtraLarge } = useScreenSize();
 
+    if (loading) return <LoadingSpinner />
+    
     return (
         <>          
             <div className='grid grid-cols-6 xl:gap-4'>
