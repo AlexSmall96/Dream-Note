@@ -16,6 +16,7 @@ export default function AnalysesView () {
     const { dreamId, showMainAnalysis, setShowMainAnalysis } = useAnalysesContext();
 
     const [analyses, setAnalyses] = useState<SavedAnalysis[]>([])
+    const [containsFav, setContainsFav] = useState(false)
     const [mainAnalysis, setMainAnalysis] = useState<SavedAnalysis | null>(null)
     const [refetchAnalyses, setRefetchAnalyses] = useState(false)
 
@@ -27,6 +28,7 @@ export default function AnalysesView () {
                 const response = await fetchSavedAnalyses(dreamId, filter)
                 setAnalyses(response.analyses)
                 setMainAnalysis(prev => prev || response.analyses[0] || null)
+                setContainsFav(response.analyses.some(a => a.isFavorite))
             } catch (err){
                 console.log(err)
             }
@@ -34,6 +36,9 @@ export default function AnalysesView () {
         getSavedAnalyses()
     }, [dreamId, refetchAnalyses, filter])
 
+    useEffect(() => {
+        setContainsFav(analyses.some(a => a.isFavorite))
+    }, [analyses])
     
     const toggleFavorite = async (analysisId: string) => {
         setAnalyses(prev =>  prev.map(a => a._id === analysisId ? {...a, isFavorite: !a.isFavorite} : a))
@@ -73,33 +78,45 @@ export default function AnalysesView () {
         <>          
             <div className='grid grid-cols-6 xl:gap-4'>
                 <div className='col-span-6 xl:col-span-3'>
-                    {analyses.length > 0 && (!showMainAnalysis || isExtraLarge) &&
+                    {(!showMainAnalysis || isExtraLarge) &&
                     <Card>
                         <div className="flex items-center justify-between mb-3">
-                                <TabGroup>
-                                    <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
-                                        <Tab 
-                                            onClick={() => setFilter('all')}
-                                            className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
-                                        All
-                                        </Tab>
-                                        <Tab 
-                                            onClick={() => setFilter('favorites')}
-                                            className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
-                                        Favourites
-                                        </Tab>
-                                    </TabList>
-                                </TabGroup>
-                            <div className="flex items-center gap-2" >
+                                {analyses.length > 0 && 
+                                    (containsFav ? 
+                                        <TabGroup>
+                                            <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
+                                                <Tab 
+                                                    onClick={() => setFilter('all')}
+                                                    className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
+                                                All
+                                                </Tab>
+                                                <Tab 
+                                                    onClick={() => setFilter('favorites')}
+                                                    className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
+                                                Favourites
+                                                </Tab>
+                                            </TabList>
+                                        </TabGroup>
+                                    :                                
+                                        <TabGroup>
+                                            <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
+                                                <Tab className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
+                                                    All
+                                                </Tab>
+                                            </TabList>
+                                        </TabGroup>
+                                    )
+                                }
+                            <div className="flex items-center gap-2">
+                                {analyses.length === 0 && <p>No analyses saved yet. Click the wand to get started. →</p>}
                                 <span className="flex items-center border border-gray-300 bg-gray-100 px-3 py-1 rounded-full gap-2">
                                     <GenerateModal setRefetchAnalyses={setRefetchAnalyses} />
                                     <Settings />
                                 </span>
-
                             </div>
                         </div>
                         <div className="max-h-[70vh] overflow-y-auto pr-2 scrollbar-custom">
-                            {analyses.map(analysis => 
+                            {analyses.length > 0 && analyses.map(analysis => 
                                 <Analysis
                                     key={analysis._id}
                                     analysisData={analysis}
