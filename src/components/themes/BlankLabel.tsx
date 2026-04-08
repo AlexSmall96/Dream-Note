@@ -41,6 +41,7 @@ export default function BlankLabel ({
                     className={`${newTheme.color || defaultColor} focus:outline-none w-10`}
                     value={newTheme.text}
                     onChange={handleChangeBlankLabel}
+                    maxLength={50}
                 />
                     
                 <button 

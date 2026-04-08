@@ -14,10 +14,17 @@ export default function ThemesList () {
             {uniqueThemes.map(theme =>
                 <div key={theme}>
                     <button 
-                        className={`${getColorForTheme(theme, selectedTheme !== theme)} w-24 px-2 py-0.5 shadow-sm border-l-2 border-black/20`} 
+                        className={`${getColorForTheme(theme, selectedTheme !== theme)} 
+                            w-full p-1 shadow-sm border-l-2 border-black/20 flex items-center gap-1`}
                         onClick={() => setSelectedTheme(theme)}
                     >
-                        <span className="text-sm">{theme}</span> <span className="text-sm text-gray-500">({counts[theme]})</span></button>
+                        <span className="text-sm truncate flex-1">
+                            {theme}
+                        </span>
+                        <span className="text-sm text-gray-500 flex-shrink-0">
+                            ({counts[theme]})
+                        </span>
+                    </button>
                 </div> 
             )}
         </div>

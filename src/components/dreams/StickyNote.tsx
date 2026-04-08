@@ -39,8 +39,8 @@ export default function StickyNote () {
 
     return (
         <>{showNote?
-                <div className="absolute -bottom right-6 rotate-2 bg-yellow-200 p-3 shadow-lg rounded-sm w-48 min-h-40 max-h-64 hover:-translate-y-1 hover:shadow-xl transition">
-                        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-4 bg-yellow-100 opacity-70 rounded-sm shadow-sm"></div>
+                <div className="absolute -bottom right-6 rotate-2 bg-yellow-200 p-3 shadow-lg rounded-sm w-40 lg:w-48 min-h-40 max-h-64 hover:-translate-y-1 hover:shadow-xl transition">
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-4 bg-yellow-100 opacity-70 rounded-sm shadow-sm" />
                     <div className="absolute top-2 right-2 flex gap-1">
                         <IconWithTooltip 
                             tooltipText='Close' 
@@ -67,7 +67,7 @@ export default function StickyNote () {
                         <textarea 
                             value={newNote || ''}
                             onChange={handleNoteChange}
-                            className="w-44 h-32 px-2 bg-yellow-200 focus:outline-none text-lg text-gray-800 resize-none overflow-y-hidden"
+                            className="w-30 lg:w-44 h-32 px-2 bg-yellow-200 focus:outline-none text-lg text-gray-800 resize-none overflow-y-hidden"
                         />
                     </form>
                 </div>
