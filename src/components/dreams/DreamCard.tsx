@@ -7,7 +7,7 @@ import DreamThemeList from '@/components/themes/DreamThemeList';
 import { useScreenSize } from "@/app/hooks/useScreenSize";
 
 export default function DreamCard () {
-    const { dream, setShowBlankLabel } = useDreamView()
+    const { dream, themes, setShowBlankLabel } = useDreamView()
     const params = useParams()
     const id = params.id as string
     const { isLargeAndAbove } = useScreenSize()
@@ -42,7 +42,7 @@ export default function DreamCard () {
                         extraClass="text-xl"
                         danger
                     />
-                    {isLargeAndAbove && dream.description && (
+                    {isLargeAndAbove && dream.description && themes.length < 6 && (
                         <IconWithTooltip
                             icon={faTheme}
                             onClick={() => setShowBlankLabel(true)}
