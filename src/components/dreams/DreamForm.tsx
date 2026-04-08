@@ -135,6 +135,7 @@ export default function DreamForm({
                     placeholder="Themes"
                     disabled={dream.description === '' || themes.length >= 6}
                     className="pr-20"
+                    maxLength={50}
                 />
                 {visible && (
                     <Button

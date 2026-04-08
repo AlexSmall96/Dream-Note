@@ -5,7 +5,7 @@ const themeSchema = new Schema<ThemeDocument, ThemeModel>({
     theme: {
         type: String,
         required: [true, 'Theme is required.'],
-        maxlength: [15, 'Theme cannot be more than 15 characters.'],
+        maxlength: [50, 'Theme cannot be more than 50 characters.'],
         trim: true
     },
     dream: {
