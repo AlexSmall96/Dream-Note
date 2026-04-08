@@ -8,7 +8,6 @@ import { useScreenSize } from '@/app/hooks/useScreenSize';
 
 export default function DreamAnalysisPage ({ params }: { params: { id: string } }) {
 
-    const [loading, setLoading] = useState(true)
     const [description, setDescription] = useState('')
     const [title, setTitle] = useState('')
     const [showMainAnalysis, setShowMainAnalysis] = useState(false)
@@ -24,19 +23,11 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
                 setTitle(response.dream.title || '') 
             } catch (err){
                 console.log(err)
-            } finally {
-                setLoading(false)
             }
         }
         getDreamData()
     }, [params.id])
     
-    if (loading) {
-        return (
-            <h1>Loading...</h1>
-        )
-    }
-
     return (
         <div className="flex flex-col mt-0">
             <div className="flex justify-between gap-2 w-full px-2 text-sm py-4 md:h-14 md:mb-1 md:text-md lg:text-lg w-auto xl:grid xl:grid-cols-6 xl:gap-6">
@@ -77,7 +68,13 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
             </div>
             
             {/* Wrap component in a provider to avoid props drilling to sub components */}
-            <AnalysesProvider dreamId={params.id} title={title} description={description} showMainAnalysis={showMainAnalysis} setShowMainAnalysis={setShowMainAnalysis} >
+            <AnalysesProvider 
+                dreamId={params.id} 
+                title={title} 
+                description={description} 
+                showMainAnalysis={showMainAnalysis} 
+                setShowMainAnalysis={setShowMainAnalysis} 
+            >
                 <AnalysesView  />
             </AnalysesProvider>
         </div>
