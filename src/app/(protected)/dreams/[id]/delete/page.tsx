@@ -27,7 +27,7 @@ export default function DeleteDreamPage ({
         setWaiting(true)
         try {
             await deleteDream(id)
-            setMsg(`Removed the dream ${dream.title}.`)
+            setMsg(`Removed ${dream.title}.`)
             setDeleted(true)
             setBackUrl(`/dreams`)
             setDreams(prev => prev.filter(dream => dream._id !== id))
