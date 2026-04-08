@@ -50,6 +50,7 @@ export default function Analysis ({
                         <DeleteModal 
                             handleDelete={onDelete}
                             message='Are you sure you want to delete this analysis?'
+                            deletedMessage='Analysis deleted.'
                         />
                     </div>
                 </div>
