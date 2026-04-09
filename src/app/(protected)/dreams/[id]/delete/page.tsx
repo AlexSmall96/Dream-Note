@@ -19,7 +19,7 @@ export default function DeleteDreamPage ({
     const [deleted, setDeleted] = useState<boolean>(false)
     const [waiting, setWaiting] = useState<boolean>(false)
     const [backUrl, setBackUrl] = useState<string>(`/dreams/${id}/`)
-    const { setDreams } = useDreams()
+    const { setDreams, setRefetchDreams } = useDreams()
     const { setRefetchThemes } = useThemes()
 
 
@@ -38,6 +38,7 @@ export default function DeleteDreamPage ({
         setVisible(false)
         setWaiting(false)
 		setRefetchThemes(prev => !prev)
+        setRefetchDreams(prev => !prev)
     }
 
     return (

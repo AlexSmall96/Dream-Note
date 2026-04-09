@@ -30,28 +30,29 @@ export default function ProtectedLayout({
 	if (loading || !currentUser) return null
 
     return (
-		<ThemesProvider> 
-			<div className="flex flex-col h-screen">
-				<ThemesAsideProvider>
-					<DreamsProvider>
-						<DreamCountsProvider>
-							<ThemeChartProvider>
-								<DreamChartProvider>
-									<Navbar />
-									<div className="flex flex-1">
-										<aside className="hidden md:block w-80">
-											<AsideContent />
-										</aside>
-										<main className="flex-1 px-0 sm:px-4 md:px-6">
-											{children}
-										</main>
-									</div>
-								</DreamChartProvider>
-							</ThemeChartProvider>
-						</DreamCountsProvider>
-					</DreamsProvider>
-				</ThemesAsideProvider>
-			</div>
-		</ThemesProvider>
+		<ThemesAsideProvider>
+			<ThemesProvider> 
+				<div className="flex flex-col h-screen">
+					
+						<DreamsProvider>
+							<DreamCountsProvider>
+								<ThemeChartProvider>
+									<DreamChartProvider>
+										<Navbar />
+										<div className="flex flex-1">
+											<aside className="hidden md:block w-80">
+												<AsideContent />
+											</aside>
+											<main className="flex-1 px-0 sm:px-4 md:px-6">
+												{children}
+											</main>
+										</div>
+									</DreamChartProvider>
+								</ThemeChartProvider>
+							</DreamCountsProvider>
+						</DreamsProvider>
+				</div>
+			</ThemesProvider>
+		</ThemesAsideProvider>
     )
 }
