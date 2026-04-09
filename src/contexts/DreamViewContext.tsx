@@ -1,9 +1,10 @@
 "use client";
 import { createContext, useState, useContext, useEffect } from "react"
-import { DreamBodyType, DreamFullView, DreamUpdateType } from "@/types/dreams"
+import { DreamFullView } from "@/types/dreams"
 import { fetchAiOptions } from "@/lib/api/aiAnalysis";
 import { setterFunction } from "@/types/setterFunctions";
 import { updateDream } from "@/lib/api/dreams";
+import { useThemes } from "./ThemesContext";
 
 type optionsType = {
     tone: string[],
@@ -55,6 +56,7 @@ export function DreamViewProvider({ children }:{ children: React.ReactNode}){
     const [showSettings, setShowSettings] = useState(false)
     const [peelingTheme, setPeelingTheme] = useState<string | null>(null)
     const [showBlankLabel, setShowBlankLabel] = useState(false)
+    const { setRefetchThemes } = useThemes()
 
     useEffect(() => {
         const getAiOptions = async () => {
@@ -94,13 +96,16 @@ export function DreamViewProvider({ children }:{ children: React.ReactNode}){
         await new Promise(res => setTimeout(res, 250))
         await updateThemes(themesToKeep)
         setPeelingTheme(null)
+        setRefetchThemes(prev => !prev)
     }
 
     const addTheme = async (newTheme: string) => {
         setShowBlankLabel(false)  
         if (newTheme !== '' && !themes.includes(newTheme)){
             await updateThemes([...themes, newTheme])
+            setRefetchThemes(prev => !prev)
         }
+
     }
 
     const submitNewNote = async (newNote: string) => {

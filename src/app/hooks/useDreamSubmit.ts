@@ -5,7 +5,7 @@ import { logNewDream, updateDream } from '@/lib/api/dreams'
 export function useDreamSubmit(){
 
     const [msg, setMsg] = useState<string>('')
-    const { setDreams, setRefetch } = useDreams()
+    const { setDreams, setRefetchDreams } = useDreams()
 
     const submitDream = async (payload: {
         id?: string
@@ -47,7 +47,7 @@ export function useDreamSubmit(){
             const dreamOverview = {title: result.dream.title, date: result.dream.date, _id: result.dream._id} 
             setDreams(prev => [dreamOverview, ... prev.filter(dream => dream._id !==dreamOverview._id)])
             // Trigger refetch to sort dreams
-            setRefetch(prev => !prev)
+            setRefetchDreams(prev => !prev)
             setMsg(payload.id ? 'Dream updated' : 'Dream created')
             return { success: true, dream: result.dream }
         } catch (err){

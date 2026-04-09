@@ -8,8 +8,8 @@ type DreamsContextType = {
     dreams: DreamOverview[],
     setDreams: setterFunction<DreamOverview[]>,
     searchResults: DreamOverview[],
-    refetch: boolean,
-    setRefetch: setterFunction<boolean>,
+    refetchDreams: boolean,
+    setRefetchDreams: setterFunction<boolean>,
     loadingDreams: boolean,
     setLoadingDreams: setterFunction<boolean>
 }
@@ -19,7 +19,7 @@ const DreamsContext = createContext<DreamsContextType | null>(null)
 export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     const [dreams, setDreams] = useState<DreamOverview[]>([])
     const [searchResults, setSearchResults] = useState<DreamOverview[]>([])
-    const [refetch, setRefetch] = useState<boolean>(false)
+    const [refetchDreams, setRefetchDreams] = useState<boolean>(false)
     const { month, year, sort, search, view } = useThemesAside()
     const [loadingDreams, setLoadingDreams] = useState(false)
 
@@ -36,7 +36,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
             }
         } 
         getDreams()
-    }, [month, year, sort, refetch, view])  
+    }, [month, year, sort, refetchDreams, view])  
 
     useEffect(() => {
         if (search.trim() === ''){
@@ -57,7 +57,7 @@ export function DreamsProvider({ children }:{ children: React.ReactNode }) {
     }, [search])
 
     return (
-        <DreamsContext.Provider value={{dreams, setDreams, searchResults, refetch, setRefetch, loadingDreams, setLoadingDreams}}>
+        <DreamsContext.Provider value={{dreams, setDreams, searchResults, refetchDreams, setRefetchDreams, loadingDreams, setLoadingDreams}}>
             {children}
         </DreamsContext.Provider>
     )
