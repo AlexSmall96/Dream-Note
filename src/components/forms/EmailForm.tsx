@@ -131,7 +131,7 @@ export default function EmailForm<TVerifyPayload>({
                             onChange={handleChange}
                             placeholder='Enter OTP'
                             className='bg-blue-100 p-2'
-                            disabled={waiting || error !== ''}
+                            disabled={waiting}
                             aria-label='otp'
                         />
                     </>
@@ -140,7 +140,7 @@ export default function EmailForm<TVerifyPayload>({
                     {error && <p role='alert' className="text-red-500">{error}</p>}
                     <Button
                         text={btnText}
-                        disabled={disabled || waiting || (otpSent && !otp)}
+                        disabled={disabled || waiting || (otpSent && !otp) || error !== ''}
                     />
             </form>
         </Card>
