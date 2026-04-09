@@ -20,10 +20,7 @@ export default async function NewPasswordPage({
     }
 
     return (
-        <div className="flex flex-col items-center m-4">
-            <h1 className="m-2">
-                One time passcode correct. Enter your new password below.
-            </h1>
+        <div className="flex flex-col items-center my-4">
             <ResetPasswordForm token={token} />
         </div>
     )

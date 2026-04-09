@@ -102,8 +102,8 @@ export default function EmailForm<TVerifyPayload>({
     }, [waiting, otpSent])
     
     return (
-        <Card>
-            <form onSubmit={!otpSent? handleSendOtp : handleVerifyOtp} className="flex flex-col gap-2 w-80">
+        <Card className='w-full max-w-md'>
+            <form onSubmit={!otpSent? handleSendOtp : handleVerifyOtp} className="flex flex-col gap-2">
                 {!otpSent?
                     <>
                         <Input

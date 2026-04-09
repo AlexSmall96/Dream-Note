@@ -59,39 +59,46 @@ export default function ResetPasswordForm ({token}:{token: string}) {
     }
 
     return (
-        <Card>
-            <form className='flex flex-col gap-2 w-80' onSubmit={handleSubmit}>
-                <Input
-                    name='password1'
-                    value={formData.password1}
-                    type='password'
-                    placeholder="Enter your new password."
-                    onChange={handleChange}
-                    aria-label='password'
-                    disabled={waiting}
-                />
-                <Input 
-                    name='password2'
-                    value={formData.password2}
-                    type='password'
-                    placeholder="Confirm your new password."
-                    onChange={handleChange}
-                    aria-label='confirm password'
-                    disabled={waiting}
-                />
-                {error && <p role="alert" className="text-red-500">{error}</p>}
+        <>
+            {!message &&
+                <h1 className="text-2xl font-semibold px-2 mb-4 text-center">
+                    One time passcode correct. Enter your new password below.
+                </h1>
+            }
+            <Card className="w-full max-w-md">
+                <form className='flex flex-col gap-2' onSubmit={handleSubmit}>
+                    <Input
+                        name='password1'
+                        value={formData.password1}
+                        type='password'
+                        placeholder="Enter your new password."
+                        onChange={handleChange}
+                        aria-label='password'
+                        disabled={waiting}
+                    />
+                    <Input 
+                        name='password2'
+                        value={formData.password2}
+                        type='password'
+                        placeholder="Confirm your new password."
+                        onChange={handleChange}
+                        aria-label='confirm password'
+                        disabled={waiting}
+                    />
+                    {error && <p role="alert" className="text-red-500">{error}</p>}
 
-                {message && <LinkWithMessage href='/auth/login' linkText="Login" msg={message} />}
+                    {message && <LinkWithMessage href='/auth/login' linkText="Login" msg={message} />}
 
-                {!message && !invalidSession ? 
-                    <Button text={waiting ? 'Changing password...' : 'Change password'} disabled={disabled || waiting} /> 
-                : 
-                    invalidSession ? 
-                        <LinkWithMessage href='/auth/reset-password' linkText="Request new password reset" msg={'Reset session invalid.'} />
-                    :
-                        <LinkWithMessage href='/auth/reset-password' linkText="Reset Password" msg={'Need to change your password again?'} />
-                }
-            </form>
-        </Card>
+                    {!message && !invalidSession ? 
+                        <Button text={waiting ? 'Changing password...' : 'Change password'} disabled={disabled || waiting} /> 
+                    : 
+                        invalidSession ? 
+                            <LinkWithMessage href='/auth/reset-password' linkText="Request new password reset" msg={'Reset session invalid.'} />
+                        :
+                            <LinkWithMessage href='/auth/reset-password' linkText="Reset Password" msg={'Need to change your password again?'} />
+                    }
+                </form>
+            </Card>
+        </>
     )
 }
