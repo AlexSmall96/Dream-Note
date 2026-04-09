@@ -7,7 +7,6 @@ import { MONTH_KEYS, MONTH_OPTIONS } from '@/lib/filters/dateRanges'
 import { useDreams } from './DreamsContext'
 
 type DreamCountsContextType = {
-    refetch: boolean,
     stats: DreamStats,
     setStats: setterFunction<DreamStats>,
     loadingCounts: boolean,
@@ -18,7 +17,7 @@ const DreamCountsContext = createContext<DreamCountsContextType | null>(null)
 
 export function DreamCountsProvider({ children }:{ children: React.ReactNode }) {
     const [stats, setStats] = useState<DreamStats>({monthlyTotals: {}, total: 0, thisMonthTotal: 0, uniqueYears: []})
-    const { refetch } = useDreams()
+    const { refetchDreams } = useDreams()
     const { year, setMonthString } = useThemesAside()
     const [loadingCounts, setLoadingCounts] = useState(false)
 
@@ -41,10 +40,10 @@ export function DreamCountsProvider({ children }:{ children: React.ReactNode }) 
             }
         }
         getCounts()
-    }, [year, refetch])  
+    }, [year, refetchDreams])  
 
     return (
-        <DreamCountsContext.Provider value={{refetch, stats, setStats, loadingCounts, setLoadingCounts}}>
+        <DreamCountsContext.Provider value={{stats, setStats, loadingCounts, setLoadingCounts}}>
             {children}
         </DreamCountsContext.Provider>
     )

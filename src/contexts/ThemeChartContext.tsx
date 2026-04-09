@@ -14,7 +14,7 @@ export function ThemeChartProvider({ children }:{ children: React.ReactNode }){
     const [monthlyThemes, setMonthlyThemes] = useState<ThemeMonthCount[]>([])
     const [topThemes, setTopThemes] = useState<string[]>([])
 
-    const { refetch } = useDreams()
+    const { refetchDreams } = useDreams()
 
     useEffect(() => {
         const getThemeChartStats = async () => {
@@ -23,7 +23,7 @@ export function ThemeChartProvider({ children }:{ children: React.ReactNode }){
             setTopThemes(response.themes)
         }
         getThemeChartStats() 
-    }, [refetch])
+    }, [refetchDreams])
 
 
     return (

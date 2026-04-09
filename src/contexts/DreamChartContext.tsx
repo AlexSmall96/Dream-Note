@@ -12,7 +12,7 @@ const DreamChartContext = createContext<DreamChartContextType | null>(null)
 export function DreamChartProvider({ children }:{ children: React.ReactNode }){
     const [dreamCounts, setDreamCounts] = useState<DreamCounts>([])
 
-    const { refetch } = useDreams()
+    const { refetchDreams } = useDreams()
 
     useEffect(() => {
         const getDreamChartStats = async () => {
@@ -20,7 +20,7 @@ export function DreamChartProvider({ children }:{ children: React.ReactNode }){
             setDreamCounts(response.dreamCounts)
         } 
         getDreamChartStats() 
-    }, [refetch])
+    }, [refetchDreams])
 
 
     return (
