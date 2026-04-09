@@ -39,33 +39,30 @@ export default function DreamsList(){
     return (
         loadingCounts ? <LoadingSpinner /> :
         <div className="gap-1 p-2 rounded bg-white/60 hover:bg-white border border-gray-200">
-            {isMedium && 
             <div className="grid grid-cols-8">
-                <div className="col-span-5 flex justify-start pr-2 text-sm text-gray-500">
-                    Dreams {!loadingDreams && `(${dreamsList.length})`}:
+                <div className="col-span-5 flex justify-start text-sm text-gray-500">
+                    {isMedium? 'Dreams' : 'Dream:'} {!loadingDreams && isMedium && `(${dreamsList.length}):`}
                 </div>
                 <div className="col-span-2">
                     <span className="text-sm text-gray-500">
-                        Date:
-                    </span>
-                </div>
-                <div className="col-span-1 flex justify-start pl-2">
+                    <span>Date: </span>
                     {dreamsList.length > 1 && view === 'dreams' &&
                         <IconWithTooltip icon={faSort} tooltipText={`${!sort ? 'Oldest first' : 'Newest first'}`} onClick={() => setSort(prev => !prev)} extraClass="text-gray-500" />
                     }
+                    </span>
                 </div>
-            </div>}
-            <div className="grid grid-cols-8 max-h-32 overflow-y-auto scrollbar-thin scrollbar-thumb-purple-400 scrollbar-track-gray-100">
+            </div>
+            <div className="grid grid-cols-8 max-h-32 overflow-y-auto scrollbar-custom">
                 {dreamsList.map(dream => (
                     <div key={dream._id} className="contents row-span-full">
                         <div onClick={() => handleClick(dream._id)} className="col-span-5 hover:underline cursor-pointer">
                             {dream.title}
                         </div> 
                         {view === 'themes' ? 
-                            <div className='col-span-3 pt-1 text-gray-500 text-xs md:justify-self-end'>
+                            <div className='col-span-3 pt-1 pl-2 text-gray-500 text-xs'>
                                 {formatDate(dream.date, true, true)} 
                             </div>                            
-                        :   <div className='col-span-3 pt-1 text-xs md:justify-self-end'>
+                        :   <div className='col-span-3 pt-1 pl-2 text-sm'>
                                 {formatDate(dream.date, true)}
                             </div> 
                         }

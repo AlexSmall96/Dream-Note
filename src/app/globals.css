@@ -27,8 +27,12 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
+}
+
 .scrollbar-custom {
-  @apply scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-gray-100;
+  @apply scrollbar-gutter-stable scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-gray-100;
 }
 
 .bg-paper {
