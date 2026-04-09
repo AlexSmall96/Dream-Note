@@ -2,6 +2,7 @@ import { fetchThemes } from "@/lib/api/themes"
 import { setterFunction } from "@/types/setterFunctions"
 import { ThemeWithDreamDataResponse, ThemeCounts } from "@/types/themes"
 import { createContext, useContext, useEffect, useState } from 'react'
+import { useThemesAside } from "./ThemesAsideContext"
 
 type ThemesContextType = {
     themes: ThemeWithDreamDataResponse[]
@@ -18,13 +19,17 @@ export function ThemesProvider({ children }:{ children: React.ReactNode }) {
     const [themes, setThemes] = useState<ThemeWithDreamDataResponse[]>([])
     const [counts, setCounts] = useState<ThemeCounts>({})
     const [refetchThemes, setRefetchThemes] = useState<boolean>(false)
-
+    const {selectedTheme, setSelectedTheme} = useThemesAside()
     useEffect(() => {
         const getThemes = async () => {
             try {
                 const response = await fetchThemes()
                 setThemes(response.themes)
                 setCounts(response.counts)
+                const filteredThemes = response.themes.filter(theme => theme.theme === selectedTheme)
+                if (filteredThemes.length === 0){
+                    setSelectedTheme(null)
+                }
             } catch (err){
                 console.log(err)
             }
