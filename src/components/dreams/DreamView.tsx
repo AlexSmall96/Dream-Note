@@ -38,7 +38,7 @@ export default function DreamView ({dreamId}:{dreamId:string}){
 
     return (
         <>
-            <div className="h-12 pt-2">
+            <div className="header-content">
                     {chronView && !isFirst &&
                         <span 
                             className="mr-20 text-gray-400 hover:text-gray-700 transition hover:-translate-x-1 cursor-pointer"
