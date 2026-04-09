@@ -29,23 +29,25 @@ export default function EmailForm<TVerifyPayload>({
     const router = useRouter()
     const [disabled, setDisabled] = useState(true)
     const [waiting, setWaiting] = useState(false)
-    const [btnText, setBtnText] = useState(`Send OTP to ${emailButtonText}`)
+    const defaultBtnText = `Send OTP to ${emailButtonText}`
+    const [btnText, setBtnText] = useState(defaultBtnText)
 
     // Sends a otp to the provided email address
     const handleSendOtp = async (event: React.FormEvent) => {
         event.preventDefault()
+        setWaiting(true)
         try {
-            setWaiting(true)
             const result = await requestFn(email)
             if ('errors' in result){
-                setWaiting(false)
+                console.log(result)
                 return setError(result.errors[0].msg)
             }
             setMessage(result.message)
             setOtpSent(true)
-            setWaiting(false)
         } catch (err){
             setError('Currently unable to send OTP due to system issues. Please try again later.')
+        } finally {
+            setWaiting(false)
         }
     }
 
@@ -99,6 +101,9 @@ export default function EmailForm<TVerifyPayload>({
         if (!waiting && otpSent){
             setBtnText('Verify OTP')
         }
+        if (!waiting && !otpSent){
+            setBtnText(defaultBtnText)
+        }
     }, [waiting, otpSent])
     
     return (
@@ -135,7 +140,7 @@ export default function EmailForm<TVerifyPayload>({
                     {error && <p role='alert' className="text-red-500">{error}</p>}
                     <Button
                         text={btnText}
-                        disabled={disabled || waiting || (otpSent && !otp)}
+                        disabled={disabled || waiting || (otpSent && !otp) || error !== ''}
                     />
             </form>
         </Card>
