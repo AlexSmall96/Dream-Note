@@ -30,7 +30,7 @@ export default function EditDreamPage({
 
   	return (
 		<div className="flex flex-col items-center">
-            <h1 className="text-2xl font-semibold mb-4">Edit Dream</h1>
+            <h1 className="header-content">Edit Dream</h1>
 			<DreamForm 
 				dream={dreamFormData} 
 				setDream={setDreamFormData}
