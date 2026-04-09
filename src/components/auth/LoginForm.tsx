@@ -72,8 +72,8 @@ export default function LoginForm() {
                     disabled={waiting}           
                 />
                 {error  && <p role='alert'>{error}</p>}
-                <Button text={waiting? 'Logging in...' : 'Login'} disabled={disabled} />
-                <Button text='Continue as Guest' disabled={waiting} onClick={handleLoginGuest}/>
+                <Button type='submit' text={waiting? 'Logging in...' : 'Login'} disabled={disabled} />
+                <Button type='button' text='Continue as Guest' disabled={waiting} onClick={handleLoginGuest}/>
                 <LinkWithMessage msg="Don't have an account?" href='/auth/signup' linkText="Sign up" disabled={waiting} />
                 <LinkWithMessage msg="Forgotten password?" href='/auth/reset-password' linkText="Reset Password" disabled={waiting} />
             </form>
