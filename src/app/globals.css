@@ -31,8 +31,16 @@ body {
   scrollbar-gutter: stable;
 }
 
+.scrollbar-base {
+  @apply scrollbar-gutter-stable scrollbar-thin
+}
+
 .scrollbar-custom {
-  @apply scrollbar-gutter-stable scrollbar-thin scrollbar-thumb-purple-300 scrollbar-track-gray-100;
+  @apply scrollbar-base scrollbar-thumb-purple-300 scrollbar-track-gray-100;
+}
+
+.scrollbar-custom-gray {
+  @apply scrollbar-base scrollbar-thumb-gray-400 scrollbar-track-gray-100;
 }
 
 .bg-paper {
