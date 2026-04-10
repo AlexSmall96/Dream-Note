@@ -52,7 +52,7 @@ export default function DreamCard () {
                     )}
                 </div>
             </div>
-            <p className="text-md text-xl text-gray-700 leading-relaxed font-light min-h-[150px] italic overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 max-h-60 mb-4 pb-4 pr-5 text-justify">
+            <p className="text-md text-xl text-gray-700 leading-relaxed font-light min-h-[150px] italic overflow-y-auto scrollbar-custom-gray max-h-60 mb-4 pb-4 pr-5 text-justify">
                 {dream.description}
             </p>
             <DreamThemeList />
