@@ -12,7 +12,7 @@ import { DreamCountsProvider } from '@/contexts/DreamCountsContext';
 import Navbar from '@/components/nav/Navbar';
 import { AsideContent } from "@/components/nav/AsideContent";
 import { ThemesProvider } from "@/contexts/ThemesContext";
-import AsideWrapper from "./asideWrapper";
+import AsideWrapper from "@/components/nav/AsideWrapper";
 
 export default function ProtectedLayout({
   	children,
