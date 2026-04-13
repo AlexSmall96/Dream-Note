@@ -59,10 +59,10 @@ export default function DreamsList(){
                             {dream.title}
                         </div> 
                         {view === 'themes' ? 
-                            <div className='col-span-3 pt-1 pl-2 text-gray-500 text-xs'>
+                            <div className='col-span-3 pt-1 text-gray-500 text-xs'>
                                 {formatDate(dream.date, true, true)} 
                             </div>                            
-                        :   <div className='col-span-3 pt-1 pl-2 text-sm'>
+                        :   <div className='col-span-3 pt-1 text-sm'>
                                 {formatDate(dream.date, true)}
                             </div> 
                         }
