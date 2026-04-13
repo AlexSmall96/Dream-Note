@@ -12,6 +12,7 @@ import { DreamCountsProvider } from '@/contexts/DreamCountsContext';
 import Navbar from '@/components/nav/Navbar';
 import { AsideContent } from "@/components/nav/AsideContent";
 import { ThemesProvider } from "@/contexts/ThemesContext";
+import AsideWrapper from "./asideWrapper";
 
 export default function ProtectedLayout({
   	children,
@@ -33,24 +34,23 @@ export default function ProtectedLayout({
 		<ThemesAsideProvider>
 			<ThemesProvider> 
 				<div className="flex flex-col h-screen">
-					
-						<DreamsProvider>
-							<DreamCountsProvider>
-								<ThemeChartProvider>
-									<DreamChartProvider>
-										<Navbar />
-										<div className="flex flex-1">
-											<aside className="hidden md:block w-80">
-												<AsideContent />
-											</aside>
-											<main className="flex-1 px-0 sm:px-4 md:px-6">
-												{children}
-											</main>
-										</div>
-									</DreamChartProvider>
-								</ThemeChartProvider>
-							</DreamCountsProvider>
-						</DreamsProvider>
+					<DreamsProvider>
+						<DreamCountsProvider>
+							<ThemeChartProvider>
+								<DreamChartProvider>
+									<Navbar />
+									<div className="flex flex-1">
+										<AsideWrapper>
+											<AsideContent />
+										</AsideWrapper>
+										<main className="flex-1 px-0 sm:px-4 md:px-6">
+											{children}
+										</main>
+									</div>
+								</DreamChartProvider>
+							</ThemeChartProvider>
+						</DreamCountsProvider>
+					</DreamsProvider>
 				</div>
 			</ThemesProvider>
 		</ThemesAsideProvider>
