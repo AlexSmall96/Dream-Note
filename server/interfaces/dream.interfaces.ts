@@ -7,8 +7,8 @@ import { Model, Document, Types} from "mongoose";
 import { UserDocument } from "./user.interfaces.js";
 
 export const options = {
-    tone: ['neutral', 'curious', 'caring', 'excited'],
-    style: ['clinical','poetic', 'spiritual'],
+    tone: ['neutral', 'caring', 'excited'],
+    style: ['imaginative','realistic'],
     length: ['brief', 'concise']
 } as const
 
