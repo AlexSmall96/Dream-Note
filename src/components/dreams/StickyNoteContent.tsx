@@ -45,7 +45,7 @@ export default function StickyNoteContent ({
                     onClick={handleUndoEditNote}
                 />}                        
             </div>
-            <form className={`${isExtraSmall ? 'w-full' : 'absolute left-1 bottom-1 flex gap-1'}`}>
+            <form className={`${isExtraSmall ? 'w-full' : 'absolute left-1 -bottom-1 flex gap-1'}`}>
                 <textarea 
                     value={newNote || ''}
                     onChange={handleNoteChange}
