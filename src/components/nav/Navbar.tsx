@@ -11,12 +11,13 @@ import { faFeatherPointed as faLog, faChartBar as faDashboard } from "@fortaweso
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useScreenSize } from "@/app/hooks/useScreenSize"
 import { useThemesAside } from "@/contexts/ThemesAsideContext"
+import { useDreamCounts } from "@/contexts/DreamCountsContext"
 
 export default function Navbar() {
   	const {currentUser, loading } = useCurrentUser()
 	const { setIsOpen } = useThemesAside()
 	const [hovered, setHovered] = useState(false)
-
+	const {uniqueYears} = useDreamCounts().stats
 
 	const { isLarge, isMedium } = useScreenSize()
 
@@ -37,7 +38,7 @@ export default function Navbar() {
 				<div className="hidden md:flex flex-1 gap-4 md:items-center justify-end">
 
 					<LinkWithIcon href='/dreams' icon={faDashboard} text='Dashboard' />
-					<SearchBar />
+					{uniqueYears.length > 0 && <SearchBar />}
 					<button 
 						onClick={() => window.location.href = '/dreams/create'} 
 						onMouseEnter={() => setHovered(true)}
