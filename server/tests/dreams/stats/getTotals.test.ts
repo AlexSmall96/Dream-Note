@@ -85,3 +85,10 @@ test('All time total should be correct.', async () => {
     const response = await request(server).get(`${url}`).set(...userOneAuth)
     expect(response.body.total).toBe(17)
 })
+
+test('Unique years should be correct.', async () => {
+    const response = await request(server).get(`${url}`).set(...userOneAuth)
+    expect(response.body.uniqueYears).toHaveLength(2)
+    expect(response.body.uniqueYears).toContain(currentYear.toString())
+    expect(response.body.uniqueYears).toContain('2025')
+})
