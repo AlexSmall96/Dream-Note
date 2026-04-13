@@ -1,5 +1,10 @@
 import { useDreamView } from "@/contexts/DreamViewContext"
-import { faFeatherPointed as faEdit, faTrashCan as faDelete, faMagnifyingGlass as faAnalyse, faTags as faTheme } from "@fortawesome/free-solid-svg-icons";
+import { 
+    faFeatherPointed as faEdit, 
+    faTrashCan as faDelete, 
+    faMagnifyingGlass as faAnalyse, 
+    faTags as faTheme, 
+} from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "next/navigation"
 import IconWithTooltip from '@/components/ui/IconWithTooltip';
 import StickyNote from '@/components/dreams/StickyNote';
@@ -10,7 +15,8 @@ export default function DreamCard () {
     const { dream, themes, setShowBlankLabel } = useDreamView()
     const params = useParams()
     const id = params.id as string
-    const { isLargeAndAbove } = useScreenSize()
+    const { isLargeAndAbove, isExtraSmall } = useScreenSize()
+
     return (
         <div className="font-caveat relative mb-8 pt-8 px-6 pb-20 bg-[url('/images/paper.jpg')] bg-cover bg-center rounded-lg shadow-lg border border-purple-100 w-full max-w-3xl h-110">
             <div className="flex justify-between items-start mb-4">
@@ -23,6 +29,7 @@ export default function DreamCard () {
                     </h1>
                 </div>
                 <div className="flex gap-3">
+                    {isExtraSmall && <StickyNote />}
                     <IconWithTooltip
                         href={`/dreams/${id}/analysis`}
                         icon={faAnalyse}
@@ -56,7 +63,7 @@ export default function DreamCard () {
                 {dream.description}
             </p>
             <DreamThemeList />
-            <StickyNote  />
+            {!isExtraSmall && <StickyNote  />}
         </div>
     )
 }
