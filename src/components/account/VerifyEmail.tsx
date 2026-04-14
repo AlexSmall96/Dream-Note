@@ -8,9 +8,12 @@ export default function VerifyEmail(){
 
     const [errors, setErrors] = useState<{email: string, otp: string}>({email: '', otp: ''})
     const [otp, setOtp] = useState('')
+    const [verifying, setVerifying] = useState(false)
+    const [resending, setResending] = useState(false)
     const {setCurrentUser} = useCurrentUser()
 
     const handleResend = async () => {
+        setResending(true)
         try {
             const result = await requestEmailVerification()
             if ('errors' in result){
@@ -18,6 +21,8 @@ export default function VerifyEmail(){
             }
         } catch (err){
             setErrors({...errors, email:'Currently unable to send email due to system issues.'})
+        } finally {
+            setResending(false)
         }
     }
 
@@ -28,6 +33,7 @@ export default function VerifyEmail(){
 
     const handleVerify = async (event: React.FormEvent) => {
         event.preventDefault()
+        setVerifying(true)
         try {
             const result = await verifyEmail(otp)
             if ('errors' in result){
@@ -40,6 +46,8 @@ export default function VerifyEmail(){
             }
         } catch (err) {
             setErrors({...errors, email:'Currently unable to verify otp due to system issues.'})
+        } finally {
+            setVerifying(false)
         }
     }
 
@@ -55,10 +63,11 @@ export default function VerifyEmail(){
                 onChange={handleChange}
                 placeholder='Enter OTP'
                 className='bg-blue-100 p-2'
+                disabled={verifying || resending}
             />
             <p className="text-red-500">{errors.otp ?? ''}</p>
-            <Button type='submit' text='Verify OTP' />
-            <Button type='button' onClick={handleResend} text='Resend Verification Email' />
+            <Button type='submit' text={verifying ? 'Verifying...' : 'Verify OTP'} disabled={verifying || resending} />
+            <Button type='button' onClick={handleResend} text={resending ? 'Resending...' : 'Resend Verification Email'} disabled={verifying || resending} />
             <p className="text-red-500">{errors.email ?? ''}</p>
         </form>
     )
