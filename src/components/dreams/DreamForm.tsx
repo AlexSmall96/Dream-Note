@@ -37,7 +37,7 @@ export default function DreamForm({
     }
 
     const handleChangeCurrentTheme = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value.trim()
+        const value = event.target.value
         const normalizedValue = value.toLowerCase()
 
         const normalizedSuggestions = suggestions.map(s => s.toLowerCase())
