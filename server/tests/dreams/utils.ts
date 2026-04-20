@@ -7,6 +7,7 @@ import { server } from '../setup/testServer.js'
 // Define base url for dream router
 const baseUrl = '/api/dreams'
 const currentYear = new Date().getFullYear()
+const currentMonth = new Date().getMonth() + 1
 
 // Helper function to assert an array of themes have been added to the db
 // Checks they are associated with the correct dream
@@ -25,7 +26,7 @@ const assertDreamTitlesAndDates = async (dreams: DreamDocument[], length: number
     expect(dreams).toHaveLength(length)
     dreams.map((dream: DreamDocument, index: number) => {
         expect(dream.title).toBe(`dream${start-index}`)
-        expect(dream.date).toBe(`${currentYear}-06-0${start-index}T00:00:00.000Z`)
+        expect(dream.date).toBe(`${currentYear}-${currentMonth < 10 ? '0' : ''}${currentMonth}-0${start-index}T00:00:00.000Z`)
     })
 }
 
