@@ -7,6 +7,9 @@ import RootClientWrapper from "./RootClientWrapper";
 export const metadata: Metadata = {
 	title: "Dream Note",
   	description: "An AI-assisted Dream journal App built with nextJS and Express.",
+	icons: {
+		icon: '/favicon.png'
+	}
 };
 
 config.autoAddCss = false
