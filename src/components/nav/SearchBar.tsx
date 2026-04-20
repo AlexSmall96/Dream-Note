@@ -1,8 +1,8 @@
 import { useDreams } from "@/contexts/DreamsContext"
 import { useThemesAside } from "@/contexts/ThemesAsideContext"
 import { formatDate } from "@/lib/utils/formatDate"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useRouter } from "next/navigation"
+import { useEffect, useRef } from "react"
 
 export default function SearchBar() {
     
@@ -15,14 +15,30 @@ export default function SearchBar() {
 
     const router = useRouter()
 
+    const wrapperRef = useRef<HTMLDivElement>(null)
+
     const handleClick = (dreamId: string) => {
         router.replace(`/dreams/${dreamId}`)
         setChronView(false)
         setSearch('')
     }
+    
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
+                setSearch('')
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside)
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [setSearch])
 
     return (
-        <div className="relative flex-1 max-w-lg">
+        <div className="relative flex-1 max-w-lg" ref={wrapperRef}>
             <form className="flex flex-col gap-2 border-2 rounded border-gray-300">
                 <input 
                     type='text'
@@ -39,7 +55,10 @@ export default function SearchBar() {
                                 onClick={() => handleClick(dream._id)} 
                                 className="grid grid-cols-3 hover:bg-gray-100  cursor-pointer px-2 py-0.5 justify-between items-center"
                             >
-                                <span className="col-span-2 text-md">{dream.title}</span> <span className="col-span-1 text-xs text-gray-500 justify-self-end">{formatDate(dream.date, true, true)}</span>
+                                <span className="col-span-2 text-md">{dream.title}</span> 
+                                <span className="col-span-1 text-xs text-gray-500 justify-self-end">
+                                    {formatDate(dream.date, true, true)}
+                                </span>
                             </div>
                         )}      
                     </div>
