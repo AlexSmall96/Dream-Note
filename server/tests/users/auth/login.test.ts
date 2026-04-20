@@ -86,8 +86,8 @@ test('Login to guest account should be successful and seed data should be reset.
         guestTitles.map(async (title) => {
             const dream = await Dream.findOne({title}) as DreamDocument
             const dreamData = titleToDream(title)
-            const {description, notes, date} = dream
-            expect({description, notes, date, title}).toMatchObject(dreamData.dream)
+            const {description, notes, date, analyses} = dream
+            expect({description, notes, date, title, analyses}).toMatchObject(dreamData.dream)
             expect(dream.owner.toString()).toBe(guestUser._id.toString())
             // Themes associated with dream should be correct
             const themes = await Theme.find({dream: dream._id})
