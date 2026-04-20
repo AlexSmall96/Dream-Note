@@ -7,7 +7,7 @@ import { userType, createUser } from '../utils/userCreation.js';
 import { wipeDB } from '../../setup/wipeDB.js';
 import { Dream } from '../../../models/dream.model.js';
 import { DreamDocument, DreamInterface } from '../../../interfaces/dream.interfaces.js';
-import { guestData } from '../../../seed-data/guestSeedData.js';
+import { guestData } from '../../../seed-data/dreams.js';
 import { titleToDream } from '../utils/titleToDream.js';
 import { Types } from 'mongoose';
 import { Theme } from '../../../models/theme.model.js';

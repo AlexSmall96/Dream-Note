@@ -1,11 +1,22 @@
-export type dataType = {
-    dream: {title: string, description: string, notes?: string, date: Date}
+import { AnalysisInterface } from "../interfaces/dream.interfaces"
+import { analyses } from "./analyses.js"
+
+export type guestDataType = {
+    dream: {
+        title: string, 
+        description: string, 
+        notes?: string, 
+        date: Date,
+        analyses?: AnalysisInterface[]
+    }
     themes: string[]
 }
 
 const NOW = new Date()
 
-export const guestData:dataType[] = [
+const { underwaterAnalyses, familyGatheringAnalyses } = analyses
+
+export const guestData:guestDataType[] = [
     // --- 6 months ago (2 dreams)
     {
         dream: {
@@ -144,6 +155,16 @@ export const guestData:dataType[] = [
     },
     {
         dream: {
+            title: 'Chasing Shadows',
+            description: 
+                `I was running through dark streets chasing moving shadows that always stayed just out of reach. 
+                The environment kept shifting around me.`,
+            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 12)
+        },
+        themes: ['Fear', 'Mystery', 'Darkness', 'Pursuit']
+    },
+    {
+        dream: {
             title: 'Underwater Breathing',
             description: 
                 `I was swimming deep underwater and at first I was holding my breath, worried about how long I could last.
@@ -152,19 +173,10 @@ export const guestData:dataType[] = [
                 I swam through narrow caves and hidden tunnels, discovering entire underwater landscapes that felt untouched and ancient.
                 The deeper I went, the quieter everything became,
                 and I felt a strong sense of peace and freedom, like I could stay there forever without needing to return to the surface.`,
-            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 12)
+            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 19),
+            analyses: underwaterAnalyses
         },
         themes: ['Water', 'Freedom', 'Exploration', 'Wonder']
-    },
-    {
-        dream: {
-            title: 'Chasing Shadows',
-            description: 
-                `I was running through dark streets chasing moving shadows that always stayed just out of reach. 
-                The environment kept shifting around me.`,
-            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 19)
-        },
-        themes: ['Fear', 'Mystery', 'Darkness', 'Pursuit']
     },
     {
         dream: {
@@ -176,7 +188,8 @@ export const guestData:dataType[] = [
                 There was a strong sense of nostalgia, like revisiting a memory from childhood, and I felt happy and comforted being surrounded by everyone. 
                 At times I would pause and just observe the room, noticing small details like shared jokes and quiet moments, 
                 feeling both connected and slightly distant at the same time.`,
-            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 25)
+            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 25),
+            analyses: familyGatheringAnalyses
         },
         themes: ['Family', 'Nostalgia', 'Connection', 'Joy']
     }
