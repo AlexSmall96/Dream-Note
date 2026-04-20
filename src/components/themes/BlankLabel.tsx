@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useDreamView } from "@/contexts/DreamViewContext"
 import { getColorForTheme } from "@/lib/utils/getColorForTheme"
 import { useScreenSize } from "@/app/hooks/useScreenSize"
@@ -7,24 +7,34 @@ export default function BlankLabel ({
 
 }) {
     const [newTheme, setNewTheme] = useState({text: '', color: ''})
+    const [canAdd, setCanAdd] = useState(false)
     const { themes, setShowBlankLabel, addTheme } = useDreamView()
+    const normalizedThemes = themes.map(t => t.toLowerCase())
 
     const defaultColor = 'bg-gray-300'
-
+    
     const handleChangeBlankLabel = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const text = event.target.value.trim()
+        const text = event.target.value
+        if (text !== '' && !normalizedThemes.includes(text.toLowerCase())) {
+            setCanAdd(true)
+        } else {
+            setCanAdd(false)
+        }
         const color = text.length < 3 ? defaultColor : getColorForTheme(text)
         setNewTheme({color, text})
     }
 
     const handleAddTheme = () => {
+        if (!canAdd) return
         addTheme(newTheme.text)
         setNewTheme({text: '', color: ''})
+        setCanAdd(false)
     }
 
     const handleCloseBlankLabel = () => {
         setShowBlankLabel(false)
         setNewTheme({text: '', color: ''})
+        setCanAdd(false)
     }
 
     const { isExtraLarge } = useScreenSize()
@@ -51,7 +61,7 @@ export default function BlankLabel ({
                 >    
                     x
                 </button>
-                {newTheme.text !== '' &&
+                {canAdd &&
                 <button 
                     type='button'
                     onClick={handleAddTheme}   
