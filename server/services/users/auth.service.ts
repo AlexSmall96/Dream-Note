@@ -3,7 +3,7 @@ import { Dream } from "../../models/dream.model.js";
 import { Theme } from "../../models/theme.model.js";
 import { User } from "../../models/user.model.js";
 import { UserInterface, UserDocument } from "../../interfaces/user.interfaces.js";
-import { guestData } from '../../seed-data/guestSeedData.js'
+import { guestData } from '../../seed-data/dreams.js'
 import { AccountService } from "./account.service.js";
 import { OtpService } from "./otp.service.js";
 import { ResetTokenService } from "./reset-token.service.js";

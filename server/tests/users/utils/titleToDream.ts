@@ -1,4 +1,4 @@
-import { guestData } from "../../../seed-data/guestSeedData"
+import { guestData } from "../../../seed-data/dreams"
 
 export const titleToDream = (title: string) => {
     const dream = guestData.filter(d => d.dream.title === title)[0]

@@ -9,3 +9,9 @@ export function getYearRange(year: number) {
     const endDate = new Date(year + 1, 0, 1)    
     return [startDate, endDate]
 }
+
+export function getAllTimeRange() {
+    const startDate = new Date(0)
+    const endDate = new Date()
+    return [startDate, endDate]
+}

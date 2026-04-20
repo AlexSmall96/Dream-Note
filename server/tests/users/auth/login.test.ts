@@ -7,7 +7,7 @@ import { userType, createUser } from '../utils/userCreation.js';
 import { wipeDB } from '../../setup/wipeDB.js';
 import { Dream } from '../../../models/dream.model.js';
 import { DreamDocument, DreamInterface } from '../../../interfaces/dream.interfaces.js';
-import { guestData } from '../../../seed-data/guestSeedData.js';
+import { guestData } from '../../../seed-data/dreams.js';
 import { titleToDream } from '../utils/titleToDream.js';
 import { Types } from 'mongoose';
 import { Theme } from '../../../models/theme.model.js';
@@ -81,13 +81,13 @@ test('Login to guest account should be successful and seed data should be reset.
 
     // Correct seed dream and theme data is created
     const guestsDreams: DreamInterface[] = await Dream.find({owner: guestUser._id})
-    expect(guestsDreams).toHaveLength(4)
+    expect(guestsDreams).toHaveLength(15)
     await Promise.all(
         guestTitles.map(async (title) => {
             const dream = await Dream.findOne({title}) as DreamDocument
             const dreamData = titleToDream(title)
-            const {description, notes, date} = dream
-            expect({description, notes, date, title}).toMatchObject(dreamData.dream)
+            const {description, notes, date, analyses} = dream
+            expect({description, notes, date, title, analyses}).toMatchObject(dreamData.dream)
             expect(dream.owner.toString()).toBe(guestUser._id.toString())
             // Themes associated with dream should be correct
             const themes = await Theme.find({dream: dream._id})
