@@ -106,8 +106,8 @@ export default function DreamForm({
                 placeholder="Title"
             />
             <TextArea 
-                className='h-40'
-                value={dream.description}
+                className='h-40 text-justify'
+                value={dream.description.replace(/\n\s+/g, ' ').trim()}
                 name='description'
                 onChange={handleChange}
                 placeholder="Description"
@@ -120,8 +120,8 @@ export default function DreamForm({
                 max={now}
             />
             <TextArea 
-                className='h-20 flex flex-col placeholder-top'
-                value={dream.notes}
+                className='h-20 flex flex-col'
+                value={dream.notes.replace(/\n\s+/g, ' ').trim()}
                 name='notes'
                 onChange={handleChange}
                 placeholder="Notes"
