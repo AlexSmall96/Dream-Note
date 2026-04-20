@@ -14,7 +14,7 @@ import LoadingSpinner from "../ui/LoadingSpinner";
 
 export default function AnalysesView () {
 
-    const { dreamId, showMainAnalysis, setShowMainAnalysis } = useAnalysesContext();
+    const { dreamId, showMainAnalysis, setShowMainAnalysis, setShowHeader } = useAnalysesContext();
 
     const [analyses, setAnalyses] = useState<SavedAnalysis[]>([])
     const [containsFav, setContainsFav] = useState(false)
@@ -30,6 +30,7 @@ export default function AnalysesView () {
                 setAnalyses(response.analyses)
                 setMainAnalysis(prev => prev || response.analyses[0] || null)
                 setContainsFav(response.analyses.some(a => a.isFavorite))
+                setShowHeader(response.analyses.length > 0)
             } catch (err){
                 console.log(err)
             } finally {

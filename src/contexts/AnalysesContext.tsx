@@ -6,14 +6,15 @@ type AnalysesContextType = {
     title: string
     description: string
     showMainAnalysis: boolean,
-    setShowMainAnalysis: setterFunction<boolean>
+    setShowMainAnalysis: setterFunction<boolean>,
+    setShowHeader: setterFunction<boolean>
 }
 
 export const AnalysesContext = createContext<AnalysesContextType | null>(null)
 
-export const AnalysesProvider = ({ dreamId,title, description, showMainAnalysis, setShowMainAnalysis, children }: { dreamId: string, title: string, description: string, showMainAnalysis: boolean, setShowMainAnalysis: setterFunction<boolean>, children: React.ReactNode }) => {
+export const AnalysesProvider = ({ dreamId,title, description, showMainAnalysis, setShowMainAnalysis, setShowHeader, children }: { dreamId: string, title: string, description: string, showMainAnalysis: boolean, setShowMainAnalysis: setterFunction<boolean>, setShowHeader: setterFunction<boolean>, children: React.ReactNode }) => {
     return (
-        <AnalysesContext.Provider value={{ dreamId, title, description, showMainAnalysis, setShowMainAnalysis }}>
+        <AnalysesContext.Provider value={{ dreamId, title, description, showMainAnalysis, setShowMainAnalysis, setShowHeader }}>
             {children}
         </AnalysesContext.Provider>
     )
