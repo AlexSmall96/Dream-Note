@@ -11,6 +11,7 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
     const [description, setDescription] = useState('')
     const [title, setTitle] = useState('')
     const [showMainAnalysis, setShowMainAnalysis] = useState(false)
+    const [showHeader, setShowHeader] = useState(false)
     const { isExtraLarge } = useScreenSize();
     
     const router = useRouter()
@@ -62,7 +63,7 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
                         
                     </div>
                 </div>
-                {isExtraLarge && 
+                {isExtraLarge && showHeader &&
                     <div className="flex items-center font-semibold xl:col-span-3">Selected Analysis</div>
                 }
             </div>
@@ -74,6 +75,7 @@ export default function DreamAnalysisPage ({ params }: { params: { id: string } 
                 description={description} 
                 showMainAnalysis={showMainAnalysis} 
                 setShowMainAnalysis={setShowMainAnalysis} 
+                setShowHeader={setShowHeader}
             >
                 <AnalysesView  />
             </AnalysesProvider>
