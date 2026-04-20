@@ -90,23 +90,23 @@ export default function AnalysesView () {
                                 {analyses.length > 0 && 
                                     (containsFav ? 
                                         <TabGroup>
-                                            <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
+                                            <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full sm:text-md md:text-sm">
                                                 <Tab 
                                                     onClick={() => setFilter('all')}
-                                                    className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
+                                                    className="px-3 py-1 rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
                                                 All
                                                 </Tab>
                                                 <Tab 
                                                     onClick={() => setFilter('favorites')}
-                                                    className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
+                                                    className="px-3 py-1 rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
                                                 Favourites
                                                 </Tab>
                                             </TabList>
                                         </TabGroup>
                                     :                                
                                         <TabGroup>
-                                            <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full">
-                                                <Tab className="px-3 py-1 text-sm rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
+                                            <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full sm:text-md md:text-sm">
+                                                <Tab className="px-3 py-1 rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
                                                     All
                                                 </Tab>
                                             </TabList>
@@ -115,7 +115,7 @@ export default function AnalysesView () {
                                 }
                             <div className="flex items-center gap-2">
                                 {analyses.length === 0 && <p>No analyses saved yet. Click the wand to get started. →</p>}
-                                <span className="flex items-center border border-gray-300 bg-gray-100 px-3 py-1 rounded-full gap-2">
+                                <span className="flex items-center border border-gray-300 bg-gray-100 text-2xl sm:text-xl md:text-lg px-3 py-1 rounded-full gap-2">
                                     <GenerateModal setRefetchAnalyses={setRefetchAnalyses} />
                                     <Settings />
                                 </span>
