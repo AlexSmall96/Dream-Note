@@ -101,7 +101,7 @@ export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: 
             <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
                 <DialogBackdrop className="fixed inset-0 bg-black/50" />
                 <div className="fixed inset-0 flex w-screen items-center justify-center text-justify">
-                    <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
+                    <DialogPanel className="max-w-2xl space-y-4 border bg-white p-12">
                         
                         {thinking ? 
                             <p className='italic'>
@@ -119,10 +119,10 @@ export default function GenerateModal({setRefetchAnalyses}:{setRefetchAnalyses: 
                                     <FontAwesomeIcon icon={faSettings} className='text-sm'/>
                                     {` ${tone} | ${style} | ${length}`}
                                 </span>
-                                <p className='italic'>{analysis}</p>
+                                <p className='italic max-h-[30vh] overflow-y-auto scrollbar-custom-gray pr-2'>{analysis}</p>
                             </>}
                         <p className='font-semibold'>Dream:</p>
-                        <p className="text-gray-500 text-lg flex gap-4 mt-1 font-caveat max-h-[30vh] overflow-y-auto">{description}</p>
+                        <p className="text-gray-500 text-lg flex gap-4 mt-1 font-caveat max-h-[30vh] overflow-y-auto scrollbar-custom-gray pr-2">{description}</p>
                         <div className="flex gap-4 items-center justify-center border-t pt-4">
                             {!saved?
                             <>
