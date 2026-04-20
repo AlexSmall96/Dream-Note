@@ -38,31 +38,33 @@ export default function DreamsList(){
 
     return (
         loadingCounts ? <LoadingSpinner /> :
-        <div className="gap-1 p-2 rounded bg-white/60 hover:bg-white border border-gray-200">
-            <div className="grid grid-cols-8">
-                <div className="col-span-5 flex justify-start text-sm text-gray-500">
+        <div className={`rounded mt-1 ${view === 'dreams' ? 'ml-1':''} bg-white/60 hover:bg-white ${ isMedium ? 'border border-gray-200 p-2' : ''}`}>
+            <div className="grid grid-cols-10">
+                <div className="col-span-7 flex justify-start text-sm text-gray-500">
                     {isMedium? 'Dreams' : 'Dream:'} {!loadingDreams && isMedium && `(${dreamsList.length}):`}
                 </div>
-                <div className="col-span-2">
-                    <span className="text-sm text-gray-500">
-                    <span>Date: </span>
+                <div className="col-span-3 -ml-2 flex items-center justify-start text-sm text-gray-500">
+                    Date: 
                     {dreamsList.length > 1 && view === 'dreams' &&
-                        <IconWithTooltip icon={faSort} tooltipText={`${!sort ? 'Oldest first' : 'Newest first'}`} onClick={() => setSort(prev => !prev)} extraClass="text-gray-500" />
+                        <IconWithTooltip 
+                        icon={faSort} 
+                        tooltipText={`${!sort ? 'Oldest first' : 'Newest first'}`} 
+                        onClick={() => setSort(prev => !prev)} 
+                        extraClass="text-gray-500 ml-1" />
                     }
-                    </span>
                 </div>
             </div>
-            <div className="grid grid-cols-8 max-h-32 overflow-y-auto scrollbar-custom">
+            <div className="grid grid-cols-10 max-h-32 overflow-y-auto scrollbar-custom">
                 {dreamsList.map(dream => (
                     <div key={dream._id} className="contents row-span-full">
-                        <div onClick={() => handleClick(dream._id)} className="col-span-5 hover:underline cursor-pointer">
+                        <div onClick={() => handleClick(dream._id)} className="truncate pr-1 col-span-7 hover:underline cursor-pointer">
                             {dream.title}
                         </div> 
                         {view === 'themes' ? 
                             <div className='col-span-3 pt-1 text-gray-500 text-xs'>
                                 {formatDate(dream.date, true, true)} 
                             </div>                            
-                        :   <div className='col-span-3 pt-1 text-sm'>
+                        :   <div className='col-span-3 flex items-center justify-start pt-1 text-sm'>
                                 {formatDate(dream.date, true)}
                             </div> 
                         }
