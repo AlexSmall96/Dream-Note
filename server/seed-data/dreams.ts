@@ -36,7 +36,8 @@ export const guestData:guestDataType[] = [
                 `I was walking through a beautiful city that was slowly sinking into the ocean. 
                 The streets were flooded with clear blue water, and people were calmly going about their lives as if nothing was wrong. 
                 I felt both peaceful and uneasy at the same time.`,
-            date: new Date(NOW.getFullYear(), NOW.getMonth() - 6, 14)
+            date: new Date(NOW.getFullYear(), NOW.getMonth() - 6, 14),
+            notes: 'This was when I was on holiday in Spain, I had been swimming in the ocean that day.'
         },
         themes: ['Water', 'Change', 'Calm', 'Anxiety', 'Surreal']
     },
@@ -49,7 +50,7 @@ export const guestData:guestDataType[] = [
                 `I found myself in a countryside field surrounded by animals that could talk. 
                 They were debating philosophical questions about life and existence, 
                 and I was trying to join in but struggled to understand their language fully.`,
-            date: new Date(NOW.getFullYear(), NOW.getMonth() - 5, 9)
+            date: new Date(NOW.getFullYear(), NOW.getMonth() - 5, 9),
         },
         themes: ['Animals', 'Philosophy', 'Nature', 'Confusion']
     },
@@ -62,7 +63,8 @@ export const guestData:guestDataType[] = [
                 `I was trapped in a glass elevator that kept moving unpredictably between floors. 
                 Sometimes it would shoot up rapidly, other times it would fall suddenly. 
                 Outside the glass, I could see strange landscapes instead of a building interior.`,
-            date: new Date(NOW.getFullYear(), NOW.getMonth() - 4, 18)
+            date: new Date(NOW.getFullYear(), NOW.getMonth() - 4, 18),
+            notes: 'I ate alot before bed that night, which usually gives me weird dreams.'
         },
         themes: ['Anxiety', 'Loss of Control', 'Heights', 'Surreal']
     },
@@ -97,7 +99,8 @@ export const guestData:guestDataType[] = [
             description: 
                 `I was staying in a quiet wooden cabin in the middle of a snowy forest. 
                 Everything was silent except for the wind, and I spent time looking out the window, feeling calm but slightly lonely.`,
-            date: new Date(NOW.getFullYear(), NOW.getMonth() - 2, 1)
+            date: new Date(NOW.getFullYear(), NOW.getMonth() - 2, 1),
+            notes: 'This dream felt very peaceful, like a cozy escape from the world, but also a bit isolating.'
         },
         themes: ['Winter', 'Solitude', 'Nature', 'Calm']
     },
@@ -139,7 +142,8 @@ export const guestData:guestDataType[] = [
             description: 
                 `I was climbing a steep mountain with no clear path. 
                 The higher I went, the more difficult it became, but the view kept getting more beautiful.`,
-            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 2)
+            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 2),
+            notes: 'I was planning a hike with my Dad that day.'
         },
         themes: ['Adventure', 'Challenge', 'Nature', 'Achievement']
     },
@@ -149,7 +153,8 @@ export const guestData:guestDataType[] = [
             description: 
                 `I was back in school, unprepared for an important exam. 
                 I couldn’t remember anything I had studied and felt completely overwhelmed.`,
-            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 6)
+            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 6),
+            notes: 'I often have dreams about being back at school or university.'
         },
         themes: ['Anxiety', 'School', 'Unprepared', 'Pressure']
     },
@@ -159,7 +164,8 @@ export const guestData:guestDataType[] = [
             description: 
                 `I was running through dark streets chasing moving shadows that always stayed just out of reach. 
                 The environment kept shifting around me.`,
-            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 12)
+            date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 12),
+            notes: 'Very vivid. I had just tried a new magnesium supplement.'
         },
         themes: ['Fear', 'Mystery', 'Darkness', 'Pursuit']
     },
@@ -174,7 +180,8 @@ export const guestData:guestDataType[] = [
                 The deeper I went, the quieter everything became,
                 and I felt a strong sense of peace and freedom, like I could stay there forever without needing to return to the surface.`,
             date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 19),
-            analyses: underwaterAnalyses
+            analyses: underwaterAnalyses,
+            notes: 'I was watching Finding Nemo before bed, so I think that influenced this dream a lot.'
         },
         themes: ['Water', 'Freedom', 'Exploration', 'Wonder']
     },
@@ -189,7 +196,8 @@ export const guestData:guestDataType[] = [
                 At times I would pause and just observe the room, noticing small details like shared jokes and quiet moments, 
                 feeling both connected and slightly distant at the same time.`,
             date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 25),
-            analyses: familyGatheringAnalyses
+            analyses: familyGatheringAnalyses,
+            notes: 'This dream felt very vivid and emotional, like a mix of happy memories and the bittersweet feeling of how things change over time.'
         },
         themes: ['Family', 'Nostalgia', 'Connection', 'Joy']
     }
