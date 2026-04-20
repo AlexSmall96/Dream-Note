@@ -1,11 +1,13 @@
 import { useThemeChart } from "@/contexts/ThemeChartContext"
 import { Tooltip, XAxis, BarChart, Bar} from "recharts"
 import CustomTooltip from "@/components/charts/CustomTooltip"
+import { useScreenSize } from "@/app/hooks/useScreenSize"
 
 export default function ThemesBarChart () {
 
     const { monthlyThemes, topThemes } = useThemeChart()
-    
+    const { isLarge, isMedium, isExtraSmall, isExtraLarge } = useScreenSize()
+
     const COLORS = [
         "#7f79f7",
         "#8bdbbc",
@@ -17,7 +19,7 @@ export default function ThemesBarChart () {
     if (monthlyThemes.length === 0 || topThemes.length === 0) return null
 
     return (
-        <BarChart width={400} height={400} data={monthlyThemes} role='img' aria-label="themes-chart">
+        <BarChart width={!isLarge || isExtraLarge ? 400 : 300} height={366} data={monthlyThemes} role='img' aria-label="themes-chart">
             <XAxis dataKey="month" />
             <Tooltip content={<CustomTooltip />}/>
             {topThemes.map((theme, index) => (

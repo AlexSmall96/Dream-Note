@@ -1,6 +1,7 @@
 import { useDreamChart } from "@/contexts/DreamChartContext"
 import { LineChart, Tooltip, XAxis, CartesianGrid, Line } from "recharts"
 import CustomTooltip from "./CustomTooltip"
+import { useScreenSize } from "@/app/hooks/useScreenSize"
 
 export default function DreamsLineChart () {
 
@@ -8,8 +9,17 @@ export default function DreamsLineChart () {
 
     if (dreamCounts.length === 0) return null
 
+    const { isLarge, isMedium, isExtraSmall, isExtraLarge } = useScreenSize()
+
     return (
-        <LineChart width={400} height={400} data={dreamCounts} role='img' aria-label='dream-line-chart' margin={{ top: 20, right: 20, bottom: 40, left: 20 }}>
+        <LineChart 
+            width={!isLarge || isExtraLarge ? 400 : 300} 
+            height={400} 
+            data={dreamCounts} 
+            role='img' 
+            aria-label='dream-line-chart' 
+            margin={{ top: 20, right: 20, bottom: 40, left: 20 }}
+        >
             <XAxis dataKey="label" />
             <Tooltip content={<CustomTooltip  />}/>
             <CartesianGrid stroke="#f5f5f5" />

@@ -3,6 +3,7 @@ import ThemesBarChart from "../charts/ThemesBarChart"
 import { useDreamCounts } from "@/contexts/DreamCountsContext"
 import Image from "next/image"
 import Button from "../forms/Button"
+import { Card } from "../ui/Card"
 
 export default function DreamDashboard () {
     const { stats } = useDreamCounts()
@@ -34,8 +35,18 @@ export default function DreamDashboard () {
             <h1>Totals Dreams Recorded:</h1>
             <p>All Time: {total}</p>
             <p>Past 4 weeks: {thisMonthTotal}</p>
-            <DreamsLineChart />
-            <ThemesBarChart />
+            <Card className="grid grid-cols-1 lg:grid-cols-2 gap-2"> 
+                <div className="border rounded-lg p-2">
+                    <h1 className="text-lg font-semibold text-center">Dreams:</h1>
+                    <DreamsLineChart />
+                </div>
+                
+                <div className="border rounded-lg p-2">
+                    <h1 className="text-lg font-semibold text-center">Themes:</h1>
+                    <ThemesBarChart />
+                </div>
+            </Card>
+
         </>
     )
 }
