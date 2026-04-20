@@ -16,21 +16,31 @@ export default function LoginForm() {
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
         setWaiting(true)
-        const {email, password} = formData
-        const result = await login({ email, password })
-        if ('errors' in result){
-           setWaiting(false)
-           return setError(result.errors[0].msg)
-        }   
-        window.location.href = "/dreams"
+        try {
+            const {email, password} = formData
+            const result = await login({ email, password })
+            if ('errors' in result){
+            setWaiting(false)
+            return setError(result.errors[0].msg)
+            }   
+            window.location.href = "/dreams"
+        } catch (err){
+            setError('Currently unable to login, please try again later.')
+        } finally {
+            setWaiting(false)
+        }
+
     }
 
     async function handleLoginGuest() {
+        setWaiting(true)
         try {
             await loginGuest()
             window.location.href = "/dreams"
         } catch (err){
-            console.log(err)
+            setError('Currently unable to login as guest, please try again later.')
+        } finally {
+            setWaiting(false)
         }
     }
 
