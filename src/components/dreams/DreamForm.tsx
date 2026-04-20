@@ -38,10 +38,24 @@ export default function DreamForm({
 
     const handleChangeCurrentTheme = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value.trim()
+        const normalizedValue = value.toLowerCase()
+
+        const normalizedSuggestions = suggestions.map(s => s.toLowerCase())
+        const normalizedThemes = themes.map(t => t.toLowerCase())
+
         setCurrentTheme(value)
-        setShowSuggestions(!suggestions.includes(value) && value !== '' && suggestions.length > 0)
+        setShowSuggestions(
+            !normalizedSuggestions.includes(normalizedValue) &&
+            value !== '' &&
+            suggestions.length > 0
+        )
+
         setMsg('')
-        setVisible(!themes.includes(value) && value !== '')
+
+        setVisible(
+            !normalizedThemes.includes(normalizedValue) &&
+            value !== ''
+        )
     }
 
     const addTheme = () => {
