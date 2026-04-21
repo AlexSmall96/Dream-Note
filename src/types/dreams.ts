@@ -28,7 +28,9 @@ export type DreamStats = {
     total: number,
     monthlyTotals: monthlyTotalType,
     thisMonthTotal: number,
-    uniqueYears: string[]
+    uniqueYears: string[],
+    noAnalysedDreams: number,
+    oldestDreamDate: Date | null
 }
 
 export type DreamCounts = {
