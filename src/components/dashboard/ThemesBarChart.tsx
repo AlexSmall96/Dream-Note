@@ -1,6 +1,6 @@
 import { useThemeChart } from "@/contexts/ThemeChartContext"
 import { Tooltip, XAxis, BarChart, Bar} from "recharts"
-import CustomTooltip from "@/components/charts/CustomTooltip"
+import CustomTooltip from "@/components/dashboard/CustomTooltip"
 import { useScreenSize } from "@/app/hooks/useScreenSize"
 
 export default function ThemesBarChart () {

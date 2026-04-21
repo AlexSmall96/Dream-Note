@@ -1,6 +1,6 @@
 "use client";
 
-import DreamDashboard from "@/components/dreams/DreamDashboard";
+import DreamDashboard from "@/components/dashboard/DreamDashboard";
 export default function Dreams() {
 
 

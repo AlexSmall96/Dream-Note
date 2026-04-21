@@ -1,11 +1,10 @@
-import DreamsLineChart from "@/components/charts/DreamsLineChart"
-import ThemesBarChart from "../charts/ThemesBarChart"
+import DreamsLineChart from "@/components/dashboard/DreamsLineChart"
+import ThemesBarChart from "../dashboard/ThemesBarChart"
 import { useDreamCounts } from "@/contexts/DreamCountsContext"
 import Image from "next/image"
 import Button from "../forms/Button"
 import { Card } from "../ui/Card"
-import CircularProgress from "../charts/ProgressBar"
-import ProgressBar from "../charts/ProgressBar"
+import ProgressBar from "../dashboard/ProgressBar"
 
 export default function DreamDashboard () {
     const { stats } = useDreamCounts()
