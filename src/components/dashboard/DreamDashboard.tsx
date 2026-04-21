@@ -3,10 +3,25 @@ import ThemesBarChart from "../dashboard/ThemesBarChart"
 import { useDreamCounts } from "@/contexts/DreamCountsContext"
 import { Card } from "../ui/Card"
 import ProgressBar from "../dashboard/ProgressBar"
+import { useThemeChart } from "@/contexts/ThemeChartContext"
 
 export default function DreamDashboard () {
     const { stats } = useDreamCounts()
 	const { total, thisMonthTotal, noAnalysedDreams, oldestDreamDate} = stats
+    const { topThemes } = useThemeChart()
+
+    const COLORS = [
+        "#7f79f7",
+        "#8bdbbc",
+        "#a616f9",
+        "#44c7ef",
+        "#2203d6"
+    ]
+
+    const themeColors = topThemes.reduce((acc, theme, index) => {
+        acc[theme] = COLORS[index % COLORS.length]
+        return acc
+    }, {} as Record<string, string>)
 
     return (
         <>
@@ -56,8 +71,15 @@ export default function DreamDashboard () {
                     <DreamsLineChart />
                 </div>
                 <div className="col-span-1 lg:col-span-2 border rounded-xl p-4 shadow-sm">
-                    <h2 className="text-lg font-semibold mb-2">Top Themes</h2>
-                    <ThemesBarChart />
+                    <h2 className="text-lg font-semibold mb-2">
+                        Top Themes
+                    </h2>
+                    <div className="flex flex-wrap gap-x-1 gap-y-1 font-caveat font-normal">
+                        {topThemes.length > 0 && topThemes.map(theme => (
+                            <span key={theme} className="block mr-1 max-w-[100px] truncate" style={{ color: themeColors[theme] }}>{theme}</span>
+                        ))}
+                    </div>
+                    <ThemesBarChart colors={COLORS} />
                 </div>
             </Card>
         </>
