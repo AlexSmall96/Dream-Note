@@ -66,11 +66,11 @@ export default function DreamDashboard () {
             </Card>
 
             <Card className="grid grid-cols-1 lg:grid-cols-4 gap-4 bg-white/80 backdrop-blur p-4 shadow-sm hover:shadow-md transition">
-                <div className="col-span-1 lg:col-span-2 border rounded-xl p-4 shadow-sm">
+                <div className="col-span-1 lg:col-span-2 border rounded-xl p-4 shadow-sm bg-gray-100">
                     <h2 className="text-lg font-semibold mb-2">Dream Activity</h2>
                     <DreamsLineChart />
                 </div>
-                <div className="col-span-1 lg:col-span-2 border rounded-xl p-4 shadow-sm">
+                <div className="col-span-1 lg:col-span-2 border rounded-xl p-4 shadow-sm bg-gray-100">
                     <h2 className="text-lg font-semibold mb-2">
                         Top Themes
                     </h2>
