@@ -68,14 +68,16 @@ export class DreamService {
 
     public async getAllStats(owner: string, year:number){
         const [
-            monthlyTotals, total, thisMonthTotal, uniqueYears
+            monthlyTotals, total, thisMonthTotal, uniqueYears, noAnalysedDreams, oldestDreamDate
         ] = await Promise.all([
             this.statsService.getMonthlyDreamStats(owner, year),
             this.statsService.getTotalNoDreams(owner),
             this.statsService.getDreamsPastMonth(owner),
-            this.statsService.getUniqueYears(owner)
+            this.statsService.getUniqueYears(owner),
+            this.statsService.getNoAnalysedDreams(owner),
+            this.statsService.getOldestDreamDate(owner)
         ])
-        return {monthlyTotals, total, thisMonthTotal, uniqueYears}
+        return {monthlyTotals, total, thisMonthTotal, uniqueYears, noAnalysedDreams, oldestDreamDate}
     }
 
     public async getChartStats(owner: string) {

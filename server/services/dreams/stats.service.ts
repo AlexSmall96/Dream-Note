@@ -36,6 +36,16 @@ export class DreamStatsService {
         return dreams.length
     }
 
+    public async getOldestDreamDate(owner: string){
+        const oldestDream = await Dream.findOne({owner}).sort({date: 1})
+        return oldestDream ? oldestDream.date : null
+    }
+
+    public async getNoAnalysedDreams(owner: string){
+        const dreams = await Dream.find({owner, analyses: { $exists: true, $not: { $size: 0 } } })
+        return dreams.length
+    }
+
     public async getDreamsPastMonth(owner: string) {
         const now = new Date();
         const startDate = new Date(now.getTime() - 28 * 24 * 60 * 60 * 1000);

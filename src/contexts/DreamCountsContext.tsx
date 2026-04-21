@@ -16,7 +16,14 @@ type DreamCountsContextType = {
 const DreamCountsContext = createContext<DreamCountsContextType | null>(null)
 
 export function DreamCountsProvider({ children }:{ children: React.ReactNode }) {
-    const [stats, setStats] = useState<DreamStats>({monthlyTotals: {}, total: 0, thisMonthTotal: 0, uniqueYears: []})
+    const [stats, setStats] = useState<DreamStats>({
+        monthlyTotals: {}, 
+        total: 0, 
+        thisMonthTotal: 0, 
+        uniqueYears: [], 
+        noAnalysedDreams: 0, 
+        oldestDreamDate: null
+    })
     const { refetchDreams } = useDreams()
     const { year, setMonthString } = useThemesAside()
     const [loadingCounts, setLoadingCounts] = useState(false)
