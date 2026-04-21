@@ -10,7 +10,7 @@ export default function ThemesBarChart ({colors}: {colors?: string[]}) {
     if (monthlyThemes.length === 0 || topThemes.length === 0) return null
 
     return (
-        <ResponsiveContainer width="100%" height={400} className='mt-1'>
+        <ResponsiveContainer width="100%" height={340} className='mt-1'>
             <BarChart data={monthlyThemes} role='img' aria-label="themes-chart">
                 <XAxis dataKey="month" />
                 <Tooltip content={<CustomTooltip />}/>
