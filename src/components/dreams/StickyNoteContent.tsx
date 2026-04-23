@@ -45,11 +45,11 @@ export default function StickyNoteContent ({
                     onClick={handleUndoEditNote}
                 />}                        
             </div>
-            <form className={`${isExtraSmall ? 'w-full' : 'h-32 absolute left-1 mt-5 flex gap-1'} -rotate-1 pt-1 overflow-y-auto scrollbar-custom-gray`}>
+            <form className={`${isExtraSmall ? 'w-full' : 'h-32 absolute left-1 mt-5 flex gap-1'} pt-1 overflow-y-auto scrollbar-custom-gray`}>
                 <textarea 
                     value={newNote || ''}
                     onChange={handleNoteChange}
-                    className={`${isExtraSmall ? 'w-full' : 'w-30 lg:w-44'} pl-1 pr-2 bg-yellow-200 focus:outline-none text-gray-800 resize-none font-caveat`}
+                    className={`${isExtraSmall ? 'w-full' : 'w-30 lg:w-44'} h-full pl-1 pr-2 bg-yellow-200 focus:outline-none text-gray-800 resize-none font-caveat`}
                 />
             </form>        
         </>
