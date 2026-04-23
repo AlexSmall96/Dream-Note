@@ -1,8 +1,6 @@
 import { Card } from "@/components/ui/Card";
-import { useAnalysesContext } from "@/contexts/AnalysesContext";
 
-export default function DescriptionSnapshot() {
-    const { description } = useAnalysesContext();
+export default function DescriptionSnapshot({description}: { description: string }) {
     return (
         <Card className="bg-paper max-h-[40vh] overflow-y-auto scrollbar-custom-gray text-justify">
             <p className='font-semibold mt-2'>Description used:</p>
