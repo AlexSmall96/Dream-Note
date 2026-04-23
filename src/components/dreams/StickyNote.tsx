@@ -78,8 +78,11 @@ export default function StickyNote () {
 
     return (
         <>{showNote?
-                 <div className="absolute -bottom right-6 rotate-2 text-lg bg-yellow-200 p-3 shadow-lg rounded-sm w-40 lg:w-48 min-h-40 max-h-64 hover:-translate-y-1 hover:shadow-xl transition">
-                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-4 bg-yellow-100 opacity-70 rounded-sm shadow-sm" />
+                <div className="select-none cursor-default absolute -bottom right-6 rotate-2 text-lg bg-yellow-200 p-3 shadow-lg 
+                    rounded-sm w-40 lg:w-48 min-h-40 max-h-64 hover:-translate-y-1 hover:shadow-xl transition"
+                >   
+                    {/* Decorative element to create the sticky note "tab" */}  
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-4 bg-yellow-100 opacity-70 rounded-sm shadow-sm select-none cursor-default" />
                     <StickyNoteContent 
                         handleClose={handleClose}
                         showUndo={showUndo}
