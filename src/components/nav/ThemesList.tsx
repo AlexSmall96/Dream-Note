@@ -10,7 +10,7 @@ export default function ThemesList () {
     const {selectedTheme, setSelectedTheme} = useThemesAside()
 
     return (
-        <div className='max-h-64 overflow-y-auto overflow-x-hidden mb-1 grid grid-cols-3 gap-1'>
+        <div className='max-h-64 overflow-y-auto overflow-x-hidden mb-1 grid grid-cols-3 gap-1 pr-1.5'>
             {uniqueThemes.map(theme =>
                 <div key={theme}>
                     <button 
