@@ -33,7 +33,7 @@ export default function IconWithTooltip({
             {!disabled && !isMedium && <span 
                 className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2
                     opacity-0 group-hover:opacity-100 transition
-                    bg-yellow-200 text-gray-800 text-xs px-2 py-1 shadow rotate-1 whitespace-nowrap"
+                    bg-yellow-200 text-gray-800 text-xs px-2 py-1 shadow rotate-1 whitespace-nowrap select-none cursor-default"
             >
                 {tooltipText}  
             </span>}
