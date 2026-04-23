@@ -23,7 +23,7 @@ export default function StickyNoteContent ({
     
     return (
         <>
-            <div className={!isExtraSmall ? "absolute top-2 right-2 h-12 flex gap-1" : "justify-end flex gap-1 mb-4"}>
+            <div className={!isExtraSmall ? "absolute -top-1 right-2 flex gap-1" : "justify-end flex gap-1 mb-4"}>
                 <IconWithTooltip 
                     tooltipText='Close' 
                     icon={faX} 
@@ -45,7 +45,7 @@ export default function StickyNoteContent ({
                     onClick={handleUndoEditNote}
                 />}                        
             </div>
-            <form className={`${isExtraSmall ? 'w-full' : 'h-32 absolute left-1 mt-5 flex gap-1'} pt-1 overflow-y-auto scrollbar-custom-gray`}>
+            <form className={`${isExtraSmall ? 'w-full' : 'h-32 absolute left-1 mt-3 flex gap-1'} overflow-y-auto scrollbar-custom-gray`}>
                 <textarea 
                     value={newNote || ''}
                     onChange={handleNoteChange}
