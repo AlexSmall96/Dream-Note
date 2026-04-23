@@ -7,10 +7,10 @@ import Settings from "@/components/analyses/Settings";
 import GenerateModal from "@/components/analyses/GenerateModal";
 import { Card } from "@/components/ui/Card";
 import { Tab, TabGroup, TabList } from '@headlessui/react'
-import DescriptionSnapshot from "./DescriptionSnapshot";
+import DescriptionSnapshot from "@/components/analyses/DescriptionSnapshot";
 import { useScreenSize } from '@/app/hooks/useScreenSize';
 import { useAnalysesContext } from "@/contexts/AnalysesContext";
-import LoadingSpinner from "../ui/LoadingSpinner";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function AnalysesView () {
 
@@ -149,7 +149,7 @@ export default function AnalysesView () {
                                 textSize="text-md"
                             />
                         </Card>
-                        <DescriptionSnapshot />
+                        <DescriptionSnapshot description={mainAnalysis.descriptionSnapshot} />
                     </div>
                 ) : null}
             </div>
