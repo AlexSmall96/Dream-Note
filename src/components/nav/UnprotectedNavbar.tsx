@@ -4,7 +4,7 @@ import Logo from "./Logo";
 
 export default function UnprotectedNavbar() {
     return (
-        <nav className="w-full border-b bg-purple-200 p-4">
+        <nav className="z-10 relative w-full border-b bg-purple-200 p-4">
             <div className="max-w-5xl mx-auto flex justify-between items-center">
                 <Logo />
                 <div className="flex gap-4">
