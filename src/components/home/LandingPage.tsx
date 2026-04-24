@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import Image from 'next/image';
 import Button from "../forms/Button"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import {faGithub, faLinkedin} from "@fortawesome/free-brands-svg-icons"
 
 export default function LandingPage(){
 
@@ -115,6 +117,19 @@ export default function LandingPage(){
                     </p>
                 </div>
             </div>
+            <div className="flex items-center text-2xl gap-4 mt-12 text-purple-500 mb-10">
+                <a href="https://www.linkedin.com/in/alex-small-a8977116b/" target="_blank" rel="noopener noreferrer">
+                    <FontAwesomeIcon 
+                        icon={faLinkedin}
+                    />               
+                </a>
+                <a href="https://github.com/AlexSmall96/" target="_blank" rel="noopener noreferrer">
+                    <FontAwesomeIcon
+                        icon={faGithub}
+                    />
+                </a>
+            </div>
+        
         </div>
     )
 }
