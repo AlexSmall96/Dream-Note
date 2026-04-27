@@ -8,7 +8,6 @@ import Button from "../forms/Button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {faGithub, faLinkedin} from "@fortawesome/free-brands-svg-icons"
 import LoadingSpinner from "../ui/LoadingSpinner"
-
 export default function LandingPage(){
 
     const router = useRouter()
@@ -31,7 +30,8 @@ export default function LandingPage(){
     async function handleLoginGuest() {
         try {
             await loginGuest()
-            router.replace("/dreams")
+            // Force full reload to ensure auth state is available before protected route loads
+            window.location.href = "/dreams"
         } catch (err){
             console.log(err)
         }
