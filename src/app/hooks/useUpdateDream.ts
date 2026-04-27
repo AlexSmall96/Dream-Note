@@ -7,10 +7,8 @@ import { useState } from "react";
 export function useUpdateDream() {
     const { submitDream, msg, setMsg } = useDreamSubmit()
     const { setRefetchThemes } = useThemes()
-	const [submitting, setSubmitting] = useState(false)
 	
     const updateDream = async (dream: DreamFormType, themes: string[],  id: string ) => {
-		setSubmitting(true)
 		await submitDream({
 			id,
 			title: dream.title,
@@ -20,8 +18,7 @@ export function useUpdateDream() {
 			themes: themes
 		})	
         setRefetchThemes(prev => !prev)
-        setSubmitting(false)
     }
 
-    return { updateDream, msg, setMsg, submitting }
+    return { updateDream, msg, setMsg }
 }
