@@ -13,6 +13,7 @@ const underwaterAnalyses: AnalysisInterface[] = [
         tone: 'neutral',
         style: 'imaginative',
         length: 'brief',
+        isFavorite: true,
         descriptionSnapshot: 
             `I was swimming deep underwater and at first I was holding my breath, worried about how long I could last.
             Then I suddenly realized I could breathe as if I were on land, and the panic turned into amazement.
@@ -52,6 +53,7 @@ const familyGatheringAnalyses: AnalysisInterface[] = [
         tone: 'neutral',
         style: 'imaginative',
         length: 'brief',
+        isFavorite: true,
         descriptionSnapshot: 
             `I was at a large family gathering in a warm, brightly lit house, with people talking, laughing, and moving between rooms. 
             There were long tables covered in food, and I kept stopping to have conversations with different relatives. 
