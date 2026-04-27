@@ -81,7 +81,7 @@ test('Login to guest account should be successful and seed data should be reset.
 
     // Correct seed dream and theme data is created
     const guestsDreams: DreamInterface[] = await Dream.find({owner: guestUser._id})
-    expect(guestsDreams).toHaveLength(15)
+    expect(guestsDreams).toHaveLength(17)
     await Promise.all(
         guestTitles.map(async (title) => {
             const dream = await Dream.findOne({title}) as DreamDocument
