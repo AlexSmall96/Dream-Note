@@ -120,6 +120,7 @@ export default function DreamForm({
                 onChange={handleChange}
                 placeholder="Title"
                 disabled={submitting}
+                maxLength={50}
             />
             <TextArea 
                 className='h-40 text-justify'
@@ -128,6 +129,7 @@ export default function DreamForm({
                 onChange={handleChange}
                 placeholder="Description"
                 disabled={submitting}
+                maxLength={5000}
             />
             <Input 
                 type='date'
@@ -144,6 +146,7 @@ export default function DreamForm({
                 onChange={handleChange}
                 placeholder="Notes"
                 disabled={submitting}
+                maxLength={5000}
             />
             <div className="relative w-full">
                 <Input
