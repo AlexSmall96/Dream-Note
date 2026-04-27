@@ -22,7 +22,8 @@ export default function SearchBar() {
         setChronView(false)
         setSearch('')
     }
-    
+
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
@@ -30,10 +31,10 @@ export default function SearchBar() {
             }
         }
 
-        document.addEventListener('mousedown', handleClickOutside)
+        document.addEventListener('click', handleClickOutside)
 
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
+            document.removeEventListener('click', handleClickOutside)
         }
     }, [setSearch])
 
