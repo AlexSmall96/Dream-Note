@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Button from "../forms/Button"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import {faGithub, faLinkedin} from "@fortawesome/free-brands-svg-icons"
+import LoadingSpinner from "../ui/LoadingSpinner"
 
 export default function LandingPage(){
 
@@ -20,7 +21,11 @@ export default function LandingPage(){
         }
     }, [loading, currentUser, router])
 
-    if (loading) return (<div>...Loading</div>)
+    if (loading) return (
+        <div className="flex flex-col items-center mt-4">
+            <LoadingSpinner />
+        </div>
+    )
     
     
     async function handleLoginGuest() {
