@@ -59,6 +59,14 @@ body {
   transition: transform 0.2s ease;
 }
 
+.header-text {
+  @apply text-2xl font-semibold
+}
+
 .header-content {
-  @apply text-2xl font-semibold h-14 mb-0.5 pt-3
+  @apply header-text h-14 mb-0.5 pt-3
+}
+
+.large-header {
+  @apply text-4xl font-semibold
 }
