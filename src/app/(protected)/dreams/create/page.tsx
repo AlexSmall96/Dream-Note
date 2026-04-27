@@ -17,9 +17,10 @@ export default function LogNewDream() {
     // Log new dream
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault()
-		await logDream(dream, themes)
+		const dreamId = await logDream(dream, themes)
         setDream(defaultDreamState)
         setThemes([])		
+        router.replace(`/dreams/${dreamId}?created=true`)
 	}
 
     return (

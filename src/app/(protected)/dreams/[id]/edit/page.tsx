@@ -6,6 +6,7 @@ import { DreamFormType } from '@/types/dreams'
 import { useUpdateDream } from "@/app/hooks/useUpdateDream";
 import { fetchFullDream } from "@/lib/api/dreams";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { useRouter } from "next/navigation";
 
 export default function EditDreamPage({
   	params,
@@ -17,7 +18,8 @@ export default function EditDreamPage({
 	const { updateDream, msg, setMsg, submitting } = useUpdateDream()
 	const [themes, setThemes] = useState<string[]>([])
 	const [loading, setLoading] = useState(true)
-	
+	const router = useRouter()
+
 	// Get existing dream
 	useEffect(() => {
 		const getFullDream = async () => {
@@ -40,6 +42,7 @@ export default function EditDreamPage({
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault()
 		await updateDream(dreamFormData, themes, params.id)
+		router.replace(`/dreams/${params.id}`)
 	}
 
   	return (
