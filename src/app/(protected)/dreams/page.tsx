@@ -4,11 +4,20 @@ import DreamDashboard from "@/components/dashboard/DreamDashboard";
 import { useDreamCounts } from "@/contexts/DreamCountsContext";
 import Image from "next/image"
 import Button from "@/components/forms/Button"
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function Dreams() {
 
-	const { stats } = useDreamCounts()
+	const { stats, loadingCounts } = useDreamCounts()
 	const { total } = stats
+
+	if (loadingCounts) {
+		return (
+			<div className="flex flex-col items-center gap-1 py-10 px-2 text-center">
+				<LoadingSpinner />
+			</div>
+		)
+	}
 
 	if (total === 0){
 		return (
