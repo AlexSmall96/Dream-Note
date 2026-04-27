@@ -1,6 +1,5 @@
 import { useDreamView } from "@/contexts/DreamViewContext"
 import { useThemesAside } from "@/contexts/ThemesAsideContext";
-import LinkWithMessage from "../forms/LinkWithMessage";
 import { useParams } from "next/navigation"
 import DreamCard from "./DreamCard";
 import { fetchFullDream } from "@/lib/api/dreams";
@@ -8,12 +7,10 @@ import { useEffect, useState } from "react";
 import { useDreamNavigation } from "@/app/hooks/useDreamNavigation";
 import { faChevronRight as faNext } from "@fortawesome/free-solid-svg-icons";
 import { faChevronLeft as faPrev } from "@fortawesome/free-solid-svg-icons";
-import IconWithTooltip from "../ui/IconWithTooltip";
-import Button from "../forms/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
-export default function DreamView ({dreamId}:{dreamId:string}){
+export default function DreamView ({dreamId, created}:{dreamId:string, created: boolean}){
     const { setDream, setThemes } = useDreamView()
     const params = useParams()
     const [loading, setLoading] = useState(true)
@@ -47,13 +44,18 @@ export default function DreamView ({dreamId}:{dreamId:string}){
                              <FontAwesomeIcon icon={faPrev} className="text-md"/>
                         </span>
                     }
-                                    {chronView && !isLast &&
+                    {chronView && !isLast &&
                         <span 
                             className="ml-20 text-gray-400 hover:text-gray-700 transition hover:translate-x-1 cursor-pointer"
                             onClick={goToNextDream}
                         >
                             <FontAwesomeIcon icon={faNext} className="text-md"/> 
                         </span>}
+                    {created && (
+                        <div className="text-purple-400 px-3 py-1 ml-4">
+                            Dream created
+                        </div>
+                    )}
             </div>
                 {loading ? 
                     <div className="flex justify-center items-center py-10">
