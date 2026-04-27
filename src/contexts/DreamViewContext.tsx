@@ -34,7 +34,11 @@ type DreamViewContextType = {
     setShowBlankLabel: setterFunction<boolean>,
     removeTheme: (themeToRemove: string) => Promise<void>,
     addTheme: (newTheme: string) => Promise<void>,
-    submitNewNote: (notes: string) => Promise<void>
+    submitNewNote: (notes: string) => Promise<void>,
+    showUpdated: boolean,
+    setShowUpdated: setterFunction<boolean>,
+    renderUpdated: boolean,
+    setRenderUpdated: setterFunction<boolean>,
 }
 
 
@@ -56,6 +60,8 @@ export function DreamViewProvider({ children }:{ children: React.ReactNode}){
     const [showSettings, setShowSettings] = useState(false)
     const [peelingTheme, setPeelingTheme] = useState<string | null>(null)
     const [showBlankLabel, setShowBlankLabel] = useState(false)
+    const [showUpdated, setShowUpdated] = useState(false)
+    const [renderUpdated, setRenderUpdated] = useState(false)
     const { setRefetchThemes } = useThemes()
 
     useEffect(() => {
@@ -136,7 +142,11 @@ export function DreamViewProvider({ children }:{ children: React.ReactNode}){
             setShowBlankLabel,
             removeTheme,
             addTheme,
-            submitNewNote
+            submitNewNote,
+            showUpdated,
+            setShowUpdated,
+            renderUpdated,
+            setRenderUpdated
         }}>
             {children}
         </DreamViewContext.Provider>

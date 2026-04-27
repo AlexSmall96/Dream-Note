@@ -9,6 +9,7 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useRouter } from "next/navigation";
 import { faFeatherPointed as faLog} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useDreamView } from "@/contexts/DreamViewContext";
 
 export default function EditDreamPage({
   	params,
@@ -18,6 +19,7 @@ export default function EditDreamPage({
 	
 	const [dreamFormData, setDreamFormData] = useState<DreamFormType>({title: '', description: '', notes: '', date: ''})
 	const { updateDream, msg, setMsg } = useUpdateDream()
+	const {setShowUpdated, setRenderUpdated} = useDreamView()
 	const [themes, setThemes] = useState<string[]>([])
 	const [loading, setLoading] = useState(true)
 	const [saving, setSaving] = useState(false)
@@ -55,6 +57,14 @@ export default function EditDreamPage({
 		try {
 			setSaving(true)
 			await updateDream(dreamFormData, themes, params.id)
+			setShowUpdated(true)
+			setRenderUpdated(true)
+			setTimeout(() => {
+  				setShowUpdated(false)
+			}, 1500)
+			setTimeout(() => {
+				setRenderUpdated(false)
+			}, 2000)
 			router.replace(`/dreams/${params.id}`)
 		} catch (err) {
 			setMsg('Something went wrong')
