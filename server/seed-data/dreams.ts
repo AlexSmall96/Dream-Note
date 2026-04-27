@@ -204,14 +204,35 @@ export const guestData:guestDataType[] = [
         {
             dream: {
             title: 'Endless Train Ride',
-            description: `I was sitting on a train that seemed completely normal at first, quietly watching the countryside pass by outside the window. After a while, I noticed the scenery repeating itself in subtle ways, like the same tree or house appearing again and again. I got up to walk through the carriages, but each one looked almost identical, filled with people who didn’t seem to notice anything strange. Some passengers glanced at me briefly, as if they knew something I didn’t. I kept moving forward, expecting to find the end of the train, but it just continued endlessly. Eventually I started to feel uneasy, realizing I didn’t remember where I had boarded or where I was supposed to get off, and the idea that the train might never stop began to settle in.`,
+            description: 
+                `I was sitting on a train that seemed completely normal at first, 
+                quietly watching the countryside pass by outside the window. 
+                After a while, I noticed the scenery repeating itself in subtle ways, 
+                like the same tree or house appearing again and again. 
+                I got up to walk through the carriages, but each one looked almost identical, 
+                filled with people who didn’t seem to notice anything strange. 
+                Some passengers glanced at me briefly, as if they knew something I didn’t. 
+                I kept moving forward, expecting to find the end of the train, 
+                but it just continued endlessly. Eventually I started to feel uneasy, 
+                realizing I didn’t remember where I had boarded or where I was supposed to get off, 
+                and the idea that the train might never stop began to settle in.`,
             date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 1)
         },
         themes: []
     },{
     dream: {
         title: 'Strange Supermarket',
-        description: `I was walking through a large supermarket, pushing a trolley down brightly lit aisles that seemed to stretch much farther than they should. At first everything looked ordinary, but as I paid closer attention, the products became increasingly strange. Labels didn’t quite make sense, and some items seemed to shift or change when I wasn’t looking directly at them. Other shoppers moved slowly and quietly, almost like they were following routines rather than actually shopping. I tried to find the exit, but every turn led me into another unfamiliar aisle. At one point, I reached a section where the shelves were completely empty, and the silence there felt heavy and unnatural. I started to feel a growing urgency to leave, but no matter which direction I chose, I couldn’t find a way out of the store.`,
+        description: 
+            `I was walking through a large supermarket, pushing a trolley down brightly 
+            lit aisles that seemed to stretch much farther than they should. 
+            At first everything looked ordinary, but as I paid closer attention, 
+            the products became increasingly strange. Labels didn’t quite make sense, 
+            and some items seemed to shift or change when I wasn’t looking directly at them. 
+            Other shoppers moved slowly and quietly, almost like they were following routines 
+            rather than actually shopping. I tried to find the exit, but every turn led me into another unfamiliar aisle. 
+            At one point, I reached a section where the shelves were completely empty, 
+            and the silence there felt heavy and unnatural. I started to feel a growing urgency to leave, 
+            but no matter which direction I chose, I couldn’t find a way out of the store.`,
         date: new Date(NOW.getFullYear(), NOW.getMonth() - 1, 11)
     },
         themes: []
