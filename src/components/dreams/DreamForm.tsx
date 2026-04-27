@@ -175,6 +175,9 @@ export default function DreamForm({
             {dream.description === '' && <p className="text-xs text-gray-500">
                 Description must be provided to add themes.
             </p>}
+            {dream.description === '' && dream.title === '' && <p className="text-xs text-gray-500">
+                Please provide a title or description to save the dream.
+            </p>}
             {themes.length > 0 && <div className='grid lg:grid-cols-6 md:grid-cols-3 gap-2 pl-2'>
                 <div className='md:col-span-3 lg:col-span-4'>
                     {themes.map(theme => 
@@ -192,6 +195,7 @@ export default function DreamForm({
             <Button 
                 type='submit' 
                 text='Save'
+                disabled={dream.description === '' && dream.title === ''}
                 color={showSuggestions? 'bg-purple-200': undefined}
             />
             <LinkWithMessage 
