@@ -11,15 +11,17 @@ export function useLogNewDream() {
     
     const logDream = async (dream: DreamFormType, themes: string[]) => {
         setSubmitting(true)
-        await submitDream({
+        const result = await submitDream({
             title: dream.title,
             description: dream.description,
             notes: dream.notes,
             date: new Date(dream.date),
             themes
         })
+        const dreamId = result.dream?._id
         setRefetchThemes(prev => !prev)
         setSubmitting(false)
+        return dreamId
     }
 
     return { logDream, msg, setMsg, submitting }
