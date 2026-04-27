@@ -30,7 +30,7 @@ export class DreamService {
             const savedThemes = await this.themeService.addThemesToDream(savedDream._id.toString(), themes, userId)
             return {dream: savedDream, themes: savedThemes}
         }
-        return {dream}
+        return {dream: savedDream}
     }
 
     public async getAiAnalysis(description: string, params: ParamsType) {

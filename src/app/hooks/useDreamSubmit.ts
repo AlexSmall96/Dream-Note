@@ -48,7 +48,6 @@ export function useDreamSubmit(){
             setDreams(prev => [dreamOverview, ... prev.filter(dream => dream._id !==dreamOverview._id)])
             // Trigger refetch to sort dreams
             setRefetchDreams(prev => !prev)
-            setMsg(payload.id ? 'Dream updated' : 'Dream created')
             return { success: true, dream: result.dream }
         } catch (err){
             console.error(err)

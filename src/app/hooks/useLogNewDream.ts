@@ -2,25 +2,23 @@
 import { DreamFormType } from "@/types/dreams";
 import { useDreamSubmit } from "@/app/hooks/useDreamSubmit";
 import { useThemes } from "@/contexts/ThemesContext";
-import { useState } from "react";
 
 export function useLogNewDream() {
     const { submitDream, msg, setMsg } = useDreamSubmit()
     const { setRefetchThemes } = useThemes()
-    const [submitting, setSubmitting] = useState(false)
     
     const logDream = async (dream: DreamFormType, themes: string[]) => {
-        setSubmitting(true)
-        await submitDream({
+        const result = await submitDream({
             title: dream.title,
             description: dream.description,
             notes: dream.notes,
             date: new Date(dream.date),
             themes
         })
+        const dreamId = result.dream?._id
         setRefetchThemes(prev => !prev)
-        setSubmitting(false)
+        return dreamId
     }
 
-    return { logDream, msg, setMsg, submitting }
+    return { logDream, msg, setMsg }
 }

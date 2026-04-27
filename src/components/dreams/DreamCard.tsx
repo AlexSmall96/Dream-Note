@@ -12,7 +12,7 @@ import DreamThemeList from '@/components/themes/DreamThemeList';
 import { useScreenSize } from "@/app/hooks/useScreenSize";
 
 export default function DreamCard () {
-    const { dream, themes, setShowBlankLabel } = useDreamView()
+    const { dream, themes, setShowBlankLabel, showUpdated, renderUpdated } = useDreamView()
     const params = useParams()
     const id = params.id as string
     const { isLargeAndAbove, isExtraSmall } = useScreenSize()
@@ -23,6 +23,17 @@ export default function DreamCard () {
                 <div>
                     <h2 className="text-lg text-gray-700 italic">
                     {new Date(dream.date).toLocaleDateString()}
+                    {renderUpdated && (
+                    <span
+                        className={`
+                        font-quicksand text-md ml-4 inline-flex items-center gap-1
+                        transition-all duration-300
+                        ${showUpdated ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}
+                        `}
+                    >
+                        Changes Saved <span className="text-green-500">✓</span>
+                    </span>
+                    )}
                     </h2>
                     <h1 className="text-2xl font-playwrite leading-relaxed">
                         {dream.title}
