@@ -14,7 +14,7 @@ export default function EditDreamPage({
 }) {
 	
 	const [dreamFormData, setDreamFormData] = useState<DreamFormType>({title: '', description: '', notes: '', date: ''})
-	const { updateDream, msg, setMsg } = useUpdateDream()
+	const { updateDream, msg, setMsg, submitting } = useUpdateDream()
 	const [themes, setThemes] = useState<string[]>([])
 	const [loading, setLoading] = useState(true)
 	
@@ -58,6 +58,7 @@ export default function EditDreamPage({
 					setMsg={setMsg}
 					backHref={`/dreams/${params.id}`}
 					backText="Back to Dream"
+					submitting={submitting}
 				/>
 			}
 		</div>

@@ -8,7 +8,7 @@ import { TextArea } from '../forms/TextArea';
 import LinkWithMessage from '../forms/LinkWithMessage';
 
 export default function DreamForm({ 
-    dream, setDream, themes, setThemes, handleSubmit, msg, setMsg, backHref, backText
+    dream, setDream, themes, setThemes, handleSubmit, msg, setMsg, backHref, backText, submitting
 }:{ 
     dream: DreamFormType, 
     setDream: Dispatch<SetStateAction<DreamFormType>>,
@@ -18,7 +18,8 @@ export default function DreamForm({
     msg: string,
     setMsg: Dispatch<SetStateAction<string>>,
     backHref: string,
-    backText: string
+    backText: string,
+    submitting: boolean
 }){ 
 
     const [currentTheme, setCurrentTheme] = useState<string>('')
@@ -118,6 +119,8 @@ export default function DreamForm({
                 name='title'
                 onChange={handleChange}
                 placeholder="Title"
+                disabled={submitting}
+                maxLength={50}
             />
             <TextArea 
                 className='h-40 text-justify'
@@ -125,6 +128,8 @@ export default function DreamForm({
                 name='description'
                 onChange={handleChange}
                 placeholder="Description"
+                disabled={submitting}
+                maxLength={5000}
             />
             <Input 
                 type='date'
@@ -132,6 +137,7 @@ export default function DreamForm({
                 name='date'
                 onChange={handleChange}
                 max={now}
+                disabled={submitting}
             />
             <TextArea 
                 className='h-20 flex flex-col'
@@ -139,6 +145,8 @@ export default function DreamForm({
                 name='notes'
                 onChange={handleChange}
                 placeholder="Notes"
+                disabled={submitting}
+                maxLength={5000}
             />
             <div className="relative w-full">
                 <Input
@@ -147,7 +155,7 @@ export default function DreamForm({
                     name="themes"
                     onChange={handleChangeCurrentTheme}
                     placeholder="Themes"
-                    disabled={dream.description === '' || themes.length >= 6}
+                    disabled={dream.description === '' || themes.length >= 6 || submitting}
                     className="pr-20"
                     maxLength={50}
                 />
@@ -157,6 +165,7 @@ export default function DreamForm({
                         onClick={addTheme}
                         text='Add'
                         extraClass="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-sm"
+                        disabled={submitting}
                     />
                 )}
             <div className={`absolute top-full left-0 w-full bg-white ${showSuggestions ? 'border border-gray-300' : ''} z-10 rounded`}>
@@ -175,10 +184,13 @@ export default function DreamForm({
             {dream.description === '' && <p className="text-xs text-gray-500">
                 Description must be provided to add themes.
             </p>}
+            {dream.description === '' && dream.title === '' && <p className="text-xs text-gray-500">
+                Please provide a title or description to save the dream.
+            </p>}
             {themes.length > 0 && <div className='grid lg:grid-cols-6 md:grid-cols-3 gap-2 pl-2'>
                 <div className='md:col-span-3 lg:col-span-4'>
                     {themes.map(theme => 
-                        <ThemeBadge handleClick={!showSuggestions ? () => removeTheme(theme) : () => {}} currentTheme={theme} key={theme} />
+                        <ThemeBadge handleClick={!showSuggestions && !submitting ? () => removeTheme(theme) : () => {}} currentTheme={theme} key={theme} />
                     )}
                 </div>
                 <div className='md:col-span-3 lg:col-span-2 lg:flex lg:justify-end'>
@@ -191,7 +203,8 @@ export default function DreamForm({
             {msg ?? ''}
             <Button 
                 type='submit' 
-                text='Save'
+                text={submitting ? 'Saving...' : 'Save Dream'}
+                disabled={submitting || (dream.description === '' && dream.title === '')}
                 color={showSuggestions? 'bg-purple-200': undefined}
             />
             <LinkWithMessage 
