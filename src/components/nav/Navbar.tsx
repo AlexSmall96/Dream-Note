@@ -19,7 +19,7 @@ export default function Navbar() {
 	const [hovered, setHovered] = useState(false)
 	const {uniqueYears} = useDreamCounts().stats
 
-	const { isLarge, isMedium } = useScreenSize()
+	const { isLargeAndAbove, isMedium } = useScreenSize()
 
 	if (loading || !currentUser) return null
 
@@ -47,7 +47,7 @@ export default function Navbar() {
 					>
 						<FontAwesomeIcon icon={faLog} className="mr-1" />
 						<span className="hidden lg:inline">Log Dream</span>
-							{hovered && !isLarge && (
+							{hovered && !isLargeAndAbove && (
 							<div className="absolute right-2 top-16 transform -translate-x-1/2 -translate-y-1/2 mr-2 px-2 py-1 bg-yellow-200 text-gray-800 text-xs whitespace-nowrap">
 								Log Dream
 							</div>
@@ -59,8 +59,8 @@ export default function Navbar() {
 				<button onClick={() => setIsOpen(true)} className="md:hidden text-xl">
           			☰
         		</button>
-		</div>
-		<OffCanvas />
+			</div>
+			<OffCanvas />
 		</nav>
   	)
 }
