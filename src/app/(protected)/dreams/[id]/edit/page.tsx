@@ -7,6 +7,8 @@ import { useUpdateDream } from "@/app/hooks/useUpdateDream";
 import { fetchFullDream } from "@/lib/api/dreams";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useRouter } from "next/navigation";
+import { faFeatherPointed as faLog} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function EditDreamPage({
   	params,
@@ -15,9 +17,10 @@ export default function EditDreamPage({
 }) {
 	
 	const [dreamFormData, setDreamFormData] = useState<DreamFormType>({title: '', description: '', notes: '', date: ''})
-	const { updateDream, msg, setMsg, submitting } = useUpdateDream()
+	const { updateDream, msg, setMsg } = useUpdateDream()
 	const [themes, setThemes] = useState<string[]>([])
 	const [loading, setLoading] = useState(true)
+	const [saving, setSaving] = useState(false)
 	const router = useRouter()
 
 	// Get existing dream
@@ -39,10 +42,24 @@ export default function EditDreamPage({
 		getFullDream()
 	}, [params.id])
 
+	if (saving) {
+		return (
+			<div className="header-content mt-12 flex flex-col items-center">
+				<FontAwesomeIcon icon={faLog}/> Saving your dream...
+			</div>
+		)
+	}
+
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault()
-		await updateDream(dreamFormData, themes, params.id)
-		router.replace(`/dreams/${params.id}`)
+		try {
+			setSaving(true)
+			await updateDream(dreamFormData, themes, params.id)
+			router.replace(`/dreams/${params.id}`)
+		} catch (err) {
+			setMsg('Something went wrong')
+			setSaving(false)
+		}
 	}
 
   	return (
@@ -61,7 +78,6 @@ export default function EditDreamPage({
 					setMsg={setMsg}
 					backHref={`/dreams/${params.id}`}
 					backText="Back to Dream"
-					submitting={submitting}
 				/>
 			}
 		</div>
