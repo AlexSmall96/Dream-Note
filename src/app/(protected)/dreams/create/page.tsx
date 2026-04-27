@@ -12,7 +12,7 @@ export default function LogNewDream() {
     const [dream, setDream] = useState<DreamFormType>(defaultDreamState)
     const [themes, setThemes] = useState<string[]>([])
     const router = useRouter()
-    const { logDream, msg, setMsg } = useLogNewDream()
+    const { logDream, msg, setMsg, submitting } = useLogNewDream()
 
     // Log new dream
 	const handleSubmit = async (event: React.FormEvent) => {
@@ -35,6 +35,7 @@ export default function LogNewDream() {
                 setMsg={setMsg}
                 backHref='/dreams'
                 backText="Back to Dashboard"
+                submitting={submitting}
             />
         </div>
     )
