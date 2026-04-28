@@ -44,7 +44,7 @@ export default function DreamsList(){
                 <div className={`${view === 'dreams' ? 'col-span-7' : 'col-span-6'} select-none cursor-default flex justify-start text-sm text-gray-500`}>
                     {isMedium? 'Dreams' : 'Dream:'} {!loadingDreams && isMedium && `(${dreamsList.length}):`}
                 </div>
-                <div className={`${view === 'dreams' ? 'col-span-3' : 'col-span-4'} select-none cursor-default flex items-center justify-start text-sm text-gray-500`}>
+                <div className={`${view === 'dreams' ? 'col-span-3' : 'col-span-4'} pl-2 select-none cursor-default flex items-center justify-start text-sm text-gray-500`}>
                     Date:
                     {dreamsList.length > 1 && view === 'dreams' &&
                         <FontAwesomeIcon
