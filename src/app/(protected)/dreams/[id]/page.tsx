@@ -7,7 +7,7 @@ export default function DreamPage({ params }: { params: { id: string } }) {
     const created = searchParams.get('created')
 
     return (
-        <div className="flex flex-col items-center overflow-hidden">           
+        <div className="flex flex-col items-center overflow-x-hidden h-screen w-full">           
             <DreamView dreamId={params.id} created={Boolean(created)} />
         </div>
     )
