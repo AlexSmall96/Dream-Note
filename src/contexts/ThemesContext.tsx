@@ -48,7 +48,7 @@ export function useThemes(){
     const context = useContext(ThemesContext)
 
     if (!context){
-        throw new Error('useThemes must be used within a DreamsProvider')
+        throw new Error('useThemes must be used within a ThemesProvider')
     }
 
     return context
