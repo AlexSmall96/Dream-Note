@@ -11,12 +11,12 @@ const setupTests = () => {
     
     beforeEach(() => {
         server.resetHandlers(...handlers)
+        vi.restoreAllMocks()
         setScreenSize('large')
     })
     
     afterEach(() => {
         cleanup()
-        vi.clearAllMocks()
     })
       
     afterAll(() => {
