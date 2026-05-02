@@ -26,7 +26,7 @@ const assertDreamTitlesAndDates = async (dreams: DreamDocument[], length: number
     expect(dreams).toHaveLength(length)
     dreams.map((dream: DreamDocument, index: number) => {
         expect(dream.title).toBe(`dream${start-index}`)
-        expect(dream.date).toBe(`${currentYear}-${currentMonth < 10 ? '0' : ''}${currentMonth}-0${start-index}T00:00:00.000Z`)
+        expect(dream.date).toBe(`2025-01-0${start-index}T00:00:00.000Z`)
     })
 }
 

@@ -25,11 +25,14 @@ export default function IconWithTooltip({
 
     const Icon = 
         <div className="font-sans relative group inline-block">
-            <FontAwesomeIcon 
-                icon={icon} 
+            <button                     
                 className={`${extraClass} ${danger ? 'text-orange-500': disabled? 'text-gray-400': 'cursor-pointer'} hover:animate-pulse`} 
                 onClick={disabled ? () => {} : onClick}
-            />
+                aria-label={tooltipText}
+            >
+                <FontAwesomeIcon icon={icon} />
+            </button>
+
             {!disabled && !isMedium && <span 
                 className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2
                     opacity-0 group-hover:opacity-100 transition

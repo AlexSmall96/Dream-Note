@@ -10,13 +10,40 @@ import IconWithTooltip from '@/components/ui/IconWithTooltip';
 import StickyNote from '@/components/dreams/StickyNote';
 import DreamThemeList from '@/components/themes/DreamThemeList';
 import { useScreenSize } from "@/app/hooks/useScreenSize";
+import { useEffect, useState } from "react";
+import { fetchFullDream } from "@/lib/api/dreams";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 export default function DreamCard () {
-    const { dream, themes, setShowBlankLabel, showUpdated, renderUpdated } = useDreamView()
+    const { dream, setDream, themes, setThemes, setShowBlankLabel, showUpdated, renderUpdated } = useDreamView()
     const params = useParams()
     const id = params.id as string
     const { isLargeAndAbove, isExtraSmall } = useScreenSize()
+    const [loading, setLoading] = useState(true)
 
+    useEffect(() => {
+        const getFullDream = async () => {
+            try {
+                const response = await fetchFullDream(id)
+                setDream(response.dream) 
+                setThemes(response.themes?.map(t => t.theme) || [])
+            } catch (err){
+                console.log(err)
+            } finally {
+                setLoading(false)
+            }
+        }
+        getFullDream()
+    }, [params.id])
+
+    if (loading){
+        return (
+            <div className="flex justify-center items-center py-10">
+                <LoadingSpinner />
+            </div>
+        )
+    }
+    
     return (
         <div className="font-caveat relative mb-8 pt-8 px-6 pb-20 bg-[url('/images/paper.jpg')] bg-cover bg-center rounded-lg shadow-lg border border-purple-100 w-full max-w-3xl h-110">
             <div className="flex justify-between items-start mb-4">
