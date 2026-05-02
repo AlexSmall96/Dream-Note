@@ -2,7 +2,7 @@
  * @vitest-environment jsdom
  */
 import '@testing-library/jest-dom/vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { test, expect, describe, vi } from 'vitest';
 import setupTests from '@/tests/setup/setupServer';
 import { DreamViewProvider } from '@/contexts/DreamViewContext';
@@ -90,6 +90,35 @@ describe('Clicking new theme button should:', () => {
         const newThemeIcon = await screen.findByRole('button', { name: /New Theme/i })
         const user = userEvent.setup()
         await user.click(newThemeIcon)
+    })
+})
+
+describe('Sticky Note should be:', () => {
+    test('Not visible on extra small screens even if dream has notes.', async () => {
+        vi.mocked(useParams).mockReturnValue({ id: '12345' })
+        setScreenSize('extraSmall')
+        renderWithProviders(<DreamCard />)
+        await waitFor(() => {
+            const note = screen.queryByRole('textbox', { name: /Note input/i })
+            expect(note).not.toBeInTheDocument()
+        })
+    })
+    test('Visible on small and above screens if dream has notes.', async () => {
+        vi.mocked(useParams).mockReturnValue({ id: '12345' })
+        setScreenSize('small')
+        renderWithProviders(<DreamCard />)
+        const note = await screen.findByRole('textbox', { name: /Note input/i })
+        expect(note).toBeInTheDocument()
+        expect(note).toHaveValue("I had just booked a hike with my Dad that day.")
+    })
+    test('Not visible if dream has no notes even on small and above screens.', async () => {
+        vi.mocked(useParams).mockReturnValue({ id: '67890' })
+        setScreenSize('small')
+        renderWithProviders(<DreamCard />) 
+        await waitFor(() => {
+            const note = screen.queryByRole('textbox', { name: /Note input/i })
+            expect(note).not.toBeInTheDocument()
+        })
     })
 })
 

@@ -50,6 +50,7 @@ export default function StickyNoteContent ({
                     value={newNote || ''}
                     onChange={handleNoteChange}
                     className={`${isExtraSmall ? 'w-full' : 'w-30 lg:w-44'} h-full pl-1 pr-2 bg-yellow-200 focus:outline-none text-gray-800 resize-none font-caveat`}
+                    aria-label="Note input"
                 />
             </form>        
         </>
