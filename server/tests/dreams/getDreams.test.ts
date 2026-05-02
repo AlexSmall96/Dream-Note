@@ -14,8 +14,6 @@ let userOneId: Types.ObjectId
 let userThreeAuth: [string, string]
 let oldDreamTitle: string
 let newDreamTitle: string
-const currentYear = new Date().getFullYear()
-const currentMonth = new Date().getMonth() + 1
 
 // Wipe db and save data
 beforeEach(async () => {
@@ -37,7 +35,7 @@ beforeEach(async () => {
     
     await Promise.all(
         userOneTitles.map(async (title, index) => {
-            const date = new Date(Date.UTC(currentYear, currentMonth - 1, index + 1))
+            const date = new Date(Date.UTC(2025, 0, index + 1))
             await new Dream({title, date, owner: userOne._id}).save()
         })
     )
@@ -46,7 +44,7 @@ beforeEach(async () => {
     const userThreeTitles = ['In space', 'In space without a space suit', 'In space wearing a space suit']
     await Promise.all(
         userThreeTitles.map(async (title, index) => {
-            const date = new Date(Date.UTC(currentYear, currentMonth - 1, index + 1))
+            const date = new Date(Date.UTC(2025, 0, index + 1))
             await new Dream({title, owner: userThree._id, date}).save()
         })
     )
@@ -72,17 +70,17 @@ test("All dreams should be returned when no parameters are passed in.", async ()
 
 test("Skip and limit parameters return correct dreams.", async () => {
     // Get dream page one of dreams
-    const pageOneResponse = await request(server).get(`${url}?limit=5&skip=0&year=${currentYear}&month=${currentMonth}`).set(...userOneAuth).expect(200)
+    const pageOneResponse = await request(server).get(`${url}?limit=5&skip=0&year=2025&month=1`).set(...userOneAuth).expect(200)
     // Should be 5 dreams, sorted oldest to newest
     const pageOneDreams = pageOneResponse.body.dreams
     assertDreamTitlesAndDates(pageOneDreams, 5)
     // Get dream page two of dreams
-    const pageTwoResponse = await request(server).get(`${url}?limit=5&skip=5&year=${currentYear}&month=${currentMonth}`).set(...userOneAuth).expect(200)
+    const pageTwoResponse = await request(server).get(`${url}?limit=5&skip=5&year=2025&month=1`).set(...userOneAuth).expect(200)
     // Should be 4 dreams, starting at dream4, sorted oldest to newest
     const pageTwoDreams = pageTwoResponse.body.dreams
     assertDreamTitlesAndDates(pageTwoDreams, 4, 4)
     // Should only return dream9
-    const singleResponse = await request(server).get(`${url}?limit=5&skip=0&title=dream9&year=${currentYear}&month=${currentMonth}`).set(...userOneAuth).expect(200)
+    const singleResponse = await request(server).get(`${url}?limit=5&skip=0&title=dream9&year=2025&month=1`).set(...userOneAuth).expect(200)
     const singleDreamArray = singleResponse.body.dreams
     expect(singleDreamArray).toHaveLength(1)
     expect(singleDreamArray[0].title).toBe('dream9')
@@ -110,6 +108,6 @@ test('Searching by title returns correct dreams.', async () => {
 test('Setting month and year returns correct dreams.', async () => {
     await filterAndAssertDreams(2024, 12, 1, userThreeAuth, [oldDreamTitle])
     await filterAndAssertDreams(2025, 5, 1, userThreeAuth,  [newDreamTitle])
-    await filterAndAssertDreams(currentYear, currentMonth, 3, userThreeAuth, ['In space wearing a space suit', 'In space without a space suit', 'In space'])
+    await filterAndAssertDreams(2025, 1, 3, userThreeAuth, ['In space wearing a space suit', 'In space without a space suit', 'In space'])
     await filterAndAssertDreams(2020, 2, 0, userThreeAuth)
 })
