@@ -25,7 +25,7 @@ export default function DreamForm({
     const [suggestions, setSuggestions] = useState<string[]>([])
     const [showSuggestions, setShowSuggestions] = useState<boolean>(false)
     const [themeDots, setThemeDots] = useState<string[]>(
-        Array(themes.length).fill('text-purple-700').concat(Array(6 - themes.length).fill('text-purple-300'))
+        Array(themes.length).fill('text-purple-700').concat(themes.length < 6 ? Array(6 - themes.length).fill('text-purple-300') : [])
     )
     const [visible, setVisible] = useState(false)
 
@@ -111,7 +111,7 @@ export default function DreamForm({
     const now = new Date().toISOString().split('T')[0]
 
     return (
-        <form className="flex flex-col gap-2 max-w-3xl w-full" onSubmit={handleSubmit}>
+        <form className="flex flex-col gap-2 max-w-3xl w-full" onSubmit={handleSubmit} aria-label='dream form'>
             <Input 
                 type='text'
                 value={dream.title}
@@ -119,11 +119,13 @@ export default function DreamForm({
                 onChange={handleChange}
                 placeholder="Title"
                 maxLength={50}
+                aria-label='Title'
             />
             <TextArea 
                 className='h-40 text-justify'
                 value={dream.description.replace(/\n\s+/g, ' ').trim()}
                 name='description'
+                aria-label='Description'
                 onChange={handleChange}
                 placeholder="Description"
                 maxLength={5000}
@@ -134,6 +136,7 @@ export default function DreamForm({
                 name='date'
                 onChange={handleChange}
                 max={now}
+                aria-label='Date'
             />
             <TextArea 
                 className='h-20 flex flex-col'
@@ -142,6 +145,7 @@ export default function DreamForm({
                 onChange={handleChange}
                 placeholder="Notes"
                 maxLength={5000}
+                aria-label='Notes'
             />
             <div className="relative w-full">
                 <Input
@@ -152,6 +156,7 @@ export default function DreamForm({
                     placeholder="Themes"
                     disabled={dream.description === '' || themes.length >= 6}
                     maxLength={50}
+                    aria-label='Themes'
                 />
                 {visible && (
                     <Button
