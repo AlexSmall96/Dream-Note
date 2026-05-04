@@ -109,6 +109,35 @@ In contrast, login and password reset flows always return generic responses to m
 - Expand frontend test coverage around key user flows to improve confidence when scaling the application and making future changes.
 
 ## 💻 Setup
+### Prerequisites
+- Node.js (v18+)
+- npm
+
+### Installation
+- git clone https://github.com/AlexSmall96/Dream-Note
+- cd dream-note
+- npm install
+### Environment Variables
+Create a `.env` file:
+```
+DATABASE_URL=your_database_url
+DATABASE_NAME=your_database_name
+PORT=3000
+JWT_SECRET=your_jwt_secret
+SMTP_MAIL=your_smtp_mail
+SMTP_PASS=your_smtp_pass
+SMTP_SERVICE=your_smtp_service
+API_KEY=your_open_ai_api_key
+NEXT_PUBLIC_API_URL=http://localhost:3000/api
+GUEST_USER_EMAIL=demo-user@email.com
+RESET_TOKEN_SECRET=your_reset_token_secret
+```
+
+### Running the Application
+npm run dev:server
+### Running Tests
+- Frontend: npm run test:frontend
+- Backend: npm run test:backend
 
 ## 👤Author 
 Alex Small | [GitHub](https://github.com/AlexSmall96) | [LinkedIn](https://www.linkedin.com/in/alex-small-a8977116b/)
