@@ -19,14 +19,12 @@ Dream Note is an AI-assisted dream journal app where users can:
 Generate and save AI dream analysis and automatically extract themes from dreams.
 
 ### Journal management
-![Dream Entry](./documentation/key-features/dreamcard.png)
+![Dream Entry](./documentation/key-features/dream-card.gif)
 
 Create, edit, and manage personal dream journal entries.
 
 ### Categorize by Theme and Date
-|   |  |
-|:--:|:---:|
-| ![Themes](./documentation/key-features/themes.png) | ![Dates](./documentation/key-features/dates.png)
+![Themes](./documentation/key-features/dates-themes.gif) 
 
 View dreams chronologically or based on theme.
 
