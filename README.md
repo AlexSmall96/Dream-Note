@@ -61,6 +61,8 @@ For the frontend, I prioritised manual testing of key user flows, since the beha
 
 **Tools used:** Vitest, Supertest, React Testing Library, MSW
 
+CI is configured using GitHub Actions to automatically run the test suite on pull requests before merging into the main branch, ensuring code quality and preventing regressions.
+
 ## 🔒 Security Considerations
 
 ## 	🤖 Use of AI During Development
