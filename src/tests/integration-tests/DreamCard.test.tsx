@@ -2,18 +2,15 @@
  * @vitest-environment jsdom
  */
 import '@testing-library/jest-dom/vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import { test, expect, describe, vi } from 'vitest';
 import setupTests from '@/tests/setup/setupServer';
-import { DreamViewProvider } from '@/contexts/DreamViewContext';
-import { DreamsProvider } from '@/contexts/DreamsContext';
-import { ThemesAsideProvider } from '@/contexts/ThemesAsideContext';
-import { ThemesProvider } from '@/contexts/ThemesContext';
 import { useParams } from 'next/navigation'
 import { setScreenSize } from '@/tests/setup/setScreenSize';
 import userEvent from '@testing-library/user-event';
 import { dreamOneData } from '@/tests/mocks/dreams/data';
-
+import {renderWithProviders} from '@/tests/utils/renderWithProviders';
+ 
 vi.mock('next/navigation', () => {
     return {
         useParams: vi.fn(),
@@ -21,20 +18,6 @@ vi.mock('next/navigation', () => {
 })
 
 setupTests()
-
-const renderWithProviders = (component: React.ReactElement) => {
-    return render(
-        <ThemesAsideProvider>
-            <ThemesProvider>
-                <DreamsProvider>
-                    <DreamViewProvider>
-                        {component}
-                    </DreamViewProvider>
-                </DreamsProvider>
-            </ThemesProvider>
-        </ThemesAsideProvider>
-    )
-}
 
 import DreamCard from "@/components/dreams/DreamCard";
 
