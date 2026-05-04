@@ -54,10 +54,12 @@ Descriptions of the database tables and fields are as follows:
 ![Database Schema](documentation/database/db-diagram.png)
 ## 🧪 Testing Strategy
 ### Backend
-For the backend, I aimed for high test coverage (~90%+) because a lot of the logic isn’t directly visible through the UI, and manual testing would miss edge cases. As the project evolved and required refactoring, the test suite gave me confidence to make changes safely.
+For the backend, I aimed for high test coverage (~90%+) using Vitest and sueprtest because a lot of the logic isn’t directly visible through the UI, and manual testing would miss edge cases. This was achieved using Vitest and Supertest for integration testing. As the project evolved and required refactoring, the test suite gave me confidence to make changes safely.
 
 ### Frontend
-For the frontend, I prioritised manual testing of key user flows, since the behaviour is more visible and easier to validate interactively. I also included a small number of automated tests to demonstrate patterns like mocking API calls (e.g. with MSW) and isolating components. Full frontend coverage wasn’t a priority for this project so I focused on demonstrating understanding rather than completeness. 
+For the frontend, I prioritised manual testing of key user flows, since the behaviour is more visible and easier to validate interactively. I also included a small number of automated tests to demonstrate patterns such as component isolation, integation tests and API mocking using React Testing Library and MSW.  Full frontend coverage wasn’t a priority for this project so I focused on demonstrating understanding rather than completeness. 
+
+**Tools used:** Vitest, Supertest, React Testing Library, MSW
 
 ## 🔒 Security Considerations
 
