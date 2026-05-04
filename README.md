@@ -100,6 +100,14 @@ In contrast, login and password reset flows always return generic responses to m
 
 ## 	🤖 Use of AI During Development
 
+Large language models and AI tools were used pragmatically throughout development to support productivity and problem-solving.
+
+- Used for brainstorming initial features and exploring product direction.
+- Acted as a sounding board for UI and UX decisions.
+- Assisted with debugging and refining architectural approaches.
+- Helped generate boilerplate code to speed up development.
+
+GitHub Copilot was used for inline code suggestions during development, primarily to improve speed and reduce repetitive coding tasks. All generated code was reviewed and adapted as needed.
 ## 📈 Future Improvements
 
 - Enhance the dashboard by allowing statistics to act as interactive filters, enabling users to quickly explore related dreams.
