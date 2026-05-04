@@ -69,6 +69,12 @@ CI is configured using GitHub Actions to automatically run the test suite on pul
 
 ## 📈 Future Improvements
 
+- Enhance the dashboard by allowing statistics to act as interactive filters, enabling users to quickly explore related dreams.
+
+- Extend AI capabilities to identify recurring themes and patterns across multiple entries over time.
+
+- Expand frontend test coverage around key user flows to improve confidence when scaling the application and making future changes.
+
 ## 💻 Setup
 
 ## 👤Author 
