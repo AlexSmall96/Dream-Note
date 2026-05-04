@@ -65,6 +65,28 @@ CI is configured using GitHub Actions to automatically run the test suite on pul
 
 ## 🔒 Security Considerations
 
+- **Password Security**  
+Passwords are securely hashed using bcrypt before storage.
+
+- **Password Reset & OTP Handling**  
+Password resets are handled via one-time passcodes (OTPs) sent to the user’s email.  
+OTPs are stored as hashed values and associated with the requesting user, preventing exposure of sensitive data.
+
+- **Protection Against Email Enumeration**  
+Password reset requests return a generic response (“If this email is associated with an account…”) to avoid revealing whether an account exists.
+
+- **Email Verification & Account Restrictions**  
+Users must verify their email before performing sensitive actions such as deleting their account or updating their password.
+
+- **Authentication Flow & Route Protection**  
+Protected and public layouts are used to differentiate authenticated and unauthenticated states.  
+Unauthenticated users attempting to access protected routes are redirected to the landing page.
+
+- **Signup vs Login Trade-off**  
+ Signup responses return specific validation errors (e.g. invalid email or password) to improve user experience, even though this can reveal account existence.  
+This is a deliberate trade-off, mitigated by typical protections such as rate limiting and email verification.  
+In contrast, login and password reset flows always return generic responses to minimise enumeration risk.
+
 ## 	🤖 Use of AI During Development
 
 ## 📈 Future Improvements
