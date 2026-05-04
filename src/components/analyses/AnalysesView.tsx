@@ -93,11 +93,13 @@ export default function AnalysesView () {
                                             <TabList className="flex gap-1 bg-gray-100 p-1 rounded-full sm:text-md md:text-sm">
                                                 <Tab 
                                                     onClick={() => setFilter('all')}
+                                                    aria-label='All'
                                                     className="px-3 py-1 rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
                                                 All
                                                 </Tab>
                                                 <Tab 
                                                     onClick={() => setFilter('favorites')}
+                                                    aria-label='Favorites'
                                                     className="px-3 py-1 rounded-full data-[hover]:underline data-[selected]:bg-purple-400 data-[selected]:text-white">
                                                 Favourites
                                                 </Tab>
@@ -138,7 +140,7 @@ export default function AnalysesView () {
                     </Card>}
                 </div>
                 {mainAnalysis && (showMainAnalysis || isExtraLarge) ? (
-                    <div className='col-span-6 xl:col-span-3 flex flex-col gap-4'>
+                    <div className='col-span-6 xl:col-span-3 flex flex-col gap-4' data-testid='main-analysis'>
                         <Card>
                             <Analysis 
                                 analysisData={mainAnalysis} 
