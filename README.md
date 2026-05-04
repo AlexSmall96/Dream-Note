@@ -7,17 +7,33 @@ Dream Note is an AI-assisted dream journal app where users can:
 - View dreams chronologically or by theme.
 - Generate customizable, AI dream analysis. 
 
-This project is currently under active development. 
-
-Current focus: Frontend styling and testing.
-
 ### [🌐 Live Site](https://dream-note-uh6p.onrender.com/)
 
 ### [📖 Repository](https://github.com/AlexSmall96/Dream-Note)
 
-**Note:** Mock versions of AI-assisted features are currently being used to minimize costs while the project is in development.
-
 ## 🔍 Key Features
+
+### AI-powered dream analysis
+![AI Demo](./documentation/key-features/analysis.gif)
+
+Generate and save AI dream analysis and automatically extract themes from dreams.
+
+### Journal management
+![Dream Entry](./documentation/key-features/dreamcard.png)
+
+Create, edit, and manage personal dream journal entries.
+
+### Categorize by Theme and Date
+|   |  |
+|:--:|:---:|
+| ![Themes](./documentation/key-features/themes.png) | ![Dates](./documentation/key-features/dates.png)
+
+View dreams chronologically or based on theme.
+
+### Dream pattern visualisation
+![Charts](./documentation/key-features/charts.gif)
+
+Visualise dream patterns over time with interactive charts.
 
 ## 💻 Tech Stack
 | Backend | Frontend | Database | Testing (Vitest) | Other Tools |
