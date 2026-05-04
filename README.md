@@ -43,15 +43,28 @@ Visualise dream patterns over time with interactive charts.
 |TypeScript  |  TailwindCSS       | MongoDB Compass         |  Mock Service Worker         |   dbdiagram      |  
 
 ## 🔧 Architecture
-### 🗃️ Database Schema
-The below diagram was used to model the database schema.
-Descriptions of the database tables and fields are as follows:
+### Backend
 
-- **Users:** Contains User's login data.
-- **Dreams:** Dreams the user will record. Contains description, date, and optional title, notes, and AI analysis. Related to the User model via a many to one relationship.
-- **Themes:** Themes related to dream, either chosen by the user or AI generated. Related to the Dream model via a many to one relationship.
+The backend follows a layered architecture:
 
-![Database Schema](documentation/database/db-diagram.png)
+Client → Router → Controller → Service → Database
+
+- **Routers** define API endpoints and handle request routing.  
+- **Controllers** manage request/response handling and validation.  
+- **Services** contain the core business logic and interact with the database.  
+
+This separation keeps concerns isolated, making the codebase easier to maintain and refactor.  
+Some services call other services where necessary to handle more complex workflows.
+
+---
+
+### Frontend
+
+- **Pages** are kept thin, primarily handling routing, layout, and parameter management.  
+- **Context** is used for global state management where needed.  
+- **Protected and public layouts** manage authenticated vs unauthenticated states, with automatic redirection for restricted routes.  
+
+This approach keeps UI logic simple while centralising state and access control.
 ## 🧪 Testing Strategy
 ### Backend
 For the backend, I aimed for high test coverage (~90%+) using Vitest and sueprtest because a lot of the logic isn’t directly visible through the UI, and manual testing would miss edge cases. This was achieved using Vitest and Supertest for integration testing. As the project evolved and required refactoring, the test suite gave me confidence to make changes safely.
