@@ -47,6 +47,11 @@ View dreams chronologically or based on theme.
 Visualise dream patterns over time with interactive charts.
 
 ### Guest Access
+
+| | |
+|:---: | :---: |
+|![Guest Login](./documentation/key-features/guest.png) |![Guest Login](./documentation/key-features/guest1.png) | 
+
 Login as a guest and explore a ready-to-go dream journal without sign-up, with restricted functionality to protect user data.
 
 ## 💻 Tech Stack
@@ -92,6 +97,8 @@ This approach keeps UI logic simple while centralising state and access control.
 ### Backend
 For the backend, I aimed for high test coverage (~90%+) using Vitest and supertest because a lot of the logic isn’t directly visible through the UI, and manual testing would miss edge cases. This was achieved using Vitest and Supertest for integration testing. As the project evolved and required refactoring, the test suite gave me confidence to make changes safely.
 
+
+---
 
 ### Frontend
 For the frontend, I prioritised manual testing of key user flows, since the behaviour is more visible and easier to validate interactively. I also included a small number of automated tests to demonstrate patterns such as component isolation, integration tests, and API mocking using React Testing Library and MSW.  Full frontend coverage wasn’t a priority for this project, so I focused on demonstrating understanding rather than completeness.
