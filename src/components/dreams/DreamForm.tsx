@@ -123,7 +123,7 @@ export default function DreamForm({
             />
             <TextArea 
                 className='h-40 text-justify'
-                value={dream.description.replace(/\n\s+/g, ' ').trim()}
+                value={dream.description.replace(/\n\s+/g, ' ')}
                 name='description'
                 aria-label='Description'
                 onChange={handleChange}
@@ -140,7 +140,7 @@ export default function DreamForm({
             />
             <TextArea 
                 className='h-20 flex flex-col'
-                value={dream.notes.replace(/\n\s+/g, ' ').trim()}
+                value={dream.notes.replace(/\n\s+/g, ' ')}
                 name='notes'
                 onChange={handleChange}
                 placeholder="Notes"
